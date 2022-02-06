@@ -27,8 +27,9 @@
 			this.guesses = [];
 		}
 	}
-
 	const game = new Game(5, 6);
+
+	let input: string;
 </script>
 
 <main>
@@ -49,10 +50,25 @@
 		{/each}
 	</div>
 
-	<input />
+	<div class="input">
+		<input class="inputChildren" bind:value={input} />
+		<h1 class="inputChildren">Hello {input}</h1>
+	</div>
 </main>
 
 <style>
+	.input {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		margin-top: 5px;
+	}
+
+	.inputChildren {
+		margin: 10px;
+		margin-top: 0px;
+	}
+
 	.game {
 		display: grid;
 
