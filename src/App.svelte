@@ -1,6 +1,10 @@
 <script lang="ts">
+	import { scale } from "svelte/transition";
+	import Popup from "./popup.svelte";
+	import Sidebar from "./sidebar.svelte";
 	import { answers, guesses } from "./words";
 
+	/* ---------------------------------- Game ---------------------------------- */
 	class Game {
 		guesses: string[];
 		boxes: ("empty" | "correct" | "semicorrect")[][];
@@ -19,68 +23,220 @@
 			);
 		}
 		word: string;
+		started: number;
+		endTimer: boolean;
 		constructor(public wordLength: number, public maxGuesses: number) {
 			this.guesses = [];
 			this.boxes = [...Array(maxGuesses)].map(() =>
 				[...Array(wordLength)].map(() => "empty")
 			);
 			this.word = answers[Math.floor(Math.random() * answers.length)];
-		}
-
-		reset() {
-			this.guesses = [];
+			this.started = Date.now();
+			this.endTimer = false;
+			console.log(this.word);
 		}
 
 		validateInput(input: string) {
 			if (!input) return "Enter something!";
 			if (input?.length < this.wordLength) return "Input too short!";
 			if (input?.length > this.wordLength) return "Input too long!";
+			if (this.guesses.includes(input))
+				return "Don't waste your guesses!";
 			if (!guesses.includes(input))
 				return `"${input}" is not a valid word!`;
 			return true;
 		}
 	}
+	function processInput() {
+		if (game.validateInput(input) !== true) return;
+
+		/* ---------------------------- Reset / add input --------------------------- */
+		inputField.value = "";
+		game.guesses = [...game.guesses, input];
+
+		/* -------------------------- Determine the colors -------------------------- */
+		for (let i = 0; i < input.length; i++) {
+			const letter = input[i];
+			const index = game.word.indexOf(letter);
+
+			if (index === -1) {
+				game.boxes[game.guesses.length - 1][i] = "empty";
+				continue;
+			}
+
+			if (game.word[i] === letter) {
+				game.boxes[game.guesses.length - 1][i] = "correct";
+				continue;
+			}
+
+			let found = false;
+			for (let i = 0; i < input.length; i++) {
+				if (game.word[i] === input[i] && input[i] === letter) {
+					found = true;
+					break;
+				}
+			}
+
+			if (found) {
+				game.boxes[game.guesses.length - 1][i] = "empty";
+				continue;
+			}
+
+			game.boxes[game.guesses.length - 1][i] = "semicorrect";
+		}
+
+		/* ------------------------------- Win / lose ------------------------------- */
+		if (input === game.word) {
+			won = true;
+			game.endTimer = true;
+		} else if (game.guesses.length >= game.maxGuesses) {
+			lose = true;
+			game.endTimer = true;
+		}
+	}
 
 	const game = new Game(5, 6);
 
+	/* --------------------------------- Inputs --------------------------------- */
+	let _input: string;
 	let input: string;
+	$: {
+		input = _input?.toLocaleLowerCase();
+		console.log(input);
+	}
+	let inputField: HTMLInputElement;
 	let inputValid: true | string = "Input too short!";
-	$: inputValid = game.validateInput(input);
+	$: inputValid = !won
+		? !lose
+			? game.validateInput(input)
+			: "You lost!"
+		: "You won!";
+	function onKeyPress(event: KeyboardEvent) {
+		if (event.code === "Enter") processInput();
+	}
+
+	/* --------------------------------- Popups --------------------------------- */
+	let won = false;
+	let closedWonPopup = false;
+	function closeWonPopup() {
+		closedWonPopup = true;
+	}
+
+	let lose = false;
+	let closedLosePopup = false;
+	function closeLosePopup() {
+		closedLosePopup = true;
+	}
 </script>
 
 <main>
+	<!-- Game -->
 	<div
 		class="game"
 		style="--max-guesses: {game.maxGuesses}; --word-length: {game.wordLength}"
 	>
 		{#each game.coloredBoxes as _row, row}
 			{#each _row as _, column}
-				<div
-					class="box"
-					style="--color: {_row[column]}"
-					id="{row},{column}"
-				>
-					{row}, {column}
-				</div>
+				{#if game.guesses[row]}
+					{#key game.guesses[row].charAt(column).toUpperCase()}
+						<div
+							class="box"
+							style="--color: {_row[column]}"
+							transition:scale
+						>
+							{game.guesses[row][column].toUpperCase()}
+						</div>
+					{/key}
+				{:else}
+					<div class="box" style="--color: {_row[column]}" />
+				{/if}
 			{/each}
 		{/each}
 	</div>
 
+	<!-- Input -->
 	<div class="input">
 		<input
 			class="inputChildren"
-			bind:value={input}
+			bind:value={_input}
+			bind:this={inputField}
+			on:keypress={onKeyPress}
 			maxlength={game.wordLength}
 		/>
 		{#if inputValid === true}
-			<button>Enter</button>
+			<button on:click={processInput}>Enter</button>
 		{:else}
 			<button disabled data-tooltip={inputValid}>Enter</button>
 		{/if}
 	</div>
+
+	<!-- Win / lose popups -->
+	{#if won && !closedWonPopup}
+		<Popup
+			message="🎉 You won {game.guesses.length === 1
+				? 'first try! (hacker)'
+				: `in ${game.guesses.length} tries!`}"
+			onClose={closeWonPopup}
+		/>
+	{/if}
+
+	{#if lose && !closedLosePopup}
+		<Popup
+			message="🎈 You lost, the word was {game.word}!"
+			onClose={closeLosePopup}
+		/>
+	{/if}
+
+	<!-- Darkmode -->
+	<Sidebar {game} />
 </main>
 
 <style>
+	.input {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		margin-top: 15px;
+	}
+
+	.inputChildren {
+		margin: 10px;
+		margin-top: 0px;
+	}
+
+	.game {
+		display: grid;
+
+		grid-template-columns: repeat(var(--word-length), 100px);
+		grid-template-rows: repeat(var(--max-guesses), 100px);
+		grid-gap: 10px;
+
+		justify-content: center;
+		align-content: center;
+	}
+
+	.box {
+		background-color: var(--color);
+		border-radius: 5px;
+
+		font-size: 150%;
+		color: white;
+
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	/* ------------------------------- Background ------------------------------- */
+	:global(body) {
+		background-color: #fff;
+		transition: background-color 0.3s;
+	}
+
+	:global(body.dark-mode) {
+		background-color: #424549;
+	}
+
 	:global([data-tooltip]) {
 		position: relative;
 		z-index: 2;
@@ -142,40 +298,5 @@
 	:global([data-tooltip="false"]:hover:after) {
 		visibility: hidden;
 		opacity: 0;
-	}
-
-	.input {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		margin-top: 5px;
-	}
-
-	.inputChildren {
-		margin: 10px;
-		margin-top: 0px;
-	}
-
-	.game {
-		display: grid;
-
-		grid-template-columns: repeat(var(--word-length), 100px);
-		grid-template-rows: repeat(var(--max-guesses), 100px);
-		grid-gap: 10px;
-
-		justify-content: center;
-		align-content: center;
-	}
-
-	.box {
-		background-color: var(--color);
-		border-radius: 5px;
-
-		font-size: 150%;
-		color: white;
-
-		display: flex;
-		justify-content: center;
-		align-items: center;
 	}
 </style>
