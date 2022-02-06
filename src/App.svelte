@@ -100,10 +100,7 @@
 	/* --------------------------------- Inputs --------------------------------- */
 	let _input: string;
 	let input: string;
-	$: {
-		input = _input?.toLocaleLowerCase();
-		console.log(input);
-	}
+	$: input = _input?.toLocaleLowerCase();
 	let inputField: HTMLInputElement;
 	let inputValid: true | string = "Input too short!";
 	$: inputValid = !won
