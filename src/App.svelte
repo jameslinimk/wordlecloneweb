@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { scale } from "svelte/transition";
 	import Popup from "./popup.svelte";
+	import Settings from "./Settings.svelte";
 	import Sidebar from "./sidebar.svelte";
 	import { answers, guesses } from "./words";
 
@@ -124,6 +125,9 @@
 	function closeLosePopup() {
 		closedLosePopup = true;
 	}
+
+	/* -------------------------------- Settings -------------------------------- */
+	let settingsOpen = false;
 </script>
 
 <main>
@@ -185,7 +189,12 @@
 	{/if}
 
 	<!-- Darkmode -->
-	<Sidebar {game} />
+	<Sidebar {game} openSettings={() => (settingsOpen = true)} />
+
+	<!-- Settings -->
+	{#if settingsOpen}
+		<Settings />
+	{/if}
 </main>
 
 <style>
