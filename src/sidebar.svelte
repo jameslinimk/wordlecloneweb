@@ -3,6 +3,8 @@
 
     export let game;
     export let toggleSettings: () => void;
+    export let zoomOut: () => void;
+    export let zoomIn: () => void;
 
     let timeElapsed = "00:00:00";
     setInterval(() => {
@@ -18,6 +20,10 @@
     <Darkmode />
     <button on:click={() => toggleSettings()}>🔨</button>
     <button on:click={() => location.reload()}>🔄</button>
+    <br />
+    <button on:click={zoomOut}>🔎➖</button>
+    <button on:click={zoomIn}>🔎➕</button>
+
     <h3 class="timer">{timeElapsed}</h3>
 </div>
 

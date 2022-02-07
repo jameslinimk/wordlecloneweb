@@ -131,6 +131,20 @@ var app = (function () {
             node.style.setProperty(key, value, important ? 'important' : '');
         }
     }
+    function select_option(select, value) {
+        for (let i = 0; i < select.options.length; i += 1) {
+            const option = select.options[i];
+            if (option.__value === value) {
+                option.selected = true;
+                return;
+            }
+        }
+        select.selectedIndex = -1; // no option should be selected
+    }
+    function select_value(select) {
+        const selected_option = select.querySelector(':checked') || select.options[0];
+        return selected_option && selected_option.__value;
+    }
     function custom_event(type, detail, bubbles = false) {
         const e = document.createEvent('CustomEvent');
         e.initCustomEvent(type, bubbles, false, detail);
@@ -1003,22 +1017,22 @@ var app = (function () {
 
     function get_each_context$1(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[0] = list[i];
-    	child_ctx[2] = i;
+    	child_ctx[5] = list[i];
+    	child_ctx[7] = i;
     	return child_ctx;
     }
 
     function get_each_context_1$1(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[0] = list[i];
-    	child_ctx[2] = i;
+    	child_ctx[5] = list[i];
+    	child_ctx[7] = i;
     	return child_ctx;
     }
 
-    // (12:12) {:else}
+    // (17:12) {:else}
     function create_else_block_1$1(ctx) {
     	let option;
-    	let t0_value = /*i*/ ctx[2] + 3 + "";
+    	let t0_value = /*i*/ ctx[7] + 3 + "";
     	let t0;
     	let t1;
 
@@ -1027,9 +1041,9 @@ var app = (function () {
     			option = element("option");
     			t0 = text(t0_value);
     			t1 = text(" letter words\r\n                ");
-    			option.__value = /*i*/ ctx[2] + 3;
+    			option.__value = /*i*/ ctx[7] + 3;
     			option.value = option.__value;
-    			add_location(option, file$3, 12, 16, 374);
+    			add_location(option, file$3, 17, 16, 537);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, option, anchor);
@@ -1045,17 +1059,17 @@ var app = (function () {
     		block,
     		id: create_else_block_1$1.name,
     		type: "else",
-    		source: "(12:12) {:else}",
+    		source: "(17:12) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (8:12) {#if i + 3 === 5}
+    // (13:12) {#if i + 3 === 5}
     function create_if_block_1$1(ctx) {
     	let option;
-    	let t0_value = /*i*/ ctx[2] + 3 + "";
+    	let t0_value = /*i*/ ctx[7] + 3 + "";
     	let t0;
     	let t1;
 
@@ -1065,9 +1079,9 @@ var app = (function () {
     			t0 = text(t0_value);
     			t1 = text(" letter words (deafult)\r\n                ");
     			option.selected = true;
-    			option.__value = /*i*/ ctx[2] + 3;
+    			option.__value = /*i*/ ctx[7] + 3;
     			option.value = option.__value;
-    			add_location(option, file$3, 8, 16, 225);
+    			add_location(option, file$3, 13, 16, 388);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, option, anchor);
@@ -1083,19 +1097,19 @@ var app = (function () {
     		block,
     		id: create_if_block_1$1.name,
     		type: "if",
-    		source: "(8:12) {#if i + 3 === 5}",
+    		source: "(13:12) {#if i + 3 === 5}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (7:8) {#each Array(5) as _, i}
+    // (12:8) {#each Array(5) as _, i}
     function create_each_block_1$1(ctx) {
     	let if_block_anchor;
 
     	function select_block_type(ctx, dirty) {
-    		if (/*i*/ ctx[2] + 3 === 5) return create_if_block_1$1;
+    		if (/*i*/ ctx[7] + 3 === 5) return create_if_block_1$1;
     		return create_else_block_1$1;
     	}
 
@@ -1122,17 +1136,17 @@ var app = (function () {
     		block,
     		id: create_each_block_1$1.name,
     		type: "each",
-    		source: "(7:8) {#each Array(5) as _, i}",
+    		source: "(12:8) {#each Array(5) as _, i}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (25:12) {:else}
+    // (30:12) {:else}
     function create_else_block$1(ctx) {
     	let option;
-    	let t0_value = /*i*/ ctx[2] + 3 + "";
+    	let t0_value = /*i*/ ctx[7] + 3 + "";
     	let t0;
     	let t1;
 
@@ -1141,9 +1155,9 @@ var app = (function () {
     			option = element("option");
     			t0 = text(t0_value);
     			t1 = text(" tries ");
-    			option.__value = /*i*/ ctx[2] + 3;
+    			option.__value = /*i*/ ctx[7] + 3;
     			option.value = option.__value;
-    			add_location(option, file$3, 25, 16, 755);
+    			add_location(option, file$3, 30, 16, 937);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, option, anchor);
@@ -1159,17 +1173,17 @@ var app = (function () {
     		block,
     		id: create_else_block$1.name,
     		type: "else",
-    		source: "(25:12) {:else}",
+    		source: "(30:12) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (21:12) {#if i + 3 === 6}
+    // (26:12) {#if i + 3 === 6}
     function create_if_block$1(ctx) {
     	let option;
-    	let t0_value = /*i*/ ctx[2] + 3 + "";
+    	let t0_value = /*i*/ ctx[7] + 3 + "";
     	let t0;
     	let t1;
 
@@ -1179,9 +1193,9 @@ var app = (function () {
     			t0 = text(t0_value);
     			t1 = text(" tries (deafult)\r\n                ");
     			option.selected = true;
-    			option.__value = /*i*/ ctx[2] + 3;
+    			option.__value = /*i*/ ctx[7] + 3;
     			option.value = option.__value;
-    			add_location(option, file$3, 21, 16, 613);
+    			add_location(option, file$3, 26, 16, 795);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, option, anchor);
@@ -1197,19 +1211,19 @@ var app = (function () {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(21:12) {#if i + 3 === 6}",
+    		source: "(26:12) {#if i + 3 === 6}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (20:8) {#each Array(7) as _, i}
+    // (25:8) {#each Array(7) as _, i}
     function create_each_block$1(ctx) {
     	let if_block_anchor;
 
     	function select_block_type_1(ctx, dirty) {
-    		if (/*i*/ ctx[2] + 3 === 6) return create_if_block$1;
+    		if (/*i*/ ctx[7] + 3 === 6) return create_if_block$1;
     		return create_else_block$1;
     	}
 
@@ -1236,7 +1250,7 @@ var app = (function () {
     		block,
     		id: create_each_block$1.name,
     		type: "each",
-    		source: "(20:8) {#each Array(7) as _, i}",
+    		source: "(25:8) {#each Array(7) as _, i}",
     		ctx
     	});
 
@@ -1256,6 +1270,8 @@ var app = (function () {
     	let div_intro;
     	let div_outro;
     	let current;
+    	let mounted;
+    	let dispose;
     	let each_value_1 = Array(5);
     	validate_each_argument(each_value_1);
     	let each_blocks_1 = [];
@@ -1294,13 +1310,15 @@ var app = (function () {
     			button = element("button");
     			strong = element("strong");
     			strong.textContent = "Apply settings (will reset)";
-    			add_location(br, file$3, 4, 4, 122);
-    			add_location(select0, file$3, 5, 4, 134);
-    			add_location(select1, file$3, 18, 4, 522);
-    			add_location(strong, file$3, 30, 12, 868);
-    			add_location(button, file$3, 30, 4, 860);
+    			add_location(br, file$3, 9, 4, 261);
+    			if (/*wordLength*/ ctx[0] === void 0) add_render_callback(() => /*select0_change_handler*/ ctx[3].call(select0));
+    			add_location(select0, file$3, 10, 4, 273);
+    			if (/*tries*/ ctx[1] === void 0) add_render_callback(() => /*select1_change_handler*/ ctx[4].call(select1));
+    			add_location(select1, file$3, 23, 4, 685);
+    			add_location(strong, file$3, 36, 9, 1085);
+    			add_location(button, file$3, 35, 4, 1042);
     			attr_dev(div, "class", "settings svelte-1k2h89l");
-    			add_location(div, file$3, 3, 0, 75);
+    			add_location(div, file$3, 8, 0, 214);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1315,6 +1333,7 @@ var app = (function () {
     				each_blocks_1[i].m(select0, null);
     			}
 
+    			select_option(select0, /*wordLength*/ ctx[0]);
     			append_dev(div, t1);
     			append_dev(div, select1);
 
@@ -1322,12 +1341,31 @@ var app = (function () {
     				each_blocks[i].m(select1, null);
     			}
 
+    			select_option(select1, /*tries*/ ctx[1]);
     			append_dev(div, t2);
     			append_dev(div, button);
     			append_dev(button, strong);
     			current = true;
+
+    			if (!mounted) {
+    				dispose = [
+    					listen_dev(select0, "change", /*select0_change_handler*/ ctx[3]),
+    					listen_dev(select1, "change", /*select1_change_handler*/ ctx[4]),
+    					listen_dev(button, "click", /*applySettings*/ ctx[2], false, false, false)
+    				];
+
+    				mounted = true;
+    			}
     		},
-    		p: noop,
+    		p: function update(ctx, [dirty]) {
+    			if (dirty & /*wordLength*/ 1) {
+    				select_option(select0, /*wordLength*/ ctx[0]);
+    			}
+
+    			if (dirty & /*tries*/ 2) {
+    				select_option(select1, /*tries*/ ctx[1]);
+    			}
+    		},
     		i: function intro(local) {
     			if (current) return;
 
@@ -1349,6 +1387,8 @@ var app = (function () {
     			destroy_each(each_blocks_1, detaching);
     			destroy_each(each_blocks, detaching);
     			if (detaching && div_outro) div_outro.end();
+    			mounted = false;
+    			run_all(dispose);
     		}
     	};
 
@@ -1366,14 +1406,47 @@ var app = (function () {
     function instance$3($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots('Settings', slots, []);
+    	let wordLength;
+    	let tries;
+
+    	function applySettings() {
+    		window.location.href = `./?wordLength=${wordLength}&maxGuesses=${tries}`;
+    	}
+
     	const writable_props = [];
 
     	Object.keys($$props).forEach(key => {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<Settings> was created with unknown prop '${key}'`);
     	});
 
-    	$$self.$capture_state = () => ({ slide });
-    	return [];
+    	function select0_change_handler() {
+    		wordLength = select_value(this);
+    		$$invalidate(0, wordLength);
+    	}
+
+    	function select1_change_handler() {
+    		tries = select_value(this);
+    		$$invalidate(1, tries);
+    	}
+
+    	$$self.$capture_state = () => ({ slide, wordLength, tries, applySettings });
+
+    	$$self.$inject_state = $$props => {
+    		if ('wordLength' in $$props) $$invalidate(0, wordLength = $$props.wordLength);
+    		if ('tries' in $$props) $$invalidate(1, tries = $$props.tries);
+    	};
+
+    	if ($$props && "$$inject" in $$props) {
+    		$$self.$inject_state($$props.$$inject);
+    	}
+
+    	return [
+    		wordLength,
+    		tries,
+    		applySettings,
+    		select0_change_handler,
+    		select1_change_handler
+    	];
     }
 
     class Settings extends SvelteComponentDev {
@@ -1543,8 +1616,14 @@ var app = (function () {
     	let t2;
     	let button1;
     	let t4;
-    	let h3;
+    	let br;
     	let t5;
+    	let button2;
+    	let t7;
+    	let button3;
+    	let t9;
+    	let h3;
+    	let t10;
     	let current;
     	let mounted;
     	let dispose;
@@ -1561,14 +1640,25 @@ var app = (function () {
     			button1 = element("button");
     			button1.textContent = "🔄";
     			t4 = space();
+    			br = element("br");
+    			t5 = space();
+    			button2 = element("button");
+    			button2.textContent = "🔎➖";
+    			t7 = space();
+    			button3 = element("button");
+    			button3.textContent = "🔎➕";
+    			t9 = space();
     			h3 = element("h3");
-    			t5 = text(/*timeElapsed*/ ctx[1]);
-    			add_location(button0, file$1, 15, 4, 373);
-    			add_location(button1, file$1, 16, 4, 432);
+    			t10 = text(/*timeElapsed*/ ctx[3]);
+    			add_location(button0, file$1, 17, 4, 414);
+    			add_location(button1, file$1, 18, 4, 473);
+    			add_location(br, file$1, 19, 4, 533);
+    			add_location(button2, file$1, 20, 4, 545);
+    			add_location(button3, file$1, 21, 4, 590);
     			attr_dev(h3, "class", "timer svelte-1uxou2x");
-    			add_location(h3, file$1, 17, 4, 492);
+    			add_location(h3, file$1, 23, 4, 636);
     			attr_dev(div, "class", "sidebar svelte-1uxou2x");
-    			add_location(div, file$1, 13, 0, 328);
+    			add_location(div, file$1, 15, 0, 369);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1581,21 +1671,48 @@ var app = (function () {
     			append_dev(div, t2);
     			append_dev(div, button1);
     			append_dev(div, t4);
+    			append_dev(div, br);
+    			append_dev(div, t5);
+    			append_dev(div, button2);
+    			append_dev(div, t7);
+    			append_dev(div, button3);
+    			append_dev(div, t9);
     			append_dev(div, h3);
-    			append_dev(h3, t5);
+    			append_dev(h3, t10);
     			current = true;
 
     			if (!mounted) {
     				dispose = [
-    					listen_dev(button0, "click", /*click_handler*/ ctx[3], false, false, false),
-    					listen_dev(button1, "click", /*click_handler_1*/ ctx[4], false, false, false)
+    					listen_dev(button0, "click", /*click_handler*/ ctx[5], false, false, false),
+    					listen_dev(button1, "click", /*click_handler_1*/ ctx[6], false, false, false),
+    					listen_dev(
+    						button2,
+    						"click",
+    						function () {
+    							if (is_function(/*zoomOut*/ ctx[1])) /*zoomOut*/ ctx[1].apply(this, arguments);
+    						},
+    						false,
+    						false,
+    						false
+    					),
+    					listen_dev(
+    						button3,
+    						"click",
+    						function () {
+    							if (is_function(/*zoomIn*/ ctx[2])) /*zoomIn*/ ctx[2].apply(this, arguments);
+    						},
+    						false,
+    						false,
+    						false
+    					)
     				];
 
     				mounted = true;
     			}
     		},
-    		p: function update(ctx, [dirty]) {
-    			if (!current || dirty & /*timeElapsed*/ 2) set_data_dev(t5, /*timeElapsed*/ ctx[1]);
+    		p: function update(new_ctx, [dirty]) {
+    			ctx = new_ctx;
+    			if (!current || dirty & /*timeElapsed*/ 8) set_data_dev(t10, /*timeElapsed*/ ctx[3]);
     		},
     		i: function intro(local) {
     			if (current) return;
@@ -1630,17 +1747,19 @@ var app = (function () {
     	validate_slots('Sidebar', slots, []);
     	let { game } = $$props;
     	let { toggleSettings } = $$props;
+    	let { zoomOut } = $$props;
+    	let { zoomIn } = $$props;
     	let timeElapsed = "00:00:00";
 
     	setInterval(
     		() => {
     			if (game.endTimer) return;
-    			$$invalidate(1, timeElapsed = new Date(Date.now() - game.started).toISOString().substr(11, 8));
+    			$$invalidate(3, timeElapsed = new Date(Date.now() - game.started).toISOString().substr(11, 8));
     		},
     		1000
     	);
 
-    	const writable_props = ['game', 'toggleSettings'];
+    	const writable_props = ['game', 'toggleSettings', 'zoomOut', 'zoomIn'];
 
     	Object.keys($$props).forEach(key => {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<Sidebar> was created with unknown prop '${key}'`);
@@ -1650,34 +1769,54 @@ var app = (function () {
     	const click_handler_1 = () => location.reload();
 
     	$$self.$$set = $$props => {
-    		if ('game' in $$props) $$invalidate(2, game = $$props.game);
+    		if ('game' in $$props) $$invalidate(4, game = $$props.game);
     		if ('toggleSettings' in $$props) $$invalidate(0, toggleSettings = $$props.toggleSettings);
+    		if ('zoomOut' in $$props) $$invalidate(1, zoomOut = $$props.zoomOut);
+    		if ('zoomIn' in $$props) $$invalidate(2, zoomIn = $$props.zoomIn);
     	};
 
     	$$self.$capture_state = () => ({
     		Darkmode,
     		game,
     		toggleSettings,
+    		zoomOut,
+    		zoomIn,
     		timeElapsed
     	});
 
     	$$self.$inject_state = $$props => {
-    		if ('game' in $$props) $$invalidate(2, game = $$props.game);
+    		if ('game' in $$props) $$invalidate(4, game = $$props.game);
     		if ('toggleSettings' in $$props) $$invalidate(0, toggleSettings = $$props.toggleSettings);
-    		if ('timeElapsed' in $$props) $$invalidate(1, timeElapsed = $$props.timeElapsed);
+    		if ('zoomOut' in $$props) $$invalidate(1, zoomOut = $$props.zoomOut);
+    		if ('zoomIn' in $$props) $$invalidate(2, zoomIn = $$props.zoomIn);
+    		if ('timeElapsed' in $$props) $$invalidate(3, timeElapsed = $$props.timeElapsed);
     	};
 
     	if ($$props && "$$inject" in $$props) {
     		$$self.$inject_state($$props.$$inject);
     	}
 
-    	return [toggleSettings, timeElapsed, game, click_handler, click_handler_1];
+    	return [
+    		toggleSettings,
+    		zoomOut,
+    		zoomIn,
+    		timeElapsed,
+    		game,
+    		click_handler,
+    		click_handler_1
+    	];
     }
 
     class Sidebar extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$1, create_fragment$1, safe_not_equal, { game: 2, toggleSettings: 0 });
+
+    		init(this, options, instance$1, create_fragment$1, safe_not_equal, {
+    			game: 4,
+    			toggleSettings: 0,
+    			zoomOut: 1,
+    			zoomIn: 2
+    		});
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
@@ -1689,12 +1828,20 @@ var app = (function () {
     		const { ctx } = this.$$;
     		const props = options.props || {};
 
-    		if (/*game*/ ctx[2] === undefined && !('game' in props)) {
+    		if (/*game*/ ctx[4] === undefined && !('game' in props)) {
     			console.warn("<Sidebar> was created without expected prop 'game'");
     		}
 
     		if (/*toggleSettings*/ ctx[0] === undefined && !('toggleSettings' in props)) {
     			console.warn("<Sidebar> was created without expected prop 'toggleSettings'");
+    		}
+
+    		if (/*zoomOut*/ ctx[1] === undefined && !('zoomOut' in props)) {
+    			console.warn("<Sidebar> was created without expected prop 'zoomOut'");
+    		}
+
+    		if (/*zoomIn*/ ctx[2] === undefined && !('zoomIn' in props)) {
+    			console.warn("<Sidebar> was created without expected prop 'zoomIn'");
     		}
     	}
 
@@ -1713,11 +1860,23 @@ var app = (function () {
     	set toggleSettings(value) {
     		throw new Error("<Sidebar>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
     	}
+
+    	get zoomOut() {
+    		throw new Error("<Sidebar>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set zoomOut(value) {
+    		throw new Error("<Sidebar>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get zoomIn() {
+    		throw new Error("<Sidebar>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set zoomIn(value) {
+    		throw new Error("<Sidebar>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
     }
-
-    const guesses = ["which", "there", "their", "about", "would", "these", "other", "words", "could", "write", "first", "water", "after", "where", "right", "think", "three", "years", "place", "sound", "great", "again", "still", "every", "small", "found", "those", "never", "under", "might", "while", "house", "world", "below", "asked", "going", "large", "until", "along", "shall", "being", "often", "earth", "began", "since", "study", "night", "light", "above", "paper", "parts", "young", "story", "point", "times", "heard", "whole", "white", "given", "means", "music", "miles", "thing", "today", "later", "using", "money", "lines", "order", "group", "among", "learn", "known", "space", "table", "early", "trees", "short", "hands", "state", "black", "shown", "stood", "front", "voice", "kinds", "makes", "comes", "close", "power", "lived", "vowel", "taken", "built", "heart", "ready", "quite", "class", "bring", "round", "horse", "shows", "piece", "green", "stand", "birds", "start", "river", "tried", "least", "field", "whose", "girls", "leave", "added", "color", "third", "hours", "moved", "plant", "doing", "names", "forms", "heavy", "ideas", "cried", "check", "floor", "begin", "woman", "alone", "plane", "spell", "watch", "carry", "wrote", "clear", "named", "books", "child", "glass", "human", "takes", "party", "build", "seems", "blood", "sides", "seven", "mouth", "solve", "north", "value", "death", "maybe", "happy", "tells", "gives", "looks", "shape", "lives", "steps", "areas", "sense", "speak", "force", "ocean", "speed", "women", "metal", "south", "grass", "scale", "cells", "lower", "sleep", "wrong", "pages", "ships", "needs", "rocks", "eight", "major", "level", "total", "ahead", "reach", "stars", "store", "sight", "terms", "catch", "works", "board", "cover", "songs", "equal", "stone", "waves", "guess", "dance", "spoke", "break", "cause", "radio", "weeks", "lands", "basic", "liked", "trade", "fresh", "final", "fight", "meant", "drive", "spent", "local", "waxes", "knows", "train", "bread", "homes", "teeth", "coast", "thick", "brown", "clean", "quiet", "sugar", "facts", "steel", "forth", "rules", "notes", "units", "peace", "month", "verbs", "seeds", "helps", "sharp", "visit", "woods", "chief", "walls", "cross", "wings", "grown", "cases", "foods", "crops", "fruit", "stick", "wants", "stage", "sheep", "nouns", "plain", "drink", "bones", "apart", "turns", "moves", "touch", "angle", "based", "range", "marks", "tired", "older", "farms", "spend", "shoes", "goods", "chair", "twice", "cents", "empty", "alike", "style", "broke", "pairs", "count", "enjoy", "score", "shore", "roots", "paint", "heads", "shook", "serve", "angry", "crowd", "wheel", "quick", "dress", "share", "alive", "noise", "solid", "cloth", "signs", "hills", "types", "drawn", "worth", "truck", "piano", "upper", "loved", "usual", "faces", "drove", "cabin", "boats", "towns", "proud", "court", "model", "prime", "fifty", "plans", "yards", "prove", "tools", "price", "sheet", "smell", "boxes", "raise", "match", "truth", "roads", "threw", "enemy", "lunch", "chart", "scene", "graph", "doubt", "guide", "winds", "block", "grain", "smoke", "mixed", "games", "wagon", "sweet", "topic", "extra", "plate", "title", "knife", "fence", "falls", "cloud", "wheat", "plays", "enter", "broad", "steam", "atoms", "press", "lying", "basis", "clock", "taste", "grows", "thank", "storm", "agree", "brain", "track", "smile", "funny", "beach", "stock", "hurry", "saved", "sorry", "giant", "trail", "offer", "ought", "rough", "daily", "avoid", "keeps", "throw", "allow", "cream", "laugh", "edges", "teach", "frame", "bells", "dream", "magic", "occur", "ended", "chord", "false", "skill", "holes", "dozen", "brave", "apple", "climb", "outer", "pitch", "ruler", "holds", "fixed", "costs", "calls", "blank", "staff", "labor", "eaten", "youth", "tones", "honor", "globe", "gases", "doors", "poles", "loose", "apply", "tears", "exact", "brush", "chest", "layer", "whale", "minor", "faith", "tests", "judge", "items", "worry", "waste", "hoped", "strip", "begun", "aside", "lakes", "bound", "depth", "candy", "event", "worse", "aware", "shell", "rooms", "ranch", "image", "snake", "aloud", "dried", "likes", "motor", "pound", "knees", "refer", "fully", "chain", "shirt", "flour", "drops", "spite", "orbit", "banks", "shoot", "curve", "tribe", "tight", "blind", "slept", "shade", "claim", "flies", "theme", "queen", "fifth", "union", "hence", "straw", "entry", "issue", "birth", "feels", "anger", "brief", "rhyme", "glory", "guard", "flows", "flesh", "owned", "trick", "yours", "sizes", "noted", "width", "burst", "route", "lungs", "uncle", "bears", "royal", "kings", "forty", "trial", "cards", "brass", "opera", "chose", "owner", "vapor", "beats", "mouse", "tough", "wires", "meter", "tower", "finds", "inner", "stuck", "arrow", "poems", "label", "swing", "solar", "truly", "tense", "beans", "split", "rises", "weigh", "hotel", "stems", "pride", "swung", "grade", "digit", "badly", "boots", "pilot", "sales", "swept", "lucky", "prize", "stove", "tubes", "acres", "wound", "steep", "slide", "trunk", "error", "porch", "slave", "exist", "faced", "mines", "marry", "juice", "raced", "waved", "goose", "trust", "fewer", "favor", "mills", "views", "joint", "eager", "spots", "blend", "rings", "adult", "index", "nails", "horns", "balls", "flame", "rates", "drill", "trace", "skins", "waxed", "seats", "stuff", "ratio", "minds", "dirty", "silly", "coins", "hello", "trips", "leads", "rifle", "hopes", "bases", "shine", "bench", "moral", "fires", "meals", "shake", "shops", "cycle", "movie", "slope", "canoe", "teams", "folks", "fired", "bands", "thumb", "shout", "canal", "habit", "reply", "ruled", "fever", "crust", "shelf", "walks", "midst", "crack", "print", "tales", "coach", "stiff", "flood", "verse", "awake", "rocky", "march", "fault", "swift", "faint", "civil", "ghost", "feast", "blade", "limit", "germs", "reads", "ducks", "dairy", "worst", "gifts", "lists", "stops", "rapid", "brick", "claws", "beads", "beast", "skirt", "cakes", "lions", "frogs", "tries", "nerve", "grand", "armed", "treat", "honey", "moist", "legal", "penny", "crown", "shock", "taxes", "sixty", "altar", "pulls", "sport", "drums", "talks", "dying", "dates", "drank", "blows", "lever", "wages", "proof", "drugs", "tanks", "sings", "tails", "pause", "herds", "arose", "hated", "clues", "novel", "shame", "burnt", "races", "flash", "weary", "heels", "token", "coats", "spare", "shiny", "alarm", "dimes", "sixth", "clerk", "mercy", "sunny", "guest", "float", "shone", "pipes", "worms", "bills", "sweat", "suits", "smart", "upset", "rains", "sandy", "rainy", "parks", "sadly", "fancy", "rider", "unity", "bunch", "rolls", "crash", "craft", "newly", "gates", "hatch", "paths", "funds", "wider", "grace", "grave", "tides", "admit", "shift", "sails", "pupil", "tiger", "angel", "cruel", "agent", "drama", "urged", "patch", "nests", "vital", "sword", "blame", "weeds", "screw", "vocal", "bacon", "chalk", "cargo", "crazy", "acted", "goats", "arise", "witch", "loves", "queer", "dwell", "backs", "ropes", "shots", "merry", "phone", "cheek", "peaks", "ideal", "beard", "eagle", "creek", "cries", "ashes", "stall", "yield", "mayor", "opens", "input", "fleet", "tooth", "cubic", "wives", "burns", "poets", "apron", "spear", "organ", "cliff", "stamp", "paste", "rural", "baked", "chase", "slice", "slant", "knock", "noisy", "sorts", "stays", "wiped", "blown", "piled", "clubs", "cheer", "widow", "twist", "tenth", "hides", "comma", "sweep", "spoon", "stern", "crept", "maple", "deeds", "rides", "muddy", "crime", "jelly", "ridge", "drift", "dusty", "devil", "tempo", "humor", "sends", "steal", "tents", "waist", "roses", "reign", "noble", "cheap", "dense", "linen", "geese", "woven", "posts", "hired", "wrath", "salad", "bowed", "tires", "shark", "belts", "grasp", "blast", "polar", "fungi", "tends", "pearl", "loads", "jokes", "veins", "frost", "hears", "loses", "hosts", "diver", "phase", "toads", "alert", "tasks", "seams", "coral", "focus", "naked", "puppy", "jumps", "spoil", "quart", "macro", "fears", "flung", "spark", "vivid", "brook", "steer", "spray", "decay", "ports", "socks", "urban", "goals", "grant", "minus", "films", "tunes", "shaft", "firms", "skies", "bride", "wreck", "flock", "stare", "hobby", "bonds", "dared", "faded", "thief", "crude", "pants", "flute", "votes", "tonal", "radar", "wells", "skull", "hairs", "argue", "wears", "dolls", "voted", "caves", "cared", "broom", "scent", "panel", "fairy", "olive", "bends", "prism", "lamps", "cable", "peach", "ruins", "rally", "schwa", "lambs", "sells", "cools", "draft", "charm", "limbs", "brake", "gazed", "cubes", "delay", "beams", "fetch", "ranks", "array", "harsh", "camel", "vines", "picks", "naval", "purse", "rigid", "crawl", "toast", "soils", "sauce", "basin", "ponds", "twins", "wrist", "fluid", "pools", "brand", "stalk", "robot", "reeds", "hoofs", "buses", "sheer", "grief", "bloom", "dwelt", "melts", "risen", "flags", "knelt", "fiber", "roofs", "freed", "armor", "piles", "aimed", "algae", "twigs", "lemon", "ditch", "drunk", "rests", "chill", "slain", "panic", "cords", "tuned", "crisp", "ledge", "dived", "swamp", "clung", "stole", "molds", "yarns", "liver", "gauge", "breed", "stool", "gulls", "awoke", "gross", "diary", "rails", "belly", "trend", "flask", "stake", "fried", "draws", "actor", "handy", "bowls", "haste", "scope", "deals", "knots", "moons", "essay", "thump", "hangs", "bliss", "dealt", "gains", "bombs", "clown", "palms", "cones", "roast", "tidal", "bored", "chant", "acids", "dough", "camps", "swore", "lover", "hooks", "males", "cocoa", "punch", "award", "reins", "ninth", "noses", "links", "drain", "fills", "nylon", "lunar", "pulse", "flown", "elbow", "fatal", "sites", "moths", "meats", "foxes", "mined", "attic", "fiery", "mount", "usage", "swear", "snowy", "rusty", "scare", "traps", "relax", "react", "valid", "robin", "cease", "gills", "prior", "safer", "polio", "loyal", "swell", "salty", "marsh", "vague", "weave", "mound", "seals", "mules", "virus", "scout", "acute", "windy", "stout", "folds", "seize", "hilly", "joins", "pluck", "stack", "lords", "dunes", "burro", "hawks", "trout", "feeds", "scarf", "halls", "coals", "towel", "souls", "elect", "buggy", "pumps", "loans", "spins", "files", "oxide", "pains", "photo", "rival", "flats", "syrup", "rodeo", "sands", "moose", "pints", "curly", "comic", "cloak", "onion", "clams", "scrap", "didst", "couch", "codes", "fails", "ounce", "lodge", "greet", "gypsy", "utter", "paved", "zones", "fours", "alley", "tiles", "bless", "crest", "elder", "kills", "yeast", "erect", "bugle", "medal", "roles", "hound", "snail", "alter", "ankle", "relay", "loops", "zeros", "bites", "modes", "debts", "realm", "glove", "rayon", "swims", "poked", "stray", "lifts", "maker", "lumps", "graze", "dread", "barns", "docks", "masts", "pours", "wharf", "curse", "plump", "robes", "seeks", "cedar", "curls", "jolly", "myths", "cages", "gloom", "locks", "pedal", "beets", "crows", "anode", "slash", "creep", "rowed", "chips", "fists", "wines", "cares", "valve", "newer", "motel", "ivory", "necks", "clamp", "barge", "blues", "alien", "frown", "strap", "crews", "shack", "gonna", "saves", "stump", "ferry", "idols", "cooks", "juicy", "glare", "carts", "alloy", "bulbs", "lawns", "lasts", "fuels", "oddly", "crane", "filed", "weird", "shawl", "slips", "troop", "bolts", "suite", "sleek", "quilt", "tramp", "blaze", "atlas", "odors", "scrub", "crabs", "probe", "logic", "adobe", "exile", "rebel", "grind", "sting", "spine", "cling", "desks", "grove", "leaps", "prose", "lofty", "agony", "snare", "tusks", "bulls", "moods", "humid", "finer", "dimly", "plank", "china", "pines", "guilt", "sacks", "brace", "quote", "lathe", "gaily", "fonts", "scalp", "adopt", "foggy", "ferns", "grams", "clump", "perch", "tumor", "teens", "crank", "fable", "hedge", "genes", "sober", "boast", "tract", "cigar", "unite", "owing", "thigh", "haiku", "swish", "dikes", "wedge", "booth", "eased", "frail", "cough", "tombs", "darts", "forts", "choir", "pouch", "pinch", "hairy", "buyer", "torch", "vigor", "waltz", "heats", "herbs", "users", "flint", "click", "madam", "bleak", "blunt", "aided", "lacks", "masks", "waded", "risks", "nurse", "chaos", "sewed", "cured", "ample", "lease", "steak", "sinks", "merit", "bluff", "bathe", "gleam", "bonus", "colts", "shear", "gland", "silky", "skate", "birch", "anvil", "sleds", "groan", "maids", "meets", "speck", "hymns", "hints", "drown", "bosom", "slick", "quest", "coils", "spied", "snows", "stead", "snack", "plows", "blond", "tamed", "thorn", "waits", "glued", "banjo", "tease", "arena", "bulky", "carve", "stunt", "warms", "shady", "razor", "folly", "leafy", "notch", "fools", "otter", "pears", "flush", "genus", "ached", "fives", "flaps", "spout", "smote", "fumes", "adapt", "cuffs", "tasty", "stoop", "clips", "disks", "sniff", "lanes", "brisk", "imply", "demon", "super", "furry", "raged", "growl", "texts", "hardy", "stung", "typed", "hates", "wiser", "timid", "serum", "beaks", "rotor", "casts", "baths", "glide", "plots", "trait", "resin", "slums", "lyric", "puffs", "decks", "brood", "mourn", "aloft", "abuse", "whirl", "edged", "ovary", "quack", "heaps", "slang", "await", "civic", "saint", "bevel", "sonar", "aunts", "packs", "froze", "tonic", "corps", "swarm", "frank", "repay", "gaunt", "wired", "niece", "cello", "needy", "chuck", "stony", "media", "surge", "hurts", "repel", "husky", "dated", "hunts", "mists", "exert", "dries", "mates", "sworn", "baker", "spice", "oasis", "boils", "spurs", "doves", "sneak", "paces", "colon", "siege", "strum", "drier", "cacao", "humus", "bales", "piped", "nasty", "rinse", "boxer", "shrub", "amuse", "tacks", "cited", "slung", "delta", "laden", "larva", "rents", "yells", "spool", "spill", "crush", "jewel", "snaps", "stain", "kicks", "tying", "slits", "rated", "eerie", "smash", "plums", "zebra", "earns", "bushy", "scary", "squad", "tutor", "silks", "slabs", "bumps", "evils", "fangs", "snout", "peril", "pivot", "yacht", "lobby", "jeans", "grins", "viola", "liner", "comet", "scars", "chops", "raids", "eater", "slate", "skips", "soles", "misty", "urine", "knobs", "sleet", "holly", "pests", "forks", "grill", "trays", "pails", "borne", "tenor", "wares", "carol", "woody", "canon", "wakes", "kitty", "miner", "polls", "shaky", "nasal", "scorn", "chess", "taxis", "crate", "shyly", "tulip", "forge", "nymph", "budge", "lowly", "abide", "depot", "oases", "asses", "sheds", "fudge", "pills", "rivet", "thine", "groom", "lanky", "boost", "broth", "heave", "gravy", "beech", "timed", "quail", "inert", "gears", "chick", "hinge", "trash", "clash", "sighs", "renew", "bough", "dwarf", "slows", "quill", "shave", "spore", "sixes", "chunk", "madly", "paced", "braid", "fuzzy", "motto", "spies", "slack", "mucus", "magma", "awful", "discs", "erase", "posed", "asset", "cider", "taper", "theft", "churn", "satin", "slots", "taxed", "bully", "sloth", "shale", "tread", "raked", "curds", "manor", "aisle", "bulge", "loins", "stair", "tapes", "leans", "bunks", "squat", "towed", "lance", "panes", "sakes", "heirs", "caste", "dummy", "pores", "fauna", "crook", "poise", "epoch", "risky", "warns", "fling", "berry", "grape", "flank", "drags", "squid", "pelts", "icing", "irony", "irons", "barks", "whoop", "choke", "diets", "whips", "tally", "dozed", "twine", "kites", "bikes", "ticks", "riots", "roars", "vault", "looms", "scold", "blink", "dandy", "pupae", "sieve", "spike", "ducts", "lends", "pizza", "brink", "widen", "plumb", "pagan", "feats", "bison", "soggy", "scoop", "argon", "nudge", "skiff", "amber", "sexes", "rouse", "salts", "hitch", "exalt", "leash", "dined", "chute", "snort", "gusts", "melon", "cheat", "reefs", "llama", "lasso", "debut", "quota", "oaths", "prone", "mixes", "rafts", "dives", "stale", "inlet", "flick", "pinto", "brows", "untie", "batch", "greed", "chore", "stirs", "blush", "onset", "barbs", "volts", "beige", "swoop", "paddy", "laced", "shove", "jerky", "poppy", "leaks", "fares", "dodge", "godly", "squaw", "affix", "brute", "nicer", "undue", "snarl", "merge", "doses", "showy", "daddy", "roost", "vases", "swirl", "petty", "colds", "curry", "cobra", "genie", "flare", "messy", "cores", "soaks", "ripen", "whine", "amino", "plaid", "spiny", "mowed", "baton", "peers", "vowed", "pious", "swans", "exits", "afoot", "plugs", "idiom", "chili", "rites", "serfs", "cleft", "berth", "grubs", "annex", "dizzy", "hasty", "latch", "wasps", "mirth", "baron", "plead", "aloof", "aging", "pixel", "bared", "mummy", "hotly", "auger", "buddy", "chaps", "badge", "stark", "fairs", "gully", "mumps", "emery", "filly", "ovens", "drone", "gauze", "idiot", "fussy", "annoy", "shank", "gouge", "bleed", "elves", "roped", "unfit", "baggy", "mower", "scant", "grabs", "fleas", "lousy", "album", "sawed", "cooky", "murky", "infer", "burly", "waged", "dingy", "brine", "kneel", "creak", "vanes", "smoky", "spurt", "combs", "easel", "laces", "humps", "rumor", "aroma", "horde", "swiss", "leapt", "opium", "slime", "afire", "pansy", "mares", "soaps", "husks", "snips", "hazel", "lined", "cafes", "naive", "wraps", "sized", "piers", "beset", "agile", "tongs", "steed", "fraud", "booty", "valor", "downy", "witty", "mossy", "psalm", "scuba", "tours", "polka", "milky", "gaudy", "shrug", "tufts", "wilds", "laser", "truss", "hares", "creed", "lilac", "siren", "tarry", "bribe", "swine", "muted", "flips", "cures", "sinew", "boxed", "hoops", "gasps", "hoods", "niche", "yucca", "glows", "sewer", "whack", "fuses", "gowns", "droop", "bucks", "pangs", "mails", "whisk", "haven", "clasp", "sling", "stint", "urges", "champ", "piety", "chirp", "pleat", "posse", "sunup", "menus", "howls", "quake", "knack", "plaza", "fiend", "caked", "bangs", "erupt", "poker", "olden", "cramp", "voter", "poses", "manly", "slump", "fined", "grips", "gaped", "purge", "hiked", "maize", "fluff", "strut", "sloop", "prowl", "roach", "cocks", "bland", "dials", "plume", "slaps", "soups", "dully", "wills", "foams", "solos", "skier", "eaves", "totem", "fused", "latex", "veils", "mused", "mains", "myrrh", "racks", "galls", "gnats", "bouts", "sisal", "shuts", "hoses", "dryly", "hover", "gloss", "seeps", "denim", "putty", "guppy", "leaky", "dusky", "filth", "oboes", "spans", "fowls", "adorn", "glaze", "haunt", "dares", "obeys", "bakes", "abyss", "smelt", "gangs", "aches", "trawl", "claps", "undid", "spicy", "hoist", "fades", "vicar", "acorn", "pussy", "gruff", "musty", "tarts", "snuff", "hunch", "truce", "tweed", "dryer", "loser", "sheaf", "moles", "lapse", "tawny", "vexed", "autos", "wager", "domes", "sheen", "clang", "spade", "sowed", "broil", "slyly", "studs", "grunt", "donor", "slugs", "aspen", "homer", "croak", "tithe", "halts", "avert", "havoc", "hogan", "glint", "ruddy", "jeeps", "flaky", "ladle", "taunt", "snore", "fines", "props", "prune", "pesos", "radii", "pokes", "tiled", "daisy", "heron", "villa", "farce", "binds", "cites", "fixes", "jerks", "livid", "waked", "inked", "booms", "chews", "licks", "hyena", "scoff", "lusty", "sonic", "smith", "usher", "tucks", "vigil", "molts", "sects", "spars", "dumps", "scaly", "wisps", "sores", "mince", "panda", "flier", "axles", "plied", "booby", "patio", "rabbi", "petal", "polyp", "tints", "grate", "troll", "tolls", "relic", "phony", "bleat", "flaws", "flake", "snags", "aptly", "drawl", "ulcer", "soapy", "bossy", "monks", "crags", "caged", "twang", "diner", "taped", "cadet", "grids", "spawn", "guile", "noose", "mores", "girth", "slimy", "aides", "spasm", "burrs", "alibi", "lymph", "saucy", "muggy", "liter", "joked", "goofy", "exams", "enact", "stork", "lured", "toxic", "omens", "nears", "covet", "wrung", "forum", "venom", "moody", "alder", "sassy", "flair", "guild", "prays", "wrens", "hauls", "stave", "tilts", "pecks", "stomp", "gales", "tempt", "capes", "mesas", "omits", "tepee", "harry", "wring", "evoke", "limes", "cluck", "lunge", "highs", "canes", "giddy", "lithe", "verge", "khaki", "queue", "loath", "foyer", "outdo", "fared", "deter", "crumb", "astir", "spire", "jumpy", "extol", "buoys", "stubs", "lucid", "thong", "afore", "whiff", "maxim", "hulls", "clogs", "slats", "jiffy", "arbor", "cinch", "igloo", "goody", "gazes", "dowel", "calms", "bitch", "scowl", "gulps", "coded", "waver", "mason", "lobes", "ebony", "flail", "isles", "clods", "dazed", "adept", "oozed", "sedan", "clays", "warts", "ketch", "skunk", "manes", "adore", "sneer", "mango", "fiord", "flora", "roomy", "minks", "thaws", "watts", "freer", "exult", "plush", "paled", "twain", "clink", "scamp", "pawed", "grope", "bravo", "gable", "stink", "sever", "waned", "rarer", "regal", "wards", "fawns", "babes", "unify", "amend", "oaken", "glade", "visor", "hefty", "nines", "throb", "pecan", "butts", "pence", "sills", "jails", "flyer", "saber", "nomad", "miter", "beeps", "domed", "gulfs", "curbs", "heath", "moors", "aorta", "larks", "tangy", "wryly", "cheep", "rages", "evade", "lures", "freak", "vogue", "tunic", "slams", "knits", "dumpy", "mania", "spits", "firth", "hikes", "trots", "nosed", "clank", "dogma", "bloat", "balsa", "graft", "middy", "stile", "keyed", "finch", "sperm", "chaff", "wiles", "amigo", "copra", "amiss", "eying", "twirl", "lurch", "popes", "chins", "smock", "tines", "guise", "grits", "junks", "shoal", "cache", "tapir", "atoll", "deity", "toils", "spree", "mocks", "scans", "shorn", "revel", "raven", "hoary", "reels", "scuff", "mimic", "weedy", "corny", "truer", "rouge", "ember", "floes", "torso", "wipes", "edict", "sulky", "recur", "groin", "baste", "kinks", "surer", "piggy", "moldy", "franc", "liars", "inept", "gusty", "facet", "jetty", "equip", "leper", "slink", "soars", "cater", "dowry", "sided", "yearn", "decoy", "taboo", "ovals", "heals", "pleas", "beret", "spilt", "gayly", "rover", "endow", "pygmy", "carat", "abbey", "vents", "waken", "chimp", "fumed", "sodas", "vinyl", "clout", "wades", "mites", "smirk", "bores", "bunny", "surly", "frock", "foray", "purer", "milks", "query", "mired", "blare", "froth", "gruel", "navel", "paler", "puffy", "casks", "grime", "derby", "mamma", "gavel", "teddy", "vomit", "moans", "allot", "defer", "wield", "viper", "louse", "erred", "hewed", "abhor", "wrest", "waxen", "adage", "ardor", "stabs", "pored", "rondo", "loped", "fishy", "bible", "hires", "foals", "feuds", "jambs", "thuds", "jeers", "knead", "quirk", "rugby", "expel", "greys", "rigor", "ester", "lyres", "aback", "glues", "lotus", "lurid", "rungs", "hutch", "thyme", "valet", "tommy", "yokes", "epics", "trill", "pikes", "ozone", "caper", "chime", "frees", "famed", "leech", "smite", "neigh", "erode", "robed", "hoard", "salve", "conic", "gawky", "craze", "jacks", "gloat", "mushy", "rumps", "fetus", "wince", "pinks", "shalt", "toots", "glens", "cooed", "rusts", "stews", "shred", "parka", "chugs", "winks", "clots", "shrew", "booed", "filmy", "juror", "dents", "gummy", "grays", "hooky", "butte", "dogie", "poled", "reams", "fifes", "spank", "gayer", "tepid", "spook", "taint", "flirt", "rogue", "spiky", "opals", "miser", "cocky", "coyly", "balmy", "slosh", "brawl", "aphid", "faked", "hydra", "brags", "chide", "yanks", "allay", "video", "altos", "eases", "meted", "chasm", "longs", "excel", "taffy", "impel", "savor", "koala", "quays", "dawns", "proxy", "clove", "duets", "dregs", "tardy", "briar", "grimy", "ultra", "meaty", "halve", "wails", "suede", "mauve", "envoy", "arson", "coves", "gooey", "brews", "sofas", "chums", "amaze", "zooms", "abbot", "halos", "scour", "suing", "cribs", "sagas", "enema", "wordy", "harps", "coupe", "molar", "flops", "weeps", "mints", "ashen", "felts", "askew", "munch", "mewed", "divan", "vices", "jumbo", "blobs", "blots", "spunk", "acrid", "topaz", "cubed", "clans", "flees", "slurs", "gnaws", "welds", "fords", "emits", "agate", "pumas", "mends", "darks", "dukes", "plies", "canny", "hoots", "oozes", "lamed", "fouls", "clefs", "nicks", "mated", "skims", "brunt", "tuber", "tinge", "fates", "ditty", "thins", "frets", "eider", "bayou", "mulch", "fasts", "amass", "damps", "morns", "friar", "palsy", "vista", "croon", "conch", "udder", "tacos", "skits", "mikes", "quits", "preen", "aster", "adder", "elegy", "pulpy", "scows", "baled", "hovel", "lavas", "crave", "optic", "welts", "busts", "knave", "razed", "shins", "totes", "scoot", "dears", "crock", "mutes", "trims", "skein", "doted", "shuns", "veers", "fakes", "yoked", "wooed", "hacks", "sprig", "wands", "lulls", "seers", "snobs", "nooks", "pined", "perky", "mooed", "frill", "dines", "booze", "tripe", "prong", "drips", "odder", "levee", "antic", "sidle", "pithy", "corks", "yelps", "joker", "fleck", "buffs", "scram", "tiers", "bogey", "doled", "irate", "vales", "coped", "hails", "elude", "bulks", "aired", "vying", "stags", "strew", "cocci", "pacts", "scabs", "silos", "dusts", "yodel", "terse", "jaded", "baser", "jibes", "foils", "sways", "forgo", "slays", "preys", "treks", "quell", "peeks", "assay", "lurks", "eject", "boars", "trite", "belch", "gnash", "wanes", "lutes", "whims", "dosed", "chewy", "snipe", "umbra", "teems", "dozes", "kelps", "upped", "brawn", "doped", "shush", "rinds", "slush", "moron", "voile", "woken", "fjord", "sheik", "jests", "kayak", "slews", "toted", "saner", "drape", "patty", "raves", "sulfa", "grist", "skied", "vixen", "civet", "vouch", "tiara", "homey", "moped", "runts", "serge", "kinky", "rills", "corns", "brats", "pries", "amble", "fries", "loons", "tsars", "datum", "musky", "pigmy", "gnome", "ravel", "ovule", "icily", "liken", "lemur", "frays", "silts", "sifts", "plods", "ramps", "tress", "earls", "dudes", "waive", "karat", "jolts", "peons", "beers", "horny", "pales", "wreak", "lairs", "lynch", "stank", "swoon", "idler", "abort", "blitz", "ensue", "atone", "bingo", "roves", "kilts", "scald", "adios", "cynic", "dulls", "memos", "elfin", "dales", "peels", "peals", "bares", "sinus", "crone", "sable", "hinds", "shirk", "enrol", "wilts", "roams", "duped", "cysts", "mitts", "safes", "spats", "coops", "filet", "knell", "refit", "covey", "punks", "kilns", "fitly", "abate", "talcs", "heeds", "duels", "wanly", "ruffs", "gauss", "lapel", "jaunt", "whelp", "cleat", "gauzy", "dirge", "edits", "wormy", "moats", "smear", "prods", "bowel", "frisk", "vests", "bayed", "rasps", "tames", "delve", "embed", "befit", "wafer", "ceded", "novas", "feign", "spews", "larch", "huffs", "doles", "mamas", "hulks", "pried", "brims", "irked", "aspic", "swipe", "mealy", "skimp", "bluer", "slake", "dowdy", "penis", "brays", "pupas", "egret", "flunk", "phlox", "gripe", "peony", "douse", "blurs", "darns", "slunk", "lefts", "chats", "inane", "vials", "stilt", "rinks", "woofs", "wowed", "bongs", "frond", "ingot", "evict", "singe", "shyer", "flied", "slops", "dolts", "drool", "dells", "whelk", "hippy", "feted", "ether", "cocos", "hives", "jibed", "mazes", "trios", "sirup", "squab", "laths", "leers", "pasta", "rifts", "lopes", "alias", "whirs", "diced", "slags", "lodes", "foxed", "idled", "prows", "plait", "malts", "chafe", "cower", "toyed", "chefs", "keels", "sties", "racer", "etude", "sucks", "sulks", "micas", "czars", "copse", "ailed", "abler", "rabid", "golds", "croup", "snaky", "visas", "palls", "mopes", "boned", "wispy", "raved", "swaps", "junky", "doily", "pawns", "tamer", "poach", "baits", "damns", "gumbo", "daunt", "prank", "hunks", "buxom", "heres", "honks", "stows", "unbar", "idles", "routs", "sages", "goads", "remit", "copes", "deign", "culls", "girds", "haves", "lucks", "stunk", "dodos", "shams", "snubs", "icons", "usurp", "dooms", "hells", "soled", "comas", "paves", "maths", "perks", "limps", "wombs", "blurb", "daubs", "cokes", "sours", "stuns", "cased", "musts", "coeds", "cowed", "aping", "zoned", "rummy", "fetes", "skulk", "quaff", "rajah", "deans", "reaps", "galas", "tills", "roved", "kudos", "toned", "pared", "scull", "vexes", "punts", "snoop", "bails", "dames", "hazes", "lores", "marts", "voids", "ameba", "rakes", "adzes", "harms", "rears", "satyr", "swill", "hexes", "colic", "leeks", "hurls", "yowls", "ivies", "plops", "musks", "papaw", "jells", "bused", "cruet", "bided", "filch", "zests", "rooks", "laxly", "rends", "loams", "basks", "sires", "carps", "pokey", "flits", "muses", "bawls", "shuck", "viler", "lisps", "peeps", "sorer", "lolls", "prude", "diked", "floss", "flogs", "scums", "dopes", "bogie", "pinky", "leafs", "tubas", "scads", "lowed", "yeses", "biked", "qualm", "evens", "caned", "gawks", "whits", "wooly", "gluts", "romps", "bests", "dunce", "crony", "joist", "tunas", "boner", "malls", "parch", "avers", "crams", "pares", "dally", "bigot", "kales", "flays", "leach", "gushy", "pooch", "huger", "slyer", "golfs", "mires", "flues", "loafs", "arced", "acnes", "neons", "fiefs", "dints", "dazes", "pouts", "cored", "yules", "lilts", "beefs", "mutts", "fells", "cowls", "spuds", "lames", "jawed", "dupes", "deads", "bylaw", "noons", "nifty", "clued", "vireo", "gapes", "metes", "cuter", "maims", "droll", "cupid", "mauls", "sedge", "papas", "wheys", "eking", "loots", "hilts", "meows", "beaus", "dices", "peppy", "riper", "fogey", "gists", "yogas", "gilts", "skews", "cedes", "zeals", "alums", "okays", "elope", "grump", "wafts", "soots", "blimp", "hefts", "mulls", "hosed", "cress", "doffs", "ruder", "pixie", "waifs", "ousts", "pucks", "biers", "gulch", "suets", "hobos", "lints", "brans", "teals", "garbs", "pewee", "helms", "turfs", "quips", "wends", "banes", "napes", "icier", "swats", "bagel", "hexed", "ogres", "goner", "gilds", "pyres", "lards", "bides", "paged", "talon", "flout", "medic", "veals", "putts", "dirks", "dotes", "tippy", "blurt", "piths", "acing", "barer", "whets", "gaits", "wools", "dunks", "heros", "swabs", "dirts", "jutes", "hemps", "surfs", "okapi", "chows", "shoos", "dusks", "parry", "decal", "furls", "cilia", "sears", "novae", "murks", "warps", "slues", "lamer", "saris", "weans", "purrs", "dills", "togas", "newts", "meany", "bunts", "razes", "goons", "wicks", "ruses", "vends", "geode", "drake", "judos", "lofts", "pulps", "lauds", "mucks", "vises", "mocha", "oiled", "roman", "ethyl", "gotta", "fugue", "smack", "gourd", "bumpy", "radix", "fatty", "borax", "cubit", "cacti", "gamma", "focal", "avail", "papal", "golly", "elite", "versa", "billy", "adieu", "annum", "howdy", "rhino", "norms", "bobby", "axiom", "setup", "yolks", "terns", "mixer", "genre", "knoll", "abode", "junta", "gorge", "combo", "alpha", "overt", "kinda", "spelt", "prick", "nobly", "ephod", "audio", "modal", "veldt", "warty", "fluke", "bonny", "bream", "rosin", "bolls", "doers", "downs", "beady", "motif", "humph", "fella", "mould", "crepe", "kerns", "aloha", "glyph", "azure", "riser", "blest", "locus", "lumpy", "beryl", "wanna", "brier", "tuner", "rowdy", "mural", "timer", "canst", "krill", "quoth", "lemme", "triad", "tenon", "amply", "deeps", "padre", "leant", "pacer", "octal", "dolly", "trans", "sumac", "foamy", "lolly", "giver", "quipu", "codex", "manna", "unwed", "vodka", "ferny", "salon", "duple", "boron", "revue", "crier", "alack", "inter", "dilly", "whist", "cults", "spake", "reset", "loess", "decor", "mover", "verve", "ethic", "gamut", "lingo", "dunno", "align", "sissy", "incur", "reedy", "avant", "piper", "waxer", "calyx", "basil", "coons", "seine", "piney", "lemma", "trams", "winch", "whirr", "saith", "ionic", "heady", "harem", "tummy", "sally", "shied", "dross", "farad", "saver", "tilde", "jingo", "bower", "serif", "facto", "belle", "inset", "bogus", "caved", "forte", "sooty", "bongo", "toves", "credo", "basal", "yella", "aglow", "glean", "gusto", "hymen", "ethos", "terra", "brash", "scrip", "swash", "aleph", "tinny", "itchy", "wanta", "trice", "jowls", "gongs", "garde", "boric", "twill", "sower", "henry", "awash", "libel", "spurn", "sabre", "rebut", "penal", "obese", "sonny", "quirt", "mebbe", "tacit", "greek", "xenon", "hullo", "pique", "roger", "negro", "hadst", "gecko", "beget", "uncut", "aloes", "louis", "quint", "clunk", "raped", "salvo", "diode", "matey", "hertz", "xylem", "kiosk", "apace", "cawed", "peter", "wench", "cohos", "sorta", "gamba", "bytes", "tango", "nutty", "axial", "aleck", "natal", "clomp", "gored", "siree", "bandy", "gunny", "runic", "whizz", "rupee", "fated", "wiper", "bards", "briny", "staid", "hocks", "ochre", "yummy", "gents", "soupy", "roper", "swath", "cameo", "edger", "spate", "gimme", "ebbed", "breve", "theta", "deems", "dykes", "servo", "telly", "tabby", "tares", "blocs", "welch", "ghoul", "vitae", "cumin", "dinky", "bronc", "tabor", "teeny", "comer", "borer", "sired", "privy", "mammy", "deary", "gyros", "sprit", "conga", "quire", "thugs", "furor", "bloke", "runes", "bawdy", "cadre", "toxin", "annul", "egged", "anion", "nodes", "picky", "stein", "jello", "audit", "echos", "fagot", "letup", "eyrie", "fount", "caped", "axons", "amuck", "banal", "riled", "petit", "umber", "miler", "fibre", "agave", "bated", "bilge", "vitro", "feint", "pudgy", "mater", "manic", "umped", "pesky", "strep", "slurp", "pylon", "puree", "caret", "temps", "newel", "yawns", "seedy", "treed", "coups", "rangy", "brads", "mangy", "loner", "circa", "tibia", "afoul", "mommy", "titer", "carne", "kooky", "motes", "amity", "suave", "hippo", "curvy", "samba", "newsy", "anise", "imams", "tulle", "aways", "liven", "hallo", "wales", "opted", "canto", "idyll", "bodes", "curio", "wrack", "hiker", "chive", "yokel", "dotty", "demur", "cusps", "specs", "quads", "laity", "toner", "decry", "writs", "saute", "clack", "aught", "logos", "tipsy", "natty", "ducal", "bidet", "bulgy", "metre", "lusts", "unary", "goeth", "baler", "sited", "shies", "hasps", "brung", "holed", "swank", "looky", "melee", "huffy", "loamy", "pimps", "titan", "binge", "shunt", "femur", "libra", "seder", "honed", "annas", "coypu", "shims", "zowie", "jihad", "savvy", "nadir", "basso", "monic", "maned", "mousy", "omega", "laver", "prima", "picas", "folio", "mecca", "reals", "troth", "testy", "balky", "crimp", "chink", "abets", "splat", "abaci", "vaunt", "cutie", "pasty", "moray", "levis", "ratty", "islet", "joust", "motet", "viral", "nukes", "grads", "comfy", "voila", "woozy", "blued", "whomp", "sward", "metro", "skeet", "chine", "aerie", "bowie", "tubby", "emirs", "coati", "unzip", "slobs", "trike", "funky", "ducat", "dewey", "skoal", "wadis", "oomph", "taker", "minim", "getup", "stoic", "synod", "runty", "flyby", "braze", "inlay", "venue", "louts", "peaty", "orlon", "humpy", "radon", "beaut", "raspy", "unfed", "crick", "nappy", "vizor", "yipes", "rebus", "divot", "kiwis", "vetch", "squib", "sitar", "kiddo", "dyers", "cotta", "matzo", "lager", "zebus", "crass", "dacha", "kneed", "dicta", "fakir", "knurl", "runny", "unpin", "julep", "globs", "nudes", "sushi", "tacky", "stoke", "kaput", "butch", "hulas", "croft", "achoo", "genii", "nodal", "outgo", "spiel", "viols", "fetid", "cagey", "fudgy", "epoxy", "leggy", "hanky", "lapis", "felon", "beefy", "coots", "melba", "caddy", "segue", "betel", "frizz", "drear", "kooks", "turbo", "hoagy", "moult", "helix", "zonal", "arias", "nosey", "paean", "lacey", "banns", "swain", "fryer", "retch", "tenet", "gigas", "whiny", "ogled", "rumen", "begot", "cruse", "abuts", "riven", "balks", "sines", "sigma", "abase", "ennui", "gores", "unset", "augur", "sated", "odium", "latin", "dings", "moire", "scion", "henna", "kraut", "dicks", "lifer", "prigs", "bebop", "gages", "gazer", "fanny", "gibes", "aural", "tempi", "hooch", "rapes", "snuck", "harts", "techs", "emend", "ninny", "guava", "scarp", "liege", "tufty", "sepia", "tomes", "carob", "emcee", "prams", "poser", "verso", "hubba", "joule", "baize", "blips", "scrim", "cubby", "clave", "winos", "rearm", "liens", "lumen", "chump", "nanny", "trump", "fichu", "chomp", "homos", "purty", "maser", "woosh", "patsy", "shill", "rusks", "avast", "swami", "boded", "ahhhh", "lobed", "natch", "shish", "tansy", "snoot", "payer", "altho", "sappy", "laxer", "hubby", "aegis", "riles", "ditto", "jazzy", "dingo", "quasi", "septa", "peaky", "lorry", "heerd", "bitty", "payee", "seamy", "apses", "imbue", "belie", "chary", "spoof", "phyla", "clime", "babel", "wacky", "sumps", "skids", "khans", "crypt", "inure", "nonce", "outen", "faire", "hooey", "anole", "kazoo", "calve", "limbo", "argot", "ducky", "faker", "vibes", "gassy", "unlit", "nervy", "femme", "biter", "fiche", "boors", "gaffe", "saxes", "recap", "synch", "facie", "dicey", "ouija", "hewer", "legit", "gurus", "edify", "tweak", "caron", "typos", "rerun", "polly", "surds", "hamza", "nulls", "hater", "lefty", "mogul", "mafia", "debug", "pates", "blabs", "splay", "talus", "porno", "moola", "nixed", "kilos", "snide", "horsy", "gesso", "jaggy", "trove", "nixes", "creel", "pater", "iotas", "cadge", "skyed", "hokum", "furze", "ankhs", "curie", "nutsy", "hilum", "remix", "angst", "burls", "jimmy", "veiny", "tryst", "codon", "befog", "gamed", "flume", "axman", "doozy", "lubes", "rheas", "bozos", "butyl", "kelly", "mynah", "jocks", "donut", "avian", "wurst", "chock", "quash", "quals", "hayed", "bombe", "cushy", "spacy", "puked", "leery", "thews", "prink", "amens", "tesla", "intro", "fiver", "frump", "capos", "opine", "coder", "namer", "jowly", "pukes", "haled", "chard", "duffs", "bruin", "reuse", "whang", "toons", "frats", "silty", "telex", "cutup", "nisei", "neato", "decaf", "softy", "bimbo", "adlib", "loony", "shoed", "agues", "peeve", "noway", "gamey", "sarge", "reran", "epact", "potty", "coned", "upend", "narco", "ikats", "whorl", "jinks", "tizzy", "weepy", "posit", "marge", "vegan", "clops", "numbs", "reeks", "rubes", "rower", "biped", "tiffs", "hocus", "hammy", "bunco", "fixit", "tykes", "chaws", "yucky", "hokey", "resew", "maven", "adman", "scuzz", "slogs", "souse", "nacho", "mimed", "melds", "boffo", "debit", "pinup", "vagus", "gulag", "randy", "bosun", "educe", "faxes", "auras", "pesto", "antsy", "betas", "fizzy", "dorky", "snits", "moxie", "thane", "mylar", "nobby", "gamin", "gouty", "esses", "goyim", "paned", "druid", "jades", "rehab", "gofer", "tzars", "octet", "homed", "socko", "dorks", "eared", "anted", "elide", "fazes", "oxbow", "dowse", "situs", "macaw", "scone", "drily", "hyper", "salsa", "mooch", "gated", "unjam", "lipid", "mitre", "venal", "knish", "ritzy", "divas", "torus", "mange", "dimer", "recut", "meson", "wined", "fends", "phage", "fiats", "caulk", "cavil", "panty", "roans", "bilks", "hones", "botch", "estop", "sully", "sooth", "gelds", "ahold", "raper", "pager", "fixer", "infix", "hicks", "tuxes", "plebe", "twits", "abash", "twixt", "wacko", "primp", "nabla", "girts", "miffs", "emote", "xerox", "rebid", "shahs", "rutty", "grout", "grift", "deify", "biddy", "kopek", "semis", "bries", "acmes", "piton", "hussy", "torts", "disco", "whore", "boozy", "gibed", "vamps", "amour", "soppy", "gonzo", "durst", "wader", "tutus", "perms", "catty", "glitz", "brigs", "nerds", "barmy", "gizmo", "owlet", "sayer", "molls", "shard", "whops", "comps", "corer", "colas", "matte", "droid", "ploys", "vapid", "cairn", "deism", "mixup", "yikes", "prosy", "raker", "flubs", "whish", "reify", "craps", "shags", "clone", "hazed", "macho", "recto", "refix", "drams", "biker", "aquas", "porky", "doyen", "exude", "goofs", "divvy", "noels", "jived", "hulky", "cager", "harpy", "oldie", "vivas", "admix", "codas", "zilch", "deist", "orcas", "retro", "pilaf", "parse", "rants", "zingy", "toddy", "chiff", "micro", "veeps", "girly", "nexus", "demos", "bibbs", "antes", "lulus", "gnarl", "zippy", "ivied", "epees", "wimps", "tromp", "grail", "yoyos", "poufs", "hales", "roust", "cabal", "rawer", "pampa", "mosey", "kefir", "burgs", "unmet", "cuspy", "boobs", "boons", "hypes", "dynes", "nards", "lanai", "yogis", "sepal", "quark", "toked", "prate", "ayins", "hawed", "swigs", "vitas", "toker", "doper", "bossa", "linty", "foist", "mondo", "stash", "kayos", "twerp", "zesty", "capon", "wimpy", "rewed", "fungo", "tarot", "frosh", "kabob", "pinko", "redid", "mimeo", "heist", "tarps", "lamas", "sutra", "dinar", "whams", "busty", "spays", "mambo", "nabob", "preps", "odour", "cabby", "conks", "sluff", "dados", "houri", "swart", "balms", "gutsy", "faxed", "egads", "pushy", "retry", "agora", "drubs", "daffy", "chits", "mufti", "karma", "lotto", "toffs", "burps", "deuce", "zings", "kappa", "clads", "doggy", "duper", "scams", "ogler", "mimes", "throe", "zetas", "waled", "promo", "blats", "muffs", "oinks", "viand", "coset", "finks", "faddy", "minis", "snafu", "sauna", "usury", "muxes", "craws", "stats", "condo", "coxes", "loopy", "dorms", "ascot", "dippy", "execs", "dopey", "envoi", "umpty", "gismo", "fazed", "strop", "jives", "slims", "batik", "pings", "sonly", "leggo", "pekoe", "prawn", "luaus", "campy", "oodle", "prexy", "proms", "touts", "ogles", "tweet", "toady", "naiad", "hider", "nuked", "fatso", "sluts", "obits", "narcs", "tyros", "delis", "wooer", "hyped", "poset", "byway", "texas", "scrod", "avows", "futon", "torte", "tuple", "carom", "kebab", "tamps", "jilts", "duals", "artsy", "repro", "modem", "toped", "psych", "sicko", "klutz", "tarns", "coxed", "drays", "cloys", "anded", "piker", "aimer", "suras", "limos", "flack", "hapax", "dutch", "mucky", "shire", "klieg", "staph", "layup", "tokes", "axing", "toper", "duvet", "cowry", "profs", "blahs", "addle", "sudsy", "batty", "coifs", "suety", "gabby", "hafta", "pitas", "gouda", "deice", "taupe", "topes", "duchy", "nitro", "carny", "limey", "orals", "hirer", "taxer", "roils", "ruble", "elate", "dolor", "wryer", "snots", "quais", "coked", "gimel", "gorse", "minas", "goest", "agape", "manta", "jings", "iliac", "admen", "offen", "cills", "offal", "lotta", "bolas", "thwap", "alway", "boggy", "donna", "locos", "belay", "gluey", "bitsy", "mimsy", "hilar", "outta", "vroom", "fetal", "raths", "renal", "dyads", "crocs", "vires", "culpa", "kivas", "feist", "teats", "thats", "yawls", "whens", "abaca", "ohhhh", "aphis", "fusty", "eclat", "perdu", "mayst", "exeat", "molly", "supra", "wetly", "plasm", "buffa", "semen", "pukka", "tagua", "paras", "stoat", "secco", "carte", "haute", "molal", "shads", "forma", "ovoid", "pions", "modus", "bueno", "rheum", "scurf", "parer", "ephah", "doest", "sprue", "flams", "molto", "dieth", "choos", "miked", "bronx", "goopy", "bally", "plumy", "moony", "morts", "yourn", "bipod", "spume", "algal", "ambit", "mucho", "spued", "dozer", "harum", "groat", "skint", "laude", "thrum", "pappy", "oncet", "rimed", "gigue", "limed", "plein", "redly", "humpf", "lites", "seest", "grebe", "absit", "thanx", "pshaw", "yawps", "plats", "payed", "areal", "tilth", "youse", "gwine", "thees", "watsa", "lento", "spitz", "yawed", "gipsy", "sprat", "cornu", "amahs", "blowy", "wahoo", "lubra", "mecum", "whooo", "coqui", "sabra", "edema", "mrads", "dicot", "astro", "kited", "ouzel", "didos", "grata", "bonne", "axmen", "klunk", "summa", "laves", "purls", "yawny", "teary", "masse", "largo", "bazar", "pssst", "sylph", "lulab", "toque", "fugit", "plunk", "ortho", "lucre", "cooch", "whipt", "folky", "tyres", "wheee", "corky", "injun", "solon", "didot", "kerfs", "rayed", "wassa", "chile", "begat", "nippy", "litre", "magna", "rebox", "hydro", "milch", "brent", "gyves", "lazed", "feued", "mavis", "inapt", "baulk", "casus", "scrum", "wised", "fossa", "dower", "kyrie", "bhoys", "scuse", "feuar", "ohmic", "juste", "ukase", "beaux", "tusky", "orate", "musta", "lardy", "intra", "quiff", "epsom", "neath", "ocher", "tared", "homme", "mezzo", "corms", "psoas", "beaky", "terry", "infra", "spivs", "tuans", "belli", "bergs", "anima", "weirs", "mahua", "scops", "manse", "titre", "curia", "kebob", "cycad", "talky", "fucks", "tapis", "amide", "dolce", "sloes", "jakes", "russe", "blash", "tutti", "pruta", "panga", "blebs", "tench", "swarf", "herem", "missy", "merse", "pawky", "limen", "vivre", "chert", "unsee", "tiros", "brack", "foots", "welsh", "fosse", "knops", "ileum", "noire", "firma", "podgy", "laird", "thunk", "shute", "rowan", "shoji", "poesy", "uncap", "fames", "glees", "costa", "turps", "fores", "solum", "imago", "byres", "fondu", "coney", "polis", "dictu", "kraal", "sherd", "mumbo", "wroth", "chars", "unbox", "vacuo", "slued", "weest", "hades", "wiled", "syncs", "muser", "excon", "hoars", "sibyl", "passe", "joeys", "lotsa", "lepta", "shays", "bocks", "endue", "darer", "nones", "ileus", "plash", "busby", "wheal", "buffo", "yobbo", "biles", "poxes", "rooty", "licit", "terce", "bromo", "hayey", "dweeb", "imbed", "saran", "bruit", "punky", "softs", "biffs", "loppy", "agars", "aquae", "livre", "biome", "bunds", "shews", "diems", "ginny", "degum", "polos", "desex", "unman", "dungy", "vitam", "wedgy", "glebe", "apers", "ridgy", "roids", "wifey", "vapes", "whoas", "bunko", "yolky", "ulnas", "reeky", "bodge", "brant", "davit", "deque", "liker", "jenny", "tacts", "fulls", "treap", "ligne", "acked", "refry", "vower", "aargh", "churl", "momma", "gaols", "whump", "arras", "marls", "tiler", "grogs", "memes", "midis", "tided", "haler", "duces", "twiny", "poste", "unrig", "prise", "drabs", "quids", "facer", "spier", "baric", "geoid", "remap", "trier", "gunks", "steno", "stoma", "airer", "ovate", "torah", "apian", "smuts", "pocks", "yurts", "exurb", "defog", "nuder", "bosky", "nimbi", "mothy", "joyed", "labia", "pards", "jammy", "bigly", "faxer", "hoppy", "nurbs", "cotes", "dishy", "vised", "celeb", "pismo", "casas", "withs", "dodgy", "scudi", "mungs", "muons", "ureas", "ioctl", "unhip", "krone", "sager", "verst", "expat", "gronk", "uvula", "shawm", "bilgy", "braes", "cento", "webby", "lippy", "gamic", "lordy", "mazed", "tings", "shoat", "faery", "wirer", "diazo", "carer", "rater", "greps", "rente", "zloty", "viers", "unapt", "poops", "fecal", "kepis", "taxon", "eyers", "wonts", "spina", "stoae", "yenta", "pooey", "buret", "japan", "bedew", "hafts", "selfs", "oared", "herby", "pryer", "oakum", "dinks", "titty", "sepoy", "penes", "fusee", "winey", "gimps", "nihil", "rille", "giber", "ousel", "umiak", "cuppy", "hames", "shits", "azine", "glads", "tacet", "bumph", "coyer", "honky", "gamer", "gooky", "waspy", "sedgy", "bents", "varia", "djinn", "junco", "pubic", "wilco", "lazes", "idyls", "lupus", "rives", "snood", "schmo", "spazz", "finis", "noter", "pavan", "orbed", "bates", "pipet", "baddy", "goers", "shako", "stets", "sebum", "seeth", "lobar", "raver", "ajuga", "riced", "velds", "dribs", "ville", "dhows", "unsew", "halma", "krona", "limby", "jiffs", "treys", "bauds", "pffft", "mimer", "plebs", "caner", "jiber", "cuppa", "washy", "chuff", "unarm", "yukky", "styes", "waker", "flaks", "maces", "rimes", "gimpy", "guano", "liras", "kapok", "scuds", "bwana", "oring", "aider", "prier", "klugy", "monte", "golem", "velar", "firer", "pieta", "umbel", "campo", "unpeg", "fovea", "abeam", "boson", "asker", "goths", "vocab", "vined", "trows", "tikis", "loper", "indie", "boffs", "spang", "grapy", "tater", "ichor", "kilty", "lochs", "supes", "degas", "flics", "torsi", "beths", "weber", "resaw", "lawny", "coven", "mujik", "relet", "therm", "heigh", "shnor", "trued", "zayin", "liest", "barfs", "bassi", "qophs", "roily", "flabs", "punny", "okras", "hanks", "dipso", "nerfs", "fauns", "calla", "pseud", "lurer", "magus", "obeah", "atria", "twink", "palmy", "pocky", "pends", "recta", "plonk", "slaws", "keens", "nicad", "pones", "inker", "whews", "groks", "mosts", "trews", "ulnar", "gyppy", "cocas", "expos", "eruct", "oiler", "vacua", "dreck", "dater", "arums", "tubal", "voxel", "dixit", "beery", "assai", "lades", "actin", "ghoti", "buzzy", "meads", "grody", "ribby", "clews", "creme", "email", "pyxie", "kulak", "bocci", "rived", "duddy", "hoper", "lapin", "wonks", "petri", "phial", "fugal", "holon", "boomy", "duomo", "musos", "shier", "hayer", "porgy", "hived", "litho", "fisty", "stagy", "luvya", "maria", "smogs", "asana", "yogic", "slomo", "fawny", "amine", "wefts", "gonad", "twirp", "brava", "plyer", "fermi", "loges", "niter", "revet", "unate", "gyved", "totty", "zappy", "honer", "giros", "dicer", "calks", "luxes", "monad", "cruft", "quoin", "fumer", "amped", "shlep", "vinca", "yahoo", "vulva", "zooey", "dryad", "nixie", "moper", "iambs", "lunes", "nudie", "limns", "weals", "nohow", "miaow", "gouts", "mynas", "mazer", "kikes", "oxeye", "stoup", "jujus", "debar", "pubes", "taels", "defun", "rands", "blear", "paver", "goosy", "sprog", "oleos", "toffy", "pawer", "maced", "crits", "kluge", "tubed", "sahib", "ganef", "scats", "sputa", "vaned", "acned", "taxol", "plink", "oweth", "tribs", "resay", "boule", "thous", "haply", "glans", "maxis", "bezel", "antis", "porks", "quoit", "alkyd", "glary", "beamy", "hexad", "bonks", "tecum", "kerbs", "filar", "frier", "redux", "abuzz", "fader", "shoer", "couth", "trues", "guyed", "goony", "booky", "fuzes", "hurly", "genet", "hodad", "calix", "filer", "pawls", "iodic", "utero", "henge", "unsay", "liers", "piing", "weald", "sexed", "folic", "poxed", "cunts", "anile", "kiths", "becks", "tatty", "plena", "rebar", "abled", "toyer", "attar", "teaks", "aioli", "awing", "anent", "feces", "redip", "wists", "prats", "mesne", "muter", "smurf", "owest", "bahts", "lossy", "ftped", "hunky", "hoers", "slier", "sicks", "fatly", "delft", "hiver", "himbo", "pengo", "busks", "loxes", "zonks", "ilium", "aport", "ikons", "mulct", "reeve", "civvy", "canna", "barfy", "kaiak", "scudo", "knout", "gaper", "bhang", "pease", "uteri", "lases", "paten", "rasae", "axels", "stoas", "ombre", "styli", "gunky", "hazer", "kenaf", "ahoys", "ammos", "weeny", "urger", "kudzu", "paren", "bolos", "fetor", "nitty", "techy", "lieth", "somas", "darky", "villi", "gluon", "janes", "cants", "farts", "socle", "jinns", "ruing", "slily", "ricer", "hadda", "wowee", "rices", "nerts", "cauls", "swive", "lilty", "micks", "arity", "pasha", "finif", "oinky", "gutty", "tetra", "wises", "wolds", "balds", "picot", "whats", "shiki", "bungs", "snarf", "legos", "dungs", "stogy", "berms", "tangs", "vails", "roods", "morel", "sware", "elans", "latus", "gules", "razer", "doxie", "buena", "overs", "gutta", "zincs", "nates", "kirks", "tikes", "donee", "jerry", "mohel", "ceder", "doges", "unmap", "folia", "rawly", "snark", "topoi", "ceils", "immix", "yores", "diest", "bubba", "pomps", "forky", "turdy", "lawzy", "poohs", "worts", "gloms", "beano", "muley", "barky", "tunny", "auric", "funks", "gaffs", "cordy", "curdy", "lisle", "toric", "soyas", "reman", "mungy", "carpy", "apish", "oaten", "gappy", "aurae", "bract", "rooky", "axled", "burry", "sizer", "proem", "turfy", "impro", "mashy", "miens", "nonny", "olios", "grook", "sates", "agley", "corgi", "dashy", "doser", "dildo", "apsos", "xored", "laker", "playa", "selah", "malty", "dulse", "frigs", "demit", "whoso", "rials", "sawer", "spics", "bedim", "snugs", "fanin", "azoic", "icers", "suers", "wizen", "koine", "topos", "shirr", "rifer", "feral", "laded", "lased", "turds", "swede", "easts", "cozen", "unhit", "pally", "aitch", "sedum", "coper", "ruche", "geeks", "swags", "etext", "algin", "offed", "ninja", "holer", "doter", "toter", "besot", "dicut", "macer", "peens", "pewit", "redox", "poler", "yecch", "fluky", "doeth", "twats", "cruds", "bebug", "bider", "stele", "hexer", "wests", "gluer", "pilau", "abaft", "whelm", "lacer", "inode", "tabus", "gator", "cuing", "refly", "luted", "cukes", "bairn", "bight", "arses", "crump", "loggy", "blini", "spoor", "toyon", "harks", "wazoo", "fenny", "naves", "keyer", "tufas", "morph", "rajas", "typal", "spiff", "oxlip", "unban", "mussy", "finny", "rimer", "login", "molas", "cirri", "huzza", "agone", "unsex", "unwon", "peats", "toile", "zombi", "dewed", "nooky", "alkyl", "ixnay", "dovey", "holey", "cuber", "amyls", "podia", "chino", "apnea", "prims", "lycra", "johns", "primo", "fatwa", "egger", "hempy", "snook", "hying", "fuzed", "barms", "crink", "moots", "yerba", "rhumb", "unarc", "direr", "munge", "eland", "nares", "wrier", "noddy", "atilt", "jukes", "ender", "thens", "unfix", "doggo", "zooks", "diddy", "shmoo", "brusk", "prest", "curer", "pasts", "kelpy", "bocce", "kicky", "taros", "lings", "dicky", "nerdy", "abend", "stela", "biggy", "laved", "baldy", "pubis", "gooks", "wonky", "stied", "hypos", "assed", "spumy", "osier", "roble", "rumba", "biffy", "pupal"];
-
-    const answers = ["aback", "abase", "abate", "abbey", "abbot", "abhor", "abide", "abled", "abode", "abort", "about", "above", "abuse", "abyss", "acorn", "acrid", "actor", "acute", "adage", "adapt", "adept", "admin", "admit", "adobe", "adopt", "adore", "adorn", "adult", "affix", "afire", "afoot", "afoul", "after", "again", "agape", "agate", "agent", "agile", "aging", "aglow", "agony", "agora", "agree", "ahead", "aider", "aisle", "alarm", "album", "alert", "algae", "alibi", "alien", "align", "alike", "alive", "allay", "alley", "allot", "allow", "alloy", "aloft", "alone", "along", "aloof", "aloud", "alpha", "altar", "alter", "amass", "amaze", "amber", "amble", "amend", "amiss", "amity", "among", "ample", "amply", "amuse", "angel", "anger", "angle", "angry", "angst", "anime", "ankle", "annex", "annoy", "annul", "anode", "antic", "anvil", "aorta", "apart", "aphid", "aping", "apnea", "apple", "apply", "apron", "aptly", "arbor", "ardor", "arena", "argue", "arise", "armor", "aroma", "arose", "array", "arrow", "arson", "artsy", "ascot", "ashen", "aside", "askew", "assay", "asset", "atoll", "atone", "attic", "audio", "audit", "augur", "aunty", "avail", "avert", "avian", "avoid", "await", "awake", "award", "aware", "awash", "awful", "awoke", "axial", "axiom", "axion", "azure", "bacon", "badge", "badly", "bagel", "baggy", "baker", "baler", "balmy", "banal", "banjo", "barge", "baron", "basal", "basic", "basil", "basin", "basis", "baste", "batch", "bathe", "baton", "batty", "bawdy", "bayou", "beach", "beady", "beard", "beast", "beech", "beefy", "befit", "began", "begat", "beget", "begin", "begun", "being", "belch", "belie", "belle", "belly", "below", "bench", "beret", "berry", "berth", "beset", "betel", "bevel", "bezel", "bible", "bicep", "biddy", "bigot", "bilge", "billy", "binge", "bingo", "biome", "birch", "birth", "bison", "bitty", "black", "blade", "blame", "bland", "blank", "blare", "blast", "blaze", "bleak", "bleat", "bleed", "bleep", "blend", "bless", "blimp", "blind", "blink", "bliss", "blitz", "bloat", "block", "bloke", "blond", "blood", "bloom", "blown", "bluer", "bluff", "blunt", "blurb", "blurt", "blush", "board", "boast", "bobby", "boney", "bongo", "bonus", "booby", "boost", "booth", "booty", "booze", "boozy", "borax", "borne", "bosom", "bossy", "botch", "bough", "boule", "bound", "bowel", "boxer", "brace", "braid", "brain", "brake", "brand", "brash", "brass", "brave", "bravo", "brawl", "brawn", "bread", "break", "breed", "briar", "bribe", "brick", "bride", "brief", "brine", "bring", "brink", "briny", "brisk", "broad", "broil", "broke", "brood", "brook", "broom", "broth", "brown", "brunt", "brush", "brute", "buddy", "budge", "buggy", "bugle", "build", "built", "bulge", "bulky", "bully", "bunch", "bunny", "burly", "burnt", "burst", "bused", "bushy", "butch", "butte", "buxom", "buyer", "bylaw", "cabal", "cabby", "cabin", "cable", "cacao", "cache", "cacti", "caddy", "cadet", "cagey", "cairn", "camel", "cameo", "canal", "candy", "canny", "canoe", "canon", "caper", "caput", "carat", "cargo", "carol", "carry", "carve", "caste", "catch", "cater", "catty", "caulk", "cause", "cavil", "cease", "cedar", "cello", "chafe", "chaff", "chain", "chair", "chalk", "champ", "chant", "chaos", "chard", "charm", "chart", "chase", "chasm", "cheap", "cheat", "check", "cheek", "cheer", "chess", "chest", "chick", "chide", "chief", "child", "chili", "chill", "chime", "china", "chirp", "chock", "choir", "choke", "chord", "chore", "chose", "chuck", "chump", "chunk", "churn", "chute", "cider", "cigar", "cinch", "circa", "civic", "civil", "clack", "claim", "clamp", "clang", "clank", "clash", "clasp", "class", "clean", "clear", "cleat", "cleft", "clerk", "click", "cliff", "climb", "cling", "clink", "cloak", "clock", "clone", "close", "cloth", "cloud", "clout", "clove", "clown", "cluck", "clued", "clump", "clung", "coach", "coast", "cobra", "cocoa", "colon", "color", "comet", "comfy", "comic", "comma", "conch", "condo", "conic", "copse", "coral", "corer", "corny", "couch", "cough", "could", "count", "coupe", "court", "coven", "cover", "covet", "covey", "cower", "coyly", "crack", "craft", "cramp", "crane", "crank", "crash", "crass", "crate", "crave", "crawl", "craze", "crazy", "creak", "cream", "credo", "creed", "creek", "creep", "creme", "crepe", "crept", "cress", "crest", "crick", "cried", "crier", "crime", "crimp", "crisp", "croak", "crock", "crone", "crony", "crook", "cross", "croup", "crowd", "crown", "crude", "cruel", "crumb", "crump", "crush", "crust", "crypt", "cubic", "cumin", "curio", "curly", "curry", "curse", "curve", "curvy", "cutie", "cyber", "cycle", "cynic", "daddy", "daily", "dairy", "daisy", "dally", "dance", "dandy", "datum", "daunt", "dealt", "death", "debar", "debit", "debug", "debut", "decal", "decay", "decor", "decoy", "decry", "defer", "deign", "deity", "delay", "delta", "delve", "demon", "demur", "denim", "dense", "depot", "depth", "derby", "deter", "detox", "deuce", "devil", "diary", "dicey", "digit", "dilly", "dimly", "diner", "dingo", "dingy", "diode", "dirge", "dirty", "disco", "ditch", "ditto", "ditty", "diver", "dizzy", "dodge", "dodgy", "dogma", "doing", "dolly", "donor", "donut", "dopey", "doubt", "dough", "dowdy", "dowel", "downy", "dowry", "dozen", "draft", "drain", "drake", "drama", "drank", "drape", "drawl", "drawn", "dread", "dream", "dress", "dried", "drier", "drift", "drill", "drink", "drive", "droit", "droll", "drone", "drool", "droop", "dross", "drove", "drown", "druid", "drunk", "dryer", "dryly", "duchy", "dully", "dummy", "dumpy", "dunce", "dusky", "dusty", "dutch", "duvet", "dwarf", "dwell", "dwelt", "dying", "eager", "eagle", "early", "earth", "easel", "eaten", "eater", "ebony", "eclat", "edict", "edify", "eerie", "egret", "eight", "eject", "eking", "elate", "elbow", "elder", "elect", "elegy", "elfin", "elide", "elite", "elope", "elude", "email", "embed", "ember", "emcee", "empty", "enact", "endow", "enema", "enemy", "enjoy", "ennui", "ensue", "enter", "entry", "envoy", "epoch", "epoxy", "equal", "equip", "erase", "erect", "erode", "error", "erupt", "essay", "ester", "ether", "ethic", "ethos", "etude", "evade", "event", "every", "evict", "evoke", "exact", "exalt", "excel", "exert", "exile", "exist", "expel", "extol", "extra", "exult", "eying", "fable", "facet", "faint", "fairy", "faith", "false", "fancy", "fanny", "farce", "fatal", "fatty", "fault", "fauna", "favor", "feast", "fecal", "feign", "fella", "felon", "femme", "femur", "fence", "feral", "ferry", "fetal", "fetch", "fetid", "fetus", "fever", "fewer", "fiber", "fibre", "ficus", "field", "fiend", "fiery", "fifth", "fifty", "fight", "filer", "filet", "filly", "filmy", "filth", "final", "finch", "finer", "first", "fishy", "fixer", "fizzy", "fjord", "flack", "flail", "flair", "flake", "flaky", "flame", "flank", "flare", "flash", "flask", "fleck", "fleet", "flesh", "flick", "flier", "fling", "flint", "flirt", "float", "flock", "flood", "floor", "flora", "floss", "flour", "flout", "flown", "fluff", "fluid", "fluke", "flume", "flung", "flunk", "flush", "flute", "flyer", "foamy", "focal", "focus", "foggy", "foist", "folio", "folly", "foray", "force", "forge", "forgo", "forte", "forth", "forty", "forum", "found", "foyer", "frail", "frame", "frank", "fraud", "freak", "freed", "freer", "fresh", "friar", "fried", "frill", "frisk", "fritz", "frock", "frond", "front", "frost", "froth", "frown", "froze", "fruit", "fudge", "fugue", "fully", "fungi", "funky", "funny", "furor", "furry", "fussy", "fuzzy", "gaffe", "gaily", "gamer", "gamma", "gamut", "gassy", "gaudy", "gauge", "gaunt", "gauze", "gavel", "gawky", "gayer", "gayly", "gazer", "gecko", "geeky", "geese", "genie", "genre", "ghost", "ghoul", "giant", "giddy", "gipsy", "girly", "girth", "given", "giver", "glade", "gland", "glare", "glass", "glaze", "gleam", "glean", "glide", "glint", "gloat", "globe", "gloom", "glory", "gloss", "glove", "glyph", "gnash", "gnome", "godly", "going", "golem", "golly", "gonad", "goner", "goody", "gooey", "goofy", "goose", "gorge", "gouge", "gourd", "grace", "grade", "graft", "grail", "grain", "grand", "grant", "grape", "graph", "grasp", "grass", "grate", "grave", "gravy", "graze", "great", "greed", "green", "greet", "grief", "grill", "grime", "grimy", "grind", "gripe", "groan", "groin", "groom", "grope", "gross", "group", "grout", "grove", "growl", "grown", "gruel", "gruff", "grunt", "guard", "guava", "guess", "guest", "guide", "guild", "guile", "guilt", "guise", "gulch", "gully", "gumbo", "gummy", "guppy", "gusto", "gusty", "gypsy", "habit", "hairy", "halve", "handy", "happy", "hardy", "harem", "harpy", "harry", "harsh", "haste", "hasty", "hatch", "hater", "haunt", "haute", "haven", "havoc", "hazel", "heady", "heard", "heart", "heath", "heave", "heavy", "hedge", "hefty", "heist", "helix", "hello", "hence", "heron", "hilly", "hinge", "hippo", "hippy", "hitch", "hoard", "hobby", "hoist", "holly", "homer", "honey", "honor", "horde", "horny", "horse", "hotel", "hotly", "hound", "house", "hovel", "hover", "howdy", "human", "humid", "humor", "humph", "humus", "hunch", "hunky", "hurry", "husky", "hussy", "hutch", "hydro", "hyena", "hymen", "hyper", "icily", "icing", "ideal", "idiom", "idiot", "idler", "idyll", "igloo", "iliac", "image", "imbue", "impel", "imply", "inane", "inbox", "incur", "index", "inept", "inert", "infer", "ingot", "inlay", "inlet", "inner", "input", "inter", "intro", "ionic", "irate", "irony", "islet", "issue", "itchy", "ivory", "jaunt", "jazzy", "jelly", "jerky", "jetty", "jewel", "jiffy", "joint", "joist", "joker", "jolly", "joust", "judge", "juice", "juicy", "jumbo", "jumpy", "junta", "junto", "juror", "kappa", "karma", "kayak", "kebab", "khaki", "kinky", "kiosk", "kitty", "knack", "knave", "knead", "kneed", "kneel", "knelt", "knife", "knock", "knoll", "known", "koala", "krill", "label", "labor", "laden", "ladle", "lager", "lance", "lanky", "lapel", "lapse", "large", "larva", "lasso", "latch", "later", "lathe", "latte", "laugh", "layer", "leach", "leafy", "leaky", "leant", "leapt", "learn", "lease", "leash", "least", "leave", "ledge", "leech", "leery", "lefty", "legal", "leggy", "lemon", "lemur", "leper", "level", "lever", "libel", "liege", "light", "liken", "lilac", "limbo", "limit", "linen", "liner", "lingo", "lipid", "lithe", "liver", "livid", "llama", "loamy", "loath", "lobby", "local", "locus", "lodge", "lofty", "logic", "login", "loopy", "loose", "lorry", "loser", "louse", "lousy", "lover", "lower", "lowly", "loyal", "lucid", "lucky", "lumen", "lumpy", "lunar", "lunch", "lunge", "lupus", "lurch", "lurid", "lusty", "lying", "lymph", "lynch", "lyric", "macaw", "macho", "macro", "madam", "madly", "mafia", "magic", "magma", "maize", "major", "maker", "mambo", "mamma", "mammy", "manga", "mange", "mango", "mangy", "mania", "manic", "manly", "manor", "maple", "march", "marry", "marsh", "mason", "masse", "match", "matey", "mauve", "maxim", "maybe", "mayor", "mealy", "meant", "meaty", "mecca", "medal", "media", "medic", "melee", "melon", "mercy", "merge", "merit", "merry", "metal", "meter", "metro", "micro", "midge", "midst", "might", "milky", "mimic", "mince", "miner", "minim", "minor", "minty", "minus", "mirth", "miser", "missy", "mocha", "modal", "model", "modem", "mogul", "moist", "molar", "moldy", "money", "month", "moody", "moose", "moral", "moron", "morph", "mossy", "motel", "motif", "motor", "motto", "moult", "mound", "mount", "mourn", "mouse", "mouth", "mover", "movie", "mower", "mucky", "mucus", "muddy", "mulch", "mummy", "munch", "mural", "murky", "mushy", "music", "musky", "musty", "myrrh", "nadir", "naive", "nanny", "nasal", "nasty", "natal", "naval", "navel", "needy", "neigh", "nerdy", "nerve", "never", "newer", "newly", "nicer", "niche", "niece", "night", "ninja", "ninny", "ninth", "noble", "nobly", "noise", "noisy", "nomad", "noose", "north", "nosey", "notch", "novel", "nudge", "nurse", "nutty", "nylon", "nymph", "oaken", "obese", "occur", "ocean", "octal", "octet", "odder", "oddly", "offal", "offer", "often", "olden", "older", "olive", "ombre", "omega", "onion", "onset", "opera", "opine", "opium", "optic", "orbit", "order", "organ", "other", "otter", "ought", "ounce", "outdo", "outer", "outgo", "ovary", "ovate", "overt", "ovine", "ovoid", "owing", "owner", "oxide", "ozone", "paddy", "pagan", "paint", "paler", "palsy", "panel", "panic", "pansy", "papal", "paper", "parer", "parka", "parry", "parse", "party", "pasta", "paste", "pasty", "patch", "patio", "patsy", "patty", "pause", "payee", "payer", "peace", "peach", "pearl", "pecan", "pedal", "penal", "pence", "penne", "penny", "perch", "peril", "perky", "pesky", "pesto", "petal", "petty", "phase", "phone", "phony", "photo", "piano", "picky", "piece", "piety", "piggy", "pilot", "pinch", "piney", "pinky", "pinto", "piper", "pique", "pitch", "pithy", "pivot", "pixel", "pixie", "pizza", "place", "plaid", "plain", "plait", "plane", "plank", "plant", "plate", "plaza", "plead", "pleat", "plied", "plier", "pluck", "plumb", "plume", "plump", "plunk", "plush", "poesy", "point", "poise", "poker", "polar", "polka", "polyp", "pooch", "poppy", "porch", "poser", "posit", "posse", "pouch", "pound", "pouty", "power", "prank", "prawn", "preen", "press", "price", "prick", "pride", "pried", "prime", "primo", "print", "prior", "prism", "privy", "prize", "probe", "prone", "prong", "proof", "prose", "proud", "prove", "prowl", "proxy", "prude", "prune", "psalm", "pubic", "pudgy", "puffy", "pulpy", "pulse", "punch", "pupal", "pupil", "puppy", "puree", "purer", "purge", "purse", "pushy", "putty", "pygmy", "quack", "quail", "quake", "qualm", "quark", "quart", "quash", "quasi", "queen", "queer", "quell", "query", "quest", "queue", "quick", "quiet", "quill", "quilt", "quirk", "quite", "quota", "quote", "quoth", "rabbi", "rabid", "racer", "radar", "radii", "radio", "rainy", "raise", "rajah", "rally", "ralph", "ramen", "ranch", "randy", "range", "rapid", "rarer", "raspy", "ratio", "ratty", "raven", "rayon", "razor", "reach", "react", "ready", "realm", "rearm", "rebar", "rebel", "rebus", "rebut", "recap", "recur", "recut", "reedy", "refer", "refit", "regal", "rehab", "reign", "relax", "relay", "relic", "remit", "renal", "renew", "repay", "repel", "reply", "rerun", "reset", "resin", "retch", "retro", "retry", "reuse", "revel", "revue", "rhino", "rhyme", "rider", "ridge", "rifle", "right", "rigid", "rigor", "rinse", "ripen", "riper", "risen", "riser", "risky", "rival", "river", "rivet", "roach", "roast", "robin", "robot", "rocky", "rodeo", "roger", "rogue", "roomy", "roost", "rotor", "rouge", "rough", "round", "rouse", "route", "rover", "rowdy", "rower", "royal", "ruddy", "ruder", "rugby", "ruler", "rumba", "rumor", "rupee", "rural", "rusty", "sadly", "safer", "saint", "salad", "sally", "salon", "salsa", "salty", "salve", "salvo", "sandy", "saner", "sappy", "sassy", "satin", "satyr", "sauce", "saucy", "sauna", "saute", "savor", "savoy", "savvy", "scald", "scale", "scalp", "scaly", "scamp", "scant", "scare", "scarf", "scary", "scene", "scent", "scion", "scoff", "scold", "scone", "scoop", "scope", "score", "scorn", "scour", "scout", "scowl", "scram", "scrap", "scree", "screw", "scrub", "scrum", "scuba", "sedan", "seedy", "segue", "seize", "semen", "sense", "sepia", "serif", "serum", "serve", "setup", "seven", "sever", "sewer", "shack", "shade", "shady", "shaft", "shake", "shaky", "shale", "shall", "shalt", "shame", "shank", "shape", "shard", "share", "shark", "sharp", "shave", "shawl", "shear", "sheen", "sheep", "sheer", "sheet", "sheik", "shelf", "shell", "shied", "shift", "shine", "shiny", "shire", "shirk", "shirt", "shoal", "shock", "shone", "shook", "shoot", "shore", "shorn", "short", "shout", "shove", "shown", "showy", "shrew", "shrub", "shrug", "shuck", "shunt", "shush", "shyly", "siege", "sieve", "sight", "sigma", "silky", "silly", "since", "sinew", "singe", "siren", "sissy", "sixth", "sixty", "skate", "skier", "skiff", "skill", "skimp", "skirt", "skulk", "skull", "skunk", "slack", "slain", "slang", "slant", "slash", "slate", "slave", "sleek", "sleep", "sleet", "slept", "slice", "slick", "slide", "slime", "slimy", "sling", "slink", "sloop", "slope", "slosh", "sloth", "slump", "slung", "slunk", "slurp", "slush", "slyly", "smack", "small", "smart", "smash", "smear", "smell", "smelt", "smile", "smirk", "smite", "smith", "smock", "smoke", "smoky", "smote", "snack", "snail", "snake", "snaky", "snare", "snarl", "sneak", "sneer", "snide", "sniff", "snipe", "snoop", "snore", "snort", "snout", "snowy", "snuck", "snuff", "soapy", "sober", "soggy", "solar", "solid", "solve", "sonar", "sonic", "sooth", "sooty", "sorry", "sound", "south", "sower", "space", "spade", "spank", "spare", "spark", "spasm", "spawn", "speak", "spear", "speck", "speed", "spell", "spelt", "spend", "spent", "sperm", "spice", "spicy", "spied", "spiel", "spike", "spiky", "spill", "spilt", "spine", "spiny", "spire", "spite", "splat", "split", "spoil", "spoke", "spoof", "spook", "spool", "spoon", "spore", "sport", "spout", "spray", "spree", "sprig", "spunk", "spurn", "spurt", "squad", "squat", "squib", "stack", "staff", "stage", "staid", "stain", "stair", "stake", "stale", "stalk", "stall", "stamp", "stand", "stank", "stare", "stark", "start", "stash", "state", "stave", "stead", "steak", "steal", "steam", "steed", "steel", "steep", "steer", "stein", "stern", "stick", "stiff", "still", "stilt", "sting", "stink", "stint", "stock", "stoic", "stoke", "stole", "stomp", "stone", "stony", "stood", "stool", "stoop", "store", "stork", "storm", "story", "stout", "stove", "strap", "straw", "stray", "strip", "strut", "stuck", "study", "stuff", "stump", "stung", "stunk", "stunt", "style", "suave", "sugar", "suing", "suite", "sulky", "sully", "sumac", "sunny", "super", "surer", "surge", "surly", "sushi", "swami", "swamp", "swarm", "swash", "swath", "swear", "sweat", "sweep", "sweet", "swell", "swept", "swift", "swill", "swine", "swing", "swirl", "swish", "swoon", "swoop", "sword", "swore", "sworn", "swung", "synod", "syrup", "tabby", "table", "taboo", "tacit", "tacky", "taffy", "taint", "taken", "taker", "tally", "talon", "tamer", "tango", "tangy", "taper", "tapir", "tardy", "tarot", "taste", "tasty", "tatty", "taunt", "tawny", "teach", "teary", "tease", "teddy", "teeth", "tempo", "tenet", "tenor", "tense", "tenth", "tepee", "tepid", "terra", "terse", "testy", "thank", "theft", "their", "theme", "there", "these", "theta", "thick", "thief", "thigh", "thing", "think", "third", "thong", "thorn", "those", "three", "threw", "throb", "throw", "thrum", "thumb", "thump", "thyme", "tiara", "tibia", "tidal", "tiger", "tight", "tilde", "timer", "timid", "tipsy", "titan", "tithe", "title", "toast", "today", "toddy", "token", "tonal", "tonga", "tonic", "tooth", "topaz", "topic", "torch", "torso", "torus", "total", "totem", "touch", "tough", "towel", "tower", "toxic", "toxin", "trace", "track", "tract", "trade", "trail", "train", "trait", "tramp", "trash", "trawl", "tread", "treat", "trend", "triad", "trial", "tribe", "trice", "trick", "tried", "tripe", "trite", "troll", "troop", "trope", "trout", "trove", "truce", "truck", "truer", "truly", "trump", "trunk", "truss", "trust", "truth", "tryst", "tubal", "tuber", "tulip", "tulle", "tumor", "tunic", "turbo", "tutor", "twang", "tweak", "tweed", "tweet", "twice", "twine", "twirl", "twist", "twixt", "tying", "udder", "ulcer", "ultra", "umbra", "uncle", "uncut", "under", "undid", "undue", "unfed", "unfit", "unify", "union", "unite", "unity", "unlit", "unmet", "unset", "untie", "until", "unwed", "unzip", "upper", "upset", "urban", "urine", "usage", "usher", "using", "usual", "usurp", "utile", "utter", "vague", "valet", "valid", "valor", "value", "valve", "vapid", "vapor", "vault", "vaunt", "vegan", "venom", "venue", "verge", "verse", "verso", "verve", "vicar", "video", "vigil", "vigor", "villa", "vinyl", "viola", "viper", "viral", "virus", "visit", "visor", "vista", "vital", "vivid", "vixen", "vocal", "vodka", "vogue", "voice", "voila", "vomit", "voter", "vouch", "vowel", "vying", "wacky", "wafer", "wager", "wagon", "waist", "waive", "waltz", "warty", "waste", "watch", "water", "waver", "waxen", "weary", "weave", "wedge", "weedy", "weigh", "weird", "welch", "welsh", "wench", "whack", "whale", "wharf", "wheat", "wheel", "whelp", "where", "which", "whiff", "while", "whine", "whiny", "whirl", "whisk", "white", "whole", "whoop", "whose", "widen", "wider", "widow", "width", "wield", "wight", "willy", "wimpy", "wince", "winch", "windy", "wiser", "wispy", "witch", "witty", "woken", "woman", "women", "woody", "wooer", "wooly", "woozy", "wordy", "world", "worry", "worse", "worst", "worth", "would", "wound", "woven", "wrack", "wrath", "wreak", "wreck", "wrest", "wring", "wrist", "write", "wrong", "wrote", "wrung", "wryly", "yacht", "yearn", "yeast", "yield", "young", "youth", "zebra", "zesty", "zonal"];
 
     /* src\App.svelte generated by Svelte v3.46.4 */
 
@@ -1726,35 +1885,214 @@ var app = (function () {
 
     function get_each_context(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[18] = list[i];
-    	child_ctx[20] = i;
+    	child_ctx[27] = list[i];
+    	child_ctx[29] = i;
     	return child_ctx;
     }
 
     function get_each_context_1(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[21] = list[i];
-    	child_ctx[23] = i;
+    	child_ctx[30] = list[i];
+    	child_ctx[32] = i;
     	return child_ctx;
     }
 
-    // (134:4) {:else}
+    // (170:1) {#if game.wordLength !== 0}
+    function create_if_block_3(ctx) {
+    	let div0;
+    	let t0;
+    	let div1;
+    	let input_1;
+    	let input_1_maxlength_value;
+    	let t1;
+    	let current;
+    	let mounted;
+    	let dispose;
+    	let each_value = /*game*/ ctx[0].coloredBoxes;
+    	validate_each_argument(each_value);
+    	let each_blocks = [];
+
+    	for (let i = 0; i < each_value.length; i += 1) {
+    		each_blocks[i] = create_each_block(get_each_context(ctx, each_value, i));
+    	}
+
+    	const out = i => transition_out(each_blocks[i], 1, 1, () => {
+    		each_blocks[i] = null;
+    	});
+
+    	function select_block_type_1(ctx, dirty) {
+    		if (/*inputValid*/ ctx[5] === true) return create_if_block_4;
+    		return create_else_block;
+    	}
+
+    	let current_block_type = select_block_type_1(ctx);
+    	let if_block = current_block_type(ctx);
+
+    	const block = {
+    		c: function create() {
+    			div0 = element("div");
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].c();
+    			}
+
+    			t0 = space();
+    			div1 = element("div");
+    			input_1 = element("input");
+    			t1 = space();
+    			if_block.c();
+    			attr_dev(div0, "class", "game svelte-1wj5s9n");
+    			set_style(div0, "--max-guesses", /*game*/ ctx[0].maxGuesses);
+    			set_style(div0, "--word-length", /*game*/ ctx[0].wordLength);
+    			add_location(div0, file, 171, 2, 6080);
+    			attr_dev(input_1, "class", "inputChildren svelte-1wj5s9n");
+    			attr_dev(input_1, "maxlength", input_1_maxlength_value = /*game*/ ctx[0].wordLength);
+    			add_location(input_1, file, 197, 3, 6733);
+    			attr_dev(div1, "class", "input svelte-1wj5s9n");
+    			add_location(div1, file, 196, 2, 6709);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div0, anchor);
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].m(div0, null);
+    			}
+
+    			/*div0_binding*/ ctx[17](div0);
+    			insert_dev(target, t0, anchor);
+    			insert_dev(target, div1, anchor);
+    			append_dev(div1, input_1);
+    			set_input_value(input_1, /*_input*/ ctx[1]);
+    			/*input_1_binding*/ ctx[19](input_1);
+    			append_dev(div1, t1);
+    			if_block.m(div1, null);
+    			current = true;
+
+    			if (!mounted) {
+    				dispose = [
+    					listen_dev(input_1, "input", /*input_1_input_handler*/ ctx[18]),
+    					listen_dev(input_1, "keypress", /*onKeyPress*/ ctx[11], false, false, false)
+    				];
+
+    				mounted = true;
+    			}
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty[0] & /*game*/ 1) {
+    				each_value = /*game*/ ctx[0].coloredBoxes;
+    				validate_each_argument(each_value);
+    				let i;
+
+    				for (i = 0; i < each_value.length; i += 1) {
+    					const child_ctx = get_each_context(ctx, each_value, i);
+
+    					if (each_blocks[i]) {
+    						each_blocks[i].p(child_ctx, dirty);
+    						transition_in(each_blocks[i], 1);
+    					} else {
+    						each_blocks[i] = create_each_block(child_ctx);
+    						each_blocks[i].c();
+    						transition_in(each_blocks[i], 1);
+    						each_blocks[i].m(div0, null);
+    					}
+    				}
+
+    				group_outros();
+
+    				for (i = each_value.length; i < each_blocks.length; i += 1) {
+    					out(i);
+    				}
+
+    				check_outros();
+    			}
+
+    			if (!current || dirty[0] & /*game*/ 1) {
+    				set_style(div0, "--max-guesses", /*game*/ ctx[0].maxGuesses);
+    			}
+
+    			if (!current || dirty[0] & /*game*/ 1) {
+    				set_style(div0, "--word-length", /*game*/ ctx[0].wordLength);
+    			}
+
+    			if (!current || dirty[0] & /*game*/ 1 && input_1_maxlength_value !== (input_1_maxlength_value = /*game*/ ctx[0].wordLength)) {
+    				attr_dev(input_1, "maxlength", input_1_maxlength_value);
+    			}
+
+    			if (dirty[0] & /*_input*/ 2 && input_1.value !== /*_input*/ ctx[1]) {
+    				set_input_value(input_1, /*_input*/ ctx[1]);
+    			}
+
+    			if (current_block_type === (current_block_type = select_block_type_1(ctx)) && if_block) {
+    				if_block.p(ctx, dirty);
+    			} else {
+    				if_block.d(1);
+    				if_block = current_block_type(ctx);
+
+    				if (if_block) {
+    					if_block.c();
+    					if_block.m(div1, null);
+    				}
+    			}
+    		},
+    		i: function intro(local) {
+    			if (current) return;
+
+    			for (let i = 0; i < each_value.length; i += 1) {
+    				transition_in(each_blocks[i]);
+    			}
+
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			each_blocks = each_blocks.filter(Boolean);
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				transition_out(each_blocks[i]);
+    			}
+
+    			current = false;
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div0);
+    			destroy_each(each_blocks, detaching);
+    			/*div0_binding*/ ctx[17](null);
+    			if (detaching) detach_dev(t0);
+    			if (detaching) detach_dev(div1);
+    			/*input_1_binding*/ ctx[19](null);
+    			if_block.d();
+    			mounted = false;
+    			run_all(dispose);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block_3.name,
+    		type: "if",
+    		source: "(170:1) {#if game.wordLength !== 0}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (189:5) {:else}
     function create_else_block_1(ctx) {
     	let div;
 
     	const block = {
     		c: function create() {
     			div = element("div");
-    			attr_dev(div, "class", "box svelte-g3b5so");
-    			set_style(div, "--color", /*_row*/ ctx[18][/*column*/ ctx[23]]);
-    			add_location(div, file, 134, 5, 4538);
+    			attr_dev(div, "class", "box svelte-1wj5s9n");
+    			set_style(div, "--color", /*_row*/ ctx[27][/*column*/ ctx[32]]);
+    			add_location(div, file, 189, 6, 6587);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*game*/ 1) {
-    				set_style(div, "--color", /*_row*/ ctx[18][/*column*/ ctx[23]]);
+    			if (dirty[0] & /*game*/ 1) {
+    				set_style(div, "--color", /*_row*/ ctx[27][/*column*/ ctx[32]]);
     			}
     		},
     		i: noop,
@@ -1768,16 +2106,16 @@ var app = (function () {
     		block,
     		id: create_else_block_1.name,
     		type: "else",
-    		source: "(134:4) {:else}",
+    		source: "(189:5) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (124:4) {#if game.guesses[row]}
-    function create_if_block_4(ctx) {
-    	let previous_key = /*game*/ ctx[0].guesses[/*row*/ ctx[20]].charAt(/*column*/ ctx[23]).toUpperCase();
+    // (179:5) {#if game.guesses[row]}
+    function create_if_block_5(ctx) {
+    	let previous_key = /*game*/ ctx[0].guesses[/*row*/ ctx[29]].charAt(/*column*/ ctx[32]).toUpperCase();
     	let key_block_anchor;
     	let current;
     	let key_block = create_key_block(ctx);
@@ -1793,7 +2131,7 @@ var app = (function () {
     			current = true;
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*game*/ 1 && safe_not_equal(previous_key, previous_key = /*game*/ ctx[0].guesses[/*row*/ ctx[20]].charAt(/*column*/ ctx[23]).toUpperCase())) {
+    			if (dirty[0] & /*game*/ 1 && safe_not_equal(previous_key, previous_key = /*game*/ ctx[0].guesses[/*row*/ ctx[29]].charAt(/*column*/ ctx[32]).toUpperCase())) {
     				group_outros();
     				transition_out(key_block, 1, 1, noop);
     				check_outros();
@@ -1822,19 +2160,19 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block_4.name,
+    		id: create_if_block_5.name,
     		type: "if",
-    		source: "(124:4) {#if game.guesses[row]}",
+    		source: "(179:5) {#if game.guesses[row]}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (125:5) {#key game.guesses[row].charAt(column).toUpperCase()}
+    // (180:6) {#key game.guesses[row].charAt(column).toUpperCase()}
     function create_key_block(ctx) {
     	let div;
-    	let t0_value = /*game*/ ctx[0].guesses[/*row*/ ctx[20]][/*column*/ ctx[23]].toUpperCase() + "";
+    	let t0_value = /*game*/ ctx[0].guesses[/*row*/ ctx[29]][/*column*/ ctx[32]].toUpperCase() + "";
     	let t0;
     	let t1;
     	let div_transition;
@@ -1845,9 +2183,9 @@ var app = (function () {
     			div = element("div");
     			t0 = text(t0_value);
     			t1 = space();
-    			attr_dev(div, "class", "box svelte-g3b5so");
-    			set_style(div, "--color", /*_row*/ ctx[18][/*column*/ ctx[23]]);
-    			add_location(div, file, 125, 6, 4343);
+    			attr_dev(div, "class", "box svelte-1wj5s9n");
+    			set_style(div, "--color", /*_row*/ ctx[27][/*column*/ ctx[32]]);
+    			add_location(div, file, 180, 7, 6383);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -1856,10 +2194,10 @@ var app = (function () {
     			current = true;
     		},
     		p: function update(ctx, dirty) {
-    			if ((!current || dirty & /*game*/ 1) && t0_value !== (t0_value = /*game*/ ctx[0].guesses[/*row*/ ctx[20]][/*column*/ ctx[23]].toUpperCase() + "")) set_data_dev(t0, t0_value);
+    			if ((!current || dirty[0] & /*game*/ 1) && t0_value !== (t0_value = /*game*/ ctx[0].guesses[/*row*/ ctx[29]][/*column*/ ctx[32]].toUpperCase() + "")) set_data_dev(t0, t0_value);
 
-    			if (!current || dirty & /*game*/ 1) {
-    				set_style(div, "--color", /*_row*/ ctx[18][/*column*/ ctx[23]]);
+    			if (!current || dirty[0] & /*game*/ 1) {
+    				set_style(div, "--color", /*_row*/ ctx[27][/*column*/ ctx[32]]);
     			}
     		},
     		i: function intro(local) {
@@ -1887,24 +2225,24 @@ var app = (function () {
     		block,
     		id: create_key_block.name,
     		type: "key",
-    		source: "(125:5) {#key game.guesses[row].charAt(column).toUpperCase()}",
+    		source: "(180:6) {#key game.guesses[row].charAt(column).toUpperCase()}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (123:3) {#each _row as _, column}
+    // (178:4) {#each _row as _, column}
     function create_each_block_1(ctx) {
     	let current_block_type_index;
     	let if_block;
     	let if_block_anchor;
     	let current;
-    	const if_block_creators = [create_if_block_4, create_else_block_1];
+    	const if_block_creators = [create_if_block_5, create_else_block_1];
     	const if_blocks = [];
 
     	function select_block_type(ctx, dirty) {
-    		if (/*game*/ ctx[0].guesses[/*row*/ ctx[20]]) return 0;
+    		if (/*game*/ ctx[0].guesses[/*row*/ ctx[29]]) return 0;
     		return 1;
     	}
 
@@ -1967,18 +2305,18 @@ var app = (function () {
     		block,
     		id: create_each_block_1.name,
     		type: "each",
-    		source: "(123:3) {#each _row as _, column}",
+    		source: "(178:4) {#each _row as _, column}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (122:2) {#each game.coloredBoxes as _row, row}
+    // (177:3) {#each game.coloredBoxes as _row, row}
     function create_each_block(ctx) {
     	let each_1_anchor;
     	let current;
-    	let each_value_1 = /*_row*/ ctx[18];
+    	let each_value_1 = /*_row*/ ctx[27];
     	validate_each_argument(each_value_1);
     	let each_blocks = [];
 
@@ -2007,8 +2345,8 @@ var app = (function () {
     			current = true;
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*game*/ 1) {
-    				each_value_1 = /*_row*/ ctx[18];
+    			if (dirty[0] & /*game*/ 1) {
+    				each_value_1 = /*_row*/ ctx[27];
     				validate_each_argument(each_value_1);
     				let i;
 
@@ -2063,14 +2401,14 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(122:2) {#each game.coloredBoxes as _row, row}",
+    		source: "(177:3) {#each game.coloredBoxes as _row, row}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (152:2) {:else}
+    // (207:3) {:else}
     function create_else_block(ctx) {
     	let button;
     	let t;
@@ -2081,14 +2419,14 @@ var app = (function () {
     			t = text("Enter");
     			button.disabled = true;
     			attr_dev(button, "data-tooltip", /*inputValid*/ ctx[5]);
-    			add_location(button, file, 152, 3, 4923);
+    			add_location(button, file, 207, 4, 6989);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
     			append_dev(button, t);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*inputValid*/ 32) {
+    			if (dirty[0] & /*inputValid*/ 32) {
     				attr_dev(button, "data-tooltip", /*inputValid*/ ctx[5]);
     			}
     		},
@@ -2101,15 +2439,15 @@ var app = (function () {
     		block,
     		id: create_else_block.name,
     		type: "else",
-    		source: "(152:2) {:else}",
+    		source: "(207:3) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (150:2) {#if inputValid === true}
-    function create_if_block_3(ctx) {
+    // (205:3) {#if inputValid === true}
+    function create_if_block_4(ctx) {
     	let button;
     	let mounted;
     	let dispose;
@@ -2118,13 +2456,13 @@ var app = (function () {
     		c: function create() {
     			button = element("button");
     			button.textContent = "Enter";
-    			add_location(button, file, 150, 3, 4861);
+    			add_location(button, file, 205, 4, 6925);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
 
     			if (!mounted) {
-    				dispose = listen_dev(button, "click", /*processInput*/ ctx[9], false, false, false);
+    				dispose = listen_dev(button, "click", /*processInput*/ ctx[10], false, false, false);
     				mounted = true;
     			}
     		},
@@ -2138,16 +2476,16 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block_3.name,
+    		id: create_if_block_4.name,
     		type: "if",
-    		source: "(150:2) {#if inputValid === true}",
+    		source: "(205:3) {#if inputValid === true}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (158:1) {#if won && !closedWonPopup}
+    // (214:1) {#if won && !closedWonPopup}
     function create_if_block_2(ctx) {
     	let popup;
     	let current;
@@ -2157,7 +2495,7 @@ var app = (function () {
     				message: "🎉 You won " + (/*game*/ ctx[0].guesses.length === 1
     				? 'first try! (hacker)'
     				: `in ${/*game*/ ctx[0].guesses.length} tries!`),
-    				onClose: /*closeWonPopup*/ ctx[11]
+    				onClose: /*closeWonPopup*/ ctx[12]
     			},
     			$$inline: true
     		});
@@ -2173,7 +2511,7 @@ var app = (function () {
     		p: function update(ctx, dirty) {
     			const popup_changes = {};
 
-    			if (dirty & /*game*/ 1) popup_changes.message = "🎉 You won " + (/*game*/ ctx[0].guesses.length === 1
+    			if (dirty[0] & /*game*/ 1) popup_changes.message = "🎉 You won " + (/*game*/ ctx[0].guesses.length === 1
     			? 'first try! (hacker)'
     			: `in ${/*game*/ ctx[0].guesses.length} tries!`);
 
@@ -2197,14 +2535,14 @@ var app = (function () {
     		block,
     		id: create_if_block_2.name,
     		type: "if",
-    		source: "(158:1) {#if won && !closedWonPopup}",
+    		source: "(214:1) {#if won && !closedWonPopup}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (167:1) {#if lose && !closedLosePopup}
+    // (223:1) {#if lose && !closedLosePopup}
     function create_if_block_1(ctx) {
     	let popup;
     	let current;
@@ -2212,7 +2550,7 @@ var app = (function () {
     	popup = new Popup({
     			props: {
     				message: "🎈 You lost, the word was " + /*game*/ ctx[0].word + "!",
-    				onClose: /*closeLosePopup*/ ctx[12]
+    				onClose: /*closeLosePopup*/ ctx[13]
     			},
     			$$inline: true
     		});
@@ -2227,7 +2565,7 @@ var app = (function () {
     		},
     		p: function update(ctx, dirty) {
     			const popup_changes = {};
-    			if (dirty & /*game*/ 1) popup_changes.message = "🎈 You lost, the word was " + /*game*/ ctx[0].word + "!";
+    			if (dirty[0] & /*game*/ 1) popup_changes.message = "🎈 You lost, the word was " + /*game*/ ctx[0].word + "!";
     			popup.$set(popup_changes);
     		},
     		i: function intro(local) {
@@ -2248,14 +2586,14 @@ var app = (function () {
     		block,
     		id: create_if_block_1.name,
     		type: "if",
-    		source: "(167:1) {#if lose && !closedLosePopup}",
+    		source: "(223:1) {#if lose && !closedLosePopup}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (178:1) {#if settingsOpen}
+    // (240:1) {#if settingsOpen}
     function create_if_block(ctx) {
     	let settings;
     	let current;
@@ -2287,7 +2625,7 @@ var app = (function () {
     		block,
     		id: create_if_block.name,
     		type: "if",
-    		source: "(178:1) {#if settingsOpen}",
+    		source: "(240:1) {#if settingsOpen}",
     		ctx
     	});
 
@@ -2296,46 +2634,22 @@ var app = (function () {
 
     function create_fragment(ctx) {
     	let main;
-    	let div0;
     	let t0;
-    	let div1;
-    	let input_1;
-    	let input_1_maxlength_value;
     	let t1;
     	let t2;
-    	let t3;
-    	let t4;
     	let sidebar;
-    	let t5;
+    	let t3;
     	let current;
-    	let mounted;
-    	let dispose;
-    	let each_value = /*game*/ ctx[0].coloredBoxes;
-    	validate_each_argument(each_value);
-    	let each_blocks = [];
-
-    	for (let i = 0; i < each_value.length; i += 1) {
-    		each_blocks[i] = create_each_block(get_each_context(ctx, each_value, i));
-    	}
-
-    	const out = i => transition_out(each_blocks[i], 1, 1, () => {
-    		each_blocks[i] = null;
-    	});
-
-    	function select_block_type_1(ctx, dirty) {
-    		if (/*inputValid*/ ctx[5] === true) return create_if_block_3;
-    		return create_else_block;
-    	}
-
-    	let current_block_type = select_block_type_1(ctx);
-    	let if_block0 = current_block_type(ctx);
+    	let if_block0 = /*game*/ ctx[0].wordLength !== 0 && create_if_block_3(ctx);
     	let if_block1 = /*won*/ ctx[2] && !/*closedWonPopup*/ ctx[6] && create_if_block_2(ctx);
     	let if_block2 = /*lose*/ ctx[3] && !/*closedLosePopup*/ ctx[7] && create_if_block_1(ctx);
 
     	sidebar = new Sidebar({
     			props: {
     				game: /*game*/ ctx[0],
-    				toggleSettings: /*func*/ ctx[16]
+    				toggleSettings: /*func*/ ctx[20],
+    				zoomIn: /*zoomIn*/ ctx[14],
+    				zoomOut: /*zoomOut*/ ctx[15]
     			},
     			$$inline: true
     		});
@@ -2345,142 +2659,69 @@ var app = (function () {
     	const block = {
     		c: function create() {
     			main = element("main");
-    			div0 = element("div");
-
-    			for (let i = 0; i < each_blocks.length; i += 1) {
-    				each_blocks[i].c();
-    			}
-
+    			if (if_block0) if_block0.c();
     			t0 = space();
-    			div1 = element("div");
-    			input_1 = element("input");
-    			t1 = space();
-    			if_block0.c();
-    			t2 = space();
     			if (if_block1) if_block1.c();
-    			t3 = space();
+    			t1 = space();
     			if (if_block2) if_block2.c();
-    			t4 = space();
+    			t2 = space();
     			create_component(sidebar.$$.fragment);
-    			t5 = space();
+    			t3 = space();
     			if (if_block3) if_block3.c();
-    			attr_dev(div0, "class", "game svelte-g3b5so");
-    			set_style(div0, "--max-guesses", /*game*/ ctx[0].maxGuesses);
-    			set_style(div0, "--word-length", /*game*/ ctx[0].wordLength);
-    			add_location(div0, file, 117, 1, 4072);
-    			attr_dev(input_1, "class", "inputChildren svelte-g3b5so");
-    			attr_dev(input_1, "maxlength", input_1_maxlength_value = /*game*/ ctx[0].wordLength);
-    			add_location(input_1, file, 142, 2, 4677);
-    			attr_dev(div1, "class", "input svelte-g3b5so");
-    			add_location(div1, file, 141, 1, 4654);
-    			add_location(main, file, 115, 0, 4047);
+    			add_location(main, file, 168, 0, 6023);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, main, anchor);
-    			append_dev(main, div0);
-
-    			for (let i = 0; i < each_blocks.length; i += 1) {
-    				each_blocks[i].m(div0, null);
-    			}
-
+    			if (if_block0) if_block0.m(main, null);
     			append_dev(main, t0);
-    			append_dev(main, div1);
-    			append_dev(div1, input_1);
-    			set_input_value(input_1, /*_input*/ ctx[1]);
-    			/*input_1_binding*/ ctx[15](input_1);
-    			append_dev(div1, t1);
-    			if_block0.m(div1, null);
-    			append_dev(main, t2);
     			if (if_block1) if_block1.m(main, null);
-    			append_dev(main, t3);
+    			append_dev(main, t1);
     			if (if_block2) if_block2.m(main, null);
-    			append_dev(main, t4);
+    			append_dev(main, t2);
     			mount_component(sidebar, main, null);
-    			append_dev(main, t5);
+    			append_dev(main, t3);
     			if (if_block3) if_block3.m(main, null);
     			current = true;
-
-    			if (!mounted) {
-    				dispose = [
-    					listen_dev(input_1, "input", /*input_1_input_handler*/ ctx[14]),
-    					listen_dev(input_1, "keypress", /*onKeyPress*/ ctx[10], false, false, false)
-    				];
-
-    				mounted = true;
-    			}
     		},
-    		p: function update(ctx, [dirty]) {
-    			if (dirty & /*game*/ 1) {
-    				each_value = /*game*/ ctx[0].coloredBoxes;
-    				validate_each_argument(each_value);
-    				let i;
+    		p: function update(ctx, dirty) {
+    			if (/*game*/ ctx[0].wordLength !== 0) {
+    				if (if_block0) {
+    					if_block0.p(ctx, dirty);
 
-    				for (i = 0; i < each_value.length; i += 1) {
-    					const child_ctx = get_each_context(ctx, each_value, i);
-
-    					if (each_blocks[i]) {
-    						each_blocks[i].p(child_ctx, dirty);
-    						transition_in(each_blocks[i], 1);
-    					} else {
-    						each_blocks[i] = create_each_block(child_ctx);
-    						each_blocks[i].c();
-    						transition_in(each_blocks[i], 1);
-    						each_blocks[i].m(div0, null);
+    					if (dirty[0] & /*game*/ 1) {
+    						transition_in(if_block0, 1);
     					}
+    				} else {
+    					if_block0 = create_if_block_3(ctx);
+    					if_block0.c();
+    					transition_in(if_block0, 1);
+    					if_block0.m(main, t0);
     				}
-
+    			} else if (if_block0) {
     				group_outros();
 
-    				for (i = each_value.length; i < each_blocks.length; i += 1) {
-    					out(i);
-    				}
+    				transition_out(if_block0, 1, 1, () => {
+    					if_block0 = null;
+    				});
 
     				check_outros();
-    			}
-
-    			if (!current || dirty & /*game*/ 1) {
-    				set_style(div0, "--max-guesses", /*game*/ ctx[0].maxGuesses);
-    			}
-
-    			if (!current || dirty & /*game*/ 1) {
-    				set_style(div0, "--word-length", /*game*/ ctx[0].wordLength);
-    			}
-
-    			if (!current || dirty & /*game*/ 1 && input_1_maxlength_value !== (input_1_maxlength_value = /*game*/ ctx[0].wordLength)) {
-    				attr_dev(input_1, "maxlength", input_1_maxlength_value);
-    			}
-
-    			if (dirty & /*_input*/ 2 && input_1.value !== /*_input*/ ctx[1]) {
-    				set_input_value(input_1, /*_input*/ ctx[1]);
-    			}
-
-    			if (current_block_type === (current_block_type = select_block_type_1(ctx)) && if_block0) {
-    				if_block0.p(ctx, dirty);
-    			} else {
-    				if_block0.d(1);
-    				if_block0 = current_block_type(ctx);
-
-    				if (if_block0) {
-    					if_block0.c();
-    					if_block0.m(div1, null);
-    				}
     			}
 
     			if (/*won*/ ctx[2] && !/*closedWonPopup*/ ctx[6]) {
     				if (if_block1) {
     					if_block1.p(ctx, dirty);
 
-    					if (dirty & /*won, closedWonPopup*/ 68) {
+    					if (dirty[0] & /*won, closedWonPopup*/ 68) {
     						transition_in(if_block1, 1);
     					}
     				} else {
     					if_block1 = create_if_block_2(ctx);
     					if_block1.c();
     					transition_in(if_block1, 1);
-    					if_block1.m(main, t3);
+    					if_block1.m(main, t1);
     				}
     			} else if (if_block1) {
     				group_outros();
@@ -2496,14 +2737,14 @@ var app = (function () {
     				if (if_block2) {
     					if_block2.p(ctx, dirty);
 
-    					if (dirty & /*lose, closedLosePopup*/ 136) {
+    					if (dirty[0] & /*lose, closedLosePopup*/ 136) {
     						transition_in(if_block2, 1);
     					}
     				} else {
     					if_block2 = create_if_block_1(ctx);
     					if_block2.c();
     					transition_in(if_block2, 1);
-    					if_block2.m(main, t4);
+    					if_block2.m(main, t2);
     				}
     			} else if (if_block2) {
     				group_outros();
@@ -2516,13 +2757,13 @@ var app = (function () {
     			}
 
     			const sidebar_changes = {};
-    			if (dirty & /*game*/ 1) sidebar_changes.game = /*game*/ ctx[0];
-    			if (dirty & /*settingsOpen*/ 256) sidebar_changes.toggleSettings = /*func*/ ctx[16];
+    			if (dirty[0] & /*game*/ 1) sidebar_changes.game = /*game*/ ctx[0];
+    			if (dirty[0] & /*settingsOpen*/ 256) sidebar_changes.toggleSettings = /*func*/ ctx[20];
     			sidebar.$set(sidebar_changes);
 
     			if (/*settingsOpen*/ ctx[8]) {
     				if (if_block3) {
-    					if (dirty & /*settingsOpen*/ 256) {
+    					if (dirty[0] & /*settingsOpen*/ 256) {
     						transition_in(if_block3, 1);
     					}
     				} else {
@@ -2543,11 +2784,7 @@ var app = (function () {
     		},
     		i: function intro(local) {
     			if (current) return;
-
-    			for (let i = 0; i < each_value.length; i += 1) {
-    				transition_in(each_blocks[i]);
-    			}
-
+    			transition_in(if_block0);
     			transition_in(if_block1);
     			transition_in(if_block2);
     			transition_in(sidebar.$$.fragment, local);
@@ -2555,12 +2792,7 @@ var app = (function () {
     			current = true;
     		},
     		o: function outro(local) {
-    			each_blocks = each_blocks.filter(Boolean);
-
-    			for (let i = 0; i < each_blocks.length; i += 1) {
-    				transition_out(each_blocks[i]);
-    			}
-
+    			transition_out(if_block0);
     			transition_out(if_block1);
     			transition_out(if_block2);
     			transition_out(sidebar.$$.fragment, local);
@@ -2569,15 +2801,11 @@ var app = (function () {
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(main);
-    			destroy_each(each_blocks, detaching);
-    			/*input_1_binding*/ ctx[15](null);
-    			if_block0.d();
+    			if (if_block0) if_block0.d();
     			if (if_block1) if_block1.d();
     			if (if_block2) if_block2.d();
     			destroy_component(sidebar);
     			if (if_block3) if_block3.d();
-    			mounted = false;
-    			run_all(dispose);
     		}
     	};
 
@@ -2597,12 +2825,14 @@ var app = (function () {
     	validate_slots('App', slots, []);
 
     	class Game {
-    		constructor(wordLength, maxGuesses) {
+    		constructor(wordLength, maxGuesses, guessesList, answersList) {
     			this.wordLength = wordLength;
     			this.maxGuesses = maxGuesses;
+    			this.guessesList = guessesList;
+    			this.answersList = answersList;
     			this.guesses = [];
     			this.boxes = [...Array(maxGuesses)].map(() => [...Array(wordLength)].map(() => "empty"));
-    			this.word = answers[Math.floor(Math.random() * answers.length)];
+    			this.word = answersList[Math.floor(Math.random() * answersList.length)];
     			this.started = Date.now();
     			this.endTimer = false;
     			console.log(this.word);
@@ -2633,10 +2863,54 @@ var app = (function () {
     			: input.length) > this.wordLength) return "Input too long!";
 
     			if (this.guesses.includes(input)) return "Don't waste your guesses!";
-    			if (!guesses.includes(input)) return `"${input}" is not a valid word!`;
+    			if (!this.guessesList.includes(input)) return `"${input}" is not a valid word!`;
     			return true;
     		}
     	}
+
+    	let wordLength = 5;
+    	let maxGuesses = 6;
+    	const searchParams = new URLSearchParams(window.location.search);
+
+    	if (searchParams.has("wordLength") && !isNaN(searchParams.get("wordLength")) && parseInt(searchParams.get("wordLength")) >= 3 && parseInt(searchParams.get("wordLength")) <= 7) {
+    		const _wordLength = parseInt(searchParams.get("wordLength"));
+    		wordLength = _wordLength;
+    	}
+
+    	if (searchParams.has("maxGuesses") && !isNaN(searchParams.get("maxGuesses")) && parseInt(searchParams.get("maxGuesses")) >= 3 && parseInt(searchParams.get("maxGuesses")) <= 9) {
+    		const _maxGuesses = parseInt(searchParams.get("maxGuesses"));
+    		maxGuesses = _maxGuesses;
+    	}
+
+    	async function start() {
+    		let _guesses;
+    		let _answers;
+    		const _words = await fetch(`./words/word_${wordLength}.txt`);
+    		const words = await _words.text();
+    		_guesses = words.split(",");
+
+    		if (wordLength !== 5) {
+    			_answers = words.split(",");
+    		}
+
+    		if (wordLength === 5) {
+    			const _words = await fetch(`./words/word_${wordLength}_answers.txt`);
+    			const words = await _words.text();
+    			_answers = words.split(",");
+    		}
+
+    		return [_guesses, _answers];
+    	}
+
+    	let game = new Game(0, 0, [], []);
+    	const guessesAnswers = start();
+
+    	guessesAnswers.then(guessesAnswers => {
+    		const guesses = guessesAnswers[0];
+    		const answers = guessesAnswers[1];
+    		$$invalidate(0, game = new Game(wordLength, maxGuesses, guesses, answers));
+    		console.log("Done!", wordLength, maxGuesses);
+    	});
 
     	function processInput() {
     		if (game.validateInput(input) !== true) return;
@@ -2688,8 +2962,6 @@ var app = (function () {
     		}
     	}
 
-    	const game = new Game(5, 6);
-
     	/* --------------------------------- Inputs --------------------------------- */
     	let _input;
 
@@ -2720,11 +2992,31 @@ var app = (function () {
     	/* -------------------------------- Settings -------------------------------- */
     	let settingsOpen = false;
 
+    	/* -------------------------------- Game div -------------------------------- */
+    	let gameDiv; /*: HTMLDivElement*/
+
+    	function zoomIn() {
+    		const style = getComputedStyle(gameDiv);
+    		$$invalidate(9, gameDiv.style.zoom = parseFloat(style.zoom) + 0.1, gameDiv);
+    	}
+
+    	function zoomOut() {
+    		const style = getComputedStyle(gameDiv);
+    		$$invalidate(9, gameDiv.style.zoom = parseFloat(style.zoom) - 0.1, gameDiv);
+    	}
+
     	const writable_props = [];
 
     	Object.keys($$props).forEach(key => {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console_1.warn(`<App> was created with unknown prop '${key}'`);
     	});
+
+    	function div0_binding($$value) {
+    		binding_callbacks[$$value ? 'unshift' : 'push'](() => {
+    			gameDiv = $$value;
+    			$$invalidate(9, gameDiv);
+    		});
+    	}
 
     	function input_1_input_handler() {
     		_input = this.value;
@@ -2745,11 +3037,14 @@ var app = (function () {
     		Popup,
     		Settings,
     		Sidebar,
-    		answers,
-    		guesses,
     		Game,
-    		processInput,
+    		wordLength,
+    		maxGuesses,
+    		searchParams,
+    		start,
     		game,
+    		guessesAnswers,
+    		processInput,
     		_input,
     		input,
     		inputField,
@@ -2761,12 +3056,18 @@ var app = (function () {
     		lose,
     		closedLosePopup,
     		closeLosePopup,
-    		settingsOpen
+    		settingsOpen,
+    		gameDiv,
+    		zoomIn,
+    		zoomOut
     	});
 
     	$$self.$inject_state = $$props => {
+    		if ('wordLength' in $$props) wordLength = $$props.wordLength;
+    		if ('maxGuesses' in $$props) maxGuesses = $$props.maxGuesses;
+    		if ('game' in $$props) $$invalidate(0, game = $$props.game);
     		if ('_input' in $$props) $$invalidate(1, _input = $$props._input);
-    		if ('input' in $$props) $$invalidate(13, input = $$props.input);
+    		if ('input' in $$props) $$invalidate(16, input = $$props.input);
     		if ('inputField' in $$props) $$invalidate(4, inputField = $$props.inputField);
     		if ('inputValid' in $$props) $$invalidate(5, inputValid = $$props.inputValid);
     		if ('won' in $$props) $$invalidate(2, won = $$props.won);
@@ -2774,6 +3075,7 @@ var app = (function () {
     		if ('lose' in $$props) $$invalidate(3, lose = $$props.lose);
     		if ('closedLosePopup' in $$props) $$invalidate(7, closedLosePopup = $$props.closedLosePopup);
     		if ('settingsOpen' in $$props) $$invalidate(8, settingsOpen = $$props.settingsOpen);
+    		if ('gameDiv' in $$props) $$invalidate(9, gameDiv = $$props.gameDiv);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -2781,13 +3083,13 @@ var app = (function () {
     	}
 
     	$$self.$$.update = () => {
-    		if ($$self.$$.dirty & /*_input*/ 2) {
-    			$$invalidate(13, input = _input === null || _input === void 0
+    		if ($$self.$$.dirty[0] & /*_input*/ 2) {
+    			$$invalidate(16, input = _input === null || _input === void 0
     			? void 0
     			: _input.toLocaleLowerCase());
     		}
 
-    		if ($$self.$$.dirty & /*won, lose, game, input*/ 8205) {
+    		if ($$self.$$.dirty[0] & /*won, lose, game, input*/ 65549) {
     			$$invalidate(5, inputValid = !won
     			? !lose ? game.validateInput(input) : "You lost!"
     			: "You won!");
@@ -2804,11 +3106,15 @@ var app = (function () {
     		closedWonPopup,
     		closedLosePopup,
     		settingsOpen,
+    		gameDiv,
     		processInput,
     		onKeyPress,
     		closeWonPopup,
     		closeLosePopup,
+    		zoomIn,
+    		zoomOut,
     		input,
+    		div0_binding,
     		input_1_input_handler,
     		input_1_binding,
     		func
@@ -2818,7 +3124,7 @@ var app = (function () {
     class App extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance, create_fragment, safe_not_equal, {});
+    		init(this, options, instance, create_fragment, safe_not_equal, {}, null, [-1, -1]);
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,

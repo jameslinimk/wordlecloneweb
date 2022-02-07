@@ -26,12 +26,18 @@
 		word: string;
 		started: number;
 		endTimer: boolean;
-		constructor(public wordLength: number, public maxGuesses: number) {
+		constructor(
+			public wordLength: number,
+			public maxGuesses: number,
+			public guessesList: string[],
+			public answersList: string[]
+		) {
 			this.guesses = [];
 			this.boxes = [...Array(maxGuesses)].map(() =>
 				[...Array(wordLength)].map(() => "empty")
 			);
-			this.word = answers[Math.floor(Math.random() * answers.length)];
+			this.word =
+				answersList[Math.floor(Math.random() * answersList.length)];
 			this.started = Date.now();
 			this.endTimer = false;
 			console.log(this.word);
@@ -43,11 +49,70 @@
 			if (input?.length > this.wordLength) return "Input too long!";
 			if (this.guesses.includes(input))
 				return "Don't waste your guesses!";
-			if (!guesses.includes(input))
+			if (!this.guessesList.includes(input))
 				return `"${input}" is not a valid word!`;
 			return true;
 		}
 	}
+
+	let wordLength = 5;
+	let maxGuesses = 6;
+
+	const searchParams = new URLSearchParams(window.location.search);
+	if (
+		searchParams.has("wordLength") &&
+		!isNaN(<any>searchParams.get("wordLength")) &&
+		parseInt(searchParams.get("wordLength")) >= 3 &&
+		parseInt(searchParams.get("wordLength")) <= 7
+	) {
+		const _wordLength = parseInt(searchParams.get("wordLength"));
+		wordLength = _wordLength;
+	}
+
+	if (
+		searchParams.has("maxGuesses") &&
+		!isNaN(<any>searchParams.get("maxGuesses")) &&
+		parseInt(searchParams.get("maxGuesses")) >= 3 &&
+		parseInt(searchParams.get("maxGuesses")) <= 9
+	) {
+		const _maxGuesses = parseInt(searchParams.get("maxGuesses"));
+		maxGuesses = _maxGuesses;
+	}
+
+	async function start() {
+		let _guesses: string[];
+		let _answers: string[];
+
+		const _words = await fetch(`./words/word_${wordLength}.txt`);
+		const words = await _words.text();
+		_guesses = words.split(",");
+		if (wordLength !== 5) {
+			_answers = words.split(",");
+		}
+
+		if (wordLength === 5) {
+			const _words = await fetch(
+				`./words/word_${wordLength}_answers.txt`
+			);
+			const words = await _words.text();
+			_answers = words.split(",");
+		}
+
+		return [_guesses, _answers];
+	}
+
+	let game = new Game(0, 0, [], []);
+
+	const guessesAnswers = start();
+	guessesAnswers.then((guessesAnswers) => {
+		const guesses = guessesAnswers[0];
+		const answers = guessesAnswers[1];
+
+		game = new Game(wordLength, maxGuesses, guesses, answers);
+
+		console.log("Done!", wordLength, maxGuesses);
+	});
+
 	function processInput() {
 		if (game.validateInput(input) !== true) return;
 
@@ -96,8 +161,6 @@
 		}
 	}
 
-	const game = new Game(5, 6);
-
 	/* --------------------------------- Inputs --------------------------------- */
 	let _input: string;
 	let input: string;
@@ -128,48 +191,62 @@
 
 	/* -------------------------------- Settings -------------------------------- */
 	let settingsOpen = false;
+
+	/* -------------------------------- Game div -------------------------------- */
+	let gameDiv /*: HTMLDivElement*/;
+	function zoomIn() {
+		const style: any = getComputedStyle(gameDiv);
+		gameDiv.style.zoom = parseFloat(style.zoom) + 0.1;
+	}
+	function zoomOut() {
+		const style: any = getComputedStyle(gameDiv);
+		gameDiv.style.zoom = parseFloat(style.zoom) - 0.1;
+	}
 </script>
 
 <main>
-	<!-- Game -->
-	<div
-		class="game"
-		style="--max-guesses: {game.maxGuesses}; --word-length: {game.wordLength}"
-	>
-		{#each game.coloredBoxes as _row, row}
-			{#each _row as _, column}
-				{#if game.guesses[row]}
-					{#key game.guesses[row].charAt(column).toUpperCase()}
-						<div
-							class="box"
-							style="--color: {_row[column]}"
-							transition:scale
-						>
-							{game.guesses[row][column].toUpperCase()}
-						</div>
-					{/key}
-				{:else}
-					<div class="box" style="--color: {_row[column]}" />
-				{/if}
+	{#if game.wordLength !== 0}
+		<!-- Game -->
+		<div
+			class="game"
+			style="--max-guesses: {game.maxGuesses}; --word-length: {game.wordLength}"
+			bind:this={gameDiv}
+		>
+			{#each game.coloredBoxes as _row, row}
+				{#each _row as _, column}
+					{#if game.guesses[row]}
+						{#key game.guesses[row].charAt(column).toUpperCase()}
+							<div
+								class="box"
+								style="--color: {_row[column]}"
+								transition:scale
+							>
+								{game.guesses[row][column].toUpperCase()}
+							</div>
+						{/key}
+					{:else}
+						<div class="box" style="--color: {_row[column]}" />
+					{/if}
+				{/each}
 			{/each}
-		{/each}
-	</div>
+		</div>
 
-	<!-- Input -->
-	<div class="input">
-		<input
-			class="inputChildren"
-			bind:value={_input}
-			bind:this={inputField}
-			on:keypress={onKeyPress}
-			maxlength={game.wordLength}
-		/>
-		{#if inputValid === true}
-			<button on:click={processInput}>Enter</button>
-		{:else}
-			<button disabled data-tooltip={inputValid}>Enter</button>
-		{/if}
-	</div>
+		<!-- Input -->
+		<div class="input">
+			<input
+				class="inputChildren"
+				bind:value={_input}
+				bind:this={inputField}
+				on:keypress={onKeyPress}
+				maxlength={game.wordLength}
+			/>
+			{#if inputValid === true}
+				<button on:click={processInput}>Enter</button>
+			{:else}
+				<button disabled data-tooltip={inputValid}>Enter</button>
+			{/if}
+		</div>
+	{/if}
 
 	<!-- Win / lose popups -->
 	{#if won && !closedWonPopup}
@@ -189,7 +266,13 @@
 	{/if}
 
 	<!-- Darkmode -->
-	<Sidebar {game} toggleSettings={() => (settingsOpen = !settingsOpen)} />
+	<!-- svelte-ignore missing-declaration -->
+	<Sidebar
+		{game}
+		toggleSettings={() => (settingsOpen = !settingsOpen)}
+		{zoomIn}
+		{zoomOut}
+	/>
 
 	<!-- Settings -->
 	{#if settingsOpen}
@@ -212,6 +295,7 @@
 
 	.game {
 		display: grid;
+		zoom: 50%;
 
 		grid-template-columns: repeat(var(--word-length), 100px);
 		grid-template-rows: repeat(var(--max-guesses), 100px);
@@ -225,7 +309,7 @@
 		background-color: var(--color);
 		border-radius: 5px;
 
-		font-size: 150%;
+		font-size: 300%;
 		color: white;
 
 		display: flex;

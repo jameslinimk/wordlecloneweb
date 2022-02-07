@@ -1,10 +1,17 @@
 <script lang="ts">
     import { slide } from "svelte/transition";
+
+    let wordLength: number;
+    let tries: number;
+
+    function applySettings() {
+        window.location.href = `./?wordLength=${wordLength}&maxGuesses=${tries}`;
+    }
 </script>
 
 <div class="settings" in:slide out:slide>
     <br />
-    <select>
+    <select bind:value={wordLength}>
         {#each Array(5) as _, i}
             {#if i + 3 === 5}
                 <option selected value={i + 3}>
@@ -17,7 +24,7 @@
             {/if}
         {/each}
     </select>
-    <select>
+    <select bind:value={tries}>
         {#each Array(7) as _, i}
             {#if i + 3 === 6}
                 <option selected value={i + 3}>
@@ -29,7 +36,9 @@
         {/each}
     </select>
 
-    <button><strong>Apply settings (will reset)</strong></button>
+    <button on:click={applySettings}
+        ><strong>Apply settings (will reset)</strong></button
+    >
 </div>
 
 <style>
