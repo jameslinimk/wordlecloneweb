@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "target": "ESNext",
+        "watch": true,
+        "lib": [
+            "DOM",
+            "ESNext"
+        ],
+        "moduleResolution": "Node",
+        "module": "CommonJS",
+        "sourceMap": true,
+        "esModuleInterop": true
+    }
+}

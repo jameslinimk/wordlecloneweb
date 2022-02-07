@@ -193,7 +193,7 @@
 
 	<!-- Settings -->
 	{#if settingsOpen}
-		<Settings closeSettings={() => (settingsOpen = false)} />
+		<Settings />
 	{/if}
 </main>
 
