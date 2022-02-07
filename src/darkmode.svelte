@@ -32,7 +32,6 @@
             theme = "dark";
         }
         applyTheme();
-        console.log(theme);
         localStorage.setItem("theme", theme);
     }
 </script>

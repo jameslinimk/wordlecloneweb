@@ -109,8 +109,6 @@
 		const answers = guessesAnswers[1];
 
 		game = new Game(wordLength, maxGuesses, guesses, answers);
-
-		console.log("Done!", wordLength, maxGuesses);
 	});
 
 	function processInput() {
