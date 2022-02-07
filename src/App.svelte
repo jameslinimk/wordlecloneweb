@@ -189,11 +189,11 @@
 	{/if}
 
 	<!-- Darkmode -->
-	<Sidebar {game} openSettings={() => (settingsOpen = true)} />
+	<Sidebar {game} toggleSettings={() => (settingsOpen = !settingsOpen)} />
 
 	<!-- Settings -->
 	{#if settingsOpen}
-		<Settings />
+		<Settings closeSettings={() => (settingsOpen = false)} />
 	{/if}
 </main>
 

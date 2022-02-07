@@ -1,4 +1,6 @@
 <script lang="ts">
+    export let label = "🌓";
+
     let theme: "dark" | "light" = "light";
 
     function applyTheme() {
@@ -35,7 +37,7 @@
     }
 </script>
 
-<button on:click={click}>🌓</button>
+<button on:click={click}>{label}</button>
 
 <style>
 </style>

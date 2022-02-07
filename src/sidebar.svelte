@@ -2,7 +2,7 @@
     import Darkmode from "./darkmode.svelte";
 
     export let game;
-    export let openSettings: () => void;
+    export let toggleSettings: () => void;
 
     let timeElapsed = "00:00:00";
     setInterval(() => {
@@ -16,7 +16,7 @@
 
 <div class="sidebar">
     <Darkmode />
-    <button on:click={() => openSettings()}>🔨</button>
+    <button on:click={() => toggleSettings()}>🔨</button>
     <button on:click={() => location.reload()}>🔄</button>
     <h3 class="timer">{timeElapsed}</h3>
 </div>
