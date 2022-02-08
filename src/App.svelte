@@ -3,7 +3,6 @@
 	import Popup from "./popup.svelte";
 	import Settings from "./Settings.svelte";
 	import Sidebar from "./sidebar.svelte";
-	import { answers, guesses } from "./words";
 
 	/* ---------------------------------- Game ---------------------------------- */
 	class Game {
@@ -40,7 +39,7 @@
 				answersList[Math.floor(Math.random() * answersList.length)];
 			this.started = Date.now();
 			this.endTimer = false;
-			console.log(this.word);
+			if (this.word) console.log(`Word is "${this.word}" (cheater 👀)`);
 		}
 
 		validateInput(input: string) {
@@ -119,6 +118,7 @@
 		game.guesses = [...game.guesses, input];
 
 		/* -------------------------- Determine the colors -------------------------- */
+		const foundindexes = [];
 		for (let i = 0; i < input.length; i++) {
 			const letter = input[i];
 			const index = game.word.indexOf(letter);
@@ -146,7 +146,13 @@
 				continue;
 			}
 
-			game.boxes[game.guesses.length - 1][i] = "semicorrect";
+			if (!foundindexes.includes(i)) {
+				game.boxes[game.guesses.length - 1][i] = "semicorrect";
+				foundindexes.push(i);
+				continue;
+			}
+
+			game.boxes[game.guesses.length - 1][i] = "empty";
 		}
 
 		/* ------------------------------- Win / lose ------------------------------- */
@@ -168,11 +174,52 @@
 	$: inputValid = !won
 		? !lose
 			? game.validateInput(input)
-			: "You lost!"
+			: `You lost, the word was ${game.word}!`
 		: "You won!";
+
+	const alphabet = [
+		"a",
+		"b",
+		"c",
+		"d",
+		"e",
+		"f",
+		"g",
+		"h",
+		"i",
+		"j",
+		"k",
+		"l",
+		"m",
+		"n",
+		"o",
+		"p",
+		"q",
+		"r",
+		"s",
+		"t",
+		"u",
+		"v",
+		"w",
+		"x",
+		"y",
+		"z",
+	];
 	function onKeyPress(event: KeyboardEvent) {
 		if (event.code === "Enter") processInput();
+		else if (!alphabet.includes(event.key.toLowerCase())) {
+			event.preventDefault();
+		}
 	}
+
+	document.onkeyup = (event) => {
+		if (event.code === "Escape") settingsOpen = !settingsOpen;
+		else if (event.code === "Equal") zoomIn();
+		else if (event.code === "Minus") zoomOut();
+		else if (alphabet.includes(event.key.toLowerCase())) {
+			inputField.focus();
+		}
+	};
 
 	/* --------------------------------- Popups --------------------------------- */
 	let won = false;
@@ -190,15 +237,25 @@
 	/* -------------------------------- Settings -------------------------------- */
 	let settingsOpen = false;
 
-	/* -------------------------------- Game div -------------------------------- */
+	/* ---------------------------------- Zoom ---------------------------------- */
 	let gameDiv /*: HTMLDivElement*/;
+	$: {
+		if (gameDiv?.style) {
+			const localZoom = localStorage.getItem("zoom");
+			if (localZoom && !isNaN(<any>localZoom)) {
+				gameDiv.style.zoom = parseFloat(localZoom);
+			}
+		}
+	}
 	function zoomIn() {
 		const style: any = getComputedStyle(gameDiv);
 		gameDiv.style.zoom = parseFloat(style.zoom) + 0.1;
+		localStorage.setItem("zoom", `${parseFloat(style.zoom) + 0.1}`);
 	}
 	function zoomOut() {
 		const style: any = getComputedStyle(gameDiv);
 		gameDiv.style.zoom = parseFloat(style.zoom) - 0.1;
+		localStorage.setItem("zoom", `${parseFloat(style.zoom) - 0.1}`);
 	}
 </script>
 
@@ -217,7 +274,7 @@
 							<div
 								class="box"
 								style="--color: {_row[column]}"
-								transition:scale
+								transition:scale={{ delay: 200 * column }}
 							>
 								{game.guesses[row][column].toUpperCase()}
 							</div>
@@ -231,12 +288,15 @@
 
 		<!-- Input -->
 		<div class="input">
+			<!-- svelte-ignore a11y-autofocus -->
 			<input
 				class="inputChildren"
 				bind:value={_input}
 				bind:this={inputField}
 				on:keypress={onKeyPress}
 				maxlength={game.wordLength}
+				placeholder="Enter word here (Max: {game.wordLength})"
+				autofocus
 			/>
 			{#if inputValid === true}
 				<button on:click={processInput}>Enter</button>
@@ -293,7 +353,7 @@
 
 	.game {
 		display: grid;
-		zoom: 50%;
+		zoom: 100%;
 
 		grid-template-columns: repeat(var(--word-length), 100px);
 		grid-template-rows: repeat(var(--max-guesses), 100px);
@@ -305,7 +365,10 @@
 
 	.box {
 		background-color: var(--color);
-		border-radius: 5px;
+		border-radius: 2px;
+		border-style: solid;
+		border-color: #000;
+		border-width: 3px;
 
 		font-size: 300%;
 		color: white;
