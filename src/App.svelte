@@ -1,27 +1,61 @@
 <script lang="ts">
 	import { scale } from "svelte/transition";
-	import Popup from "./popup.svelte";
-	import Settings from "./Settings.svelte";
-	import Sidebar from "./sidebar.svelte";
+	import Popup from "./componenets/popup.svelte";
+	import Settings from "./componenets/settings.svelte";
+	import Sidebar from "./componenets/sidebar.svelte";
+	import Keyboard from "./componenets/keyboard.svelte";
+	import InstantPopup from "./componenets/instantpopup.svelte";
+
+	const alphabet = [
+		"a",
+		"b",
+		"c",
+		"d",
+		"e",
+		"f",
+		"g",
+		"h",
+		"i",
+		"j",
+		"k",
+		"l",
+		"m",
+		"n",
+		"o",
+		"p",
+		"q",
+		"r",
+		"s",
+		"t",
+		"u",
+		"v",
+		"w",
+		"x",
+		"y",
+		"z",
+	];
 
 	/* ---------------------------------- Game ---------------------------------- */
 	class Game {
 		guesses: string[];
 		boxes: ("empty" | "correct" | "semicorrect")[][];
+
+		getColor(color: "empty" | "correct" | "semicorrect", keyboard = false) {
+			switch (color) {
+				case "correct":
+					return "#AFE1AF";
+				case "empty":
+					return !keyboard ? "#D3D3D3" : "#fff";
+				case "semicorrect":
+					return "#FFC300";
+			}
+		}
 		get coloredBoxes() {
 			return this.boxes.map((row) =>
-				row.map((color) => {
-					switch (color) {
-						case "correct":
-							return "#AFE1AF";
-						case "empty":
-							return "#D3D3D3";
-						case "semicorrect":
-							return "#FFC300";
-					}
-				})
+				row.map((color) => this.getColor(color))
 			);
 		}
+		keyboardColors: { [key: string]: "empty" | "correct" | "semicorrect" };
 		word: string;
 		started: number;
 		endTimer: boolean;
@@ -39,6 +73,10 @@
 				answersList[Math.floor(Math.random() * answersList.length)];
 			this.started = Date.now();
 			this.endTimer = false;
+			this.keyboardColors = {};
+			alphabet.forEach(
+				(letter) => (this.keyboardColors[letter] = "empty")
+			);
 			if (this.word) console.log(`Word is "${this.word}" (cheater 👀)`);
 		}
 
@@ -111,25 +149,31 @@
 	});
 
 	function processInput() {
+		console.log(`Process ${input}`);
 		if (game.validateInput(input) !== true) return;
 
 		/* ---------------------------- Reset / add input --------------------------- */
-		inputField.value = "";
+		console.log(`Input reset`);
+		console.log(game.boxes);
 		game.guesses = [...game.guesses, input];
 
 		/* -------------------------- Determine the colors -------------------------- */
 		const foundindexes = [];
 		for (let i = 0; i < input.length; i++) {
+			console.log("letter", i);
 			const letter = input[i];
 			const index = game.word.indexOf(letter);
 
 			if (index === -1) {
 				game.boxes[game.guesses.length - 1][i] = "empty";
+				game.keyboardColors[letter] = "empty";
+				console.log("emty");
 				continue;
 			}
 
 			if (game.word[i] === letter) {
 				game.boxes[game.guesses.length - 1][i] = "correct";
+				game.keyboardColors[letter] = "correct";
 				continue;
 			}
 
@@ -143,17 +187,22 @@
 
 			if (found) {
 				game.boxes[game.guesses.length - 1][i] = "empty";
+				game.keyboardColors[letter] = "empty";
 				continue;
 			}
 
 			if (!foundindexes.includes(i)) {
 				game.boxes[game.guesses.length - 1][i] = "semicorrect";
+				game.keyboardColors[letter] = "semicorrect";
 				foundindexes.push(i);
 				continue;
 			}
 
 			game.boxes[game.guesses.length - 1][i] = "empty";
+			game.keyboardColors[letter] = "empty";
 		}
+		console.log(game.boxes);
+		input = "";
 
 		/* ------------------------------- Win / lose ------------------------------- */
 		if (input === game.word) {
@@ -166,49 +215,23 @@
 	}
 
 	/* --------------------------------- Inputs --------------------------------- */
-	let _input: string;
-	let input: string;
-	$: input = _input?.toLocaleLowerCase();
-	let inputField: HTMLInputElement;
-	let inputValid: true | string = "Input too short!";
+	let input = "";
 	$: inputValid = !won
 		? !lose
 			? game.validateInput(input)
 			: `You lost, the word was ${game.word}!`
 		: "You won!";
 
-	const alphabet = [
-		"a",
-		"b",
-		"c",
-		"d",
-		"e",
-		"f",
-		"g",
-		"h",
-		"i",
-		"j",
-		"k",
-		"l",
-		"m",
-		"n",
-		"o",
-		"p",
-		"q",
-		"r",
-		"s",
-		"t",
-		"u",
-		"v",
-		"w",
-		"x",
-		"y",
-		"z",
-	];
-	function onKeyPress(event: KeyboardEvent) {
-		if (event.code === "Enter") processInput();
-		else if (!alphabet.includes(event.key.toLowerCase())) {
-			event.preventDefault();
+	function keyboardPress(key: string) {
+		if (key === "backspace") {
+			input = input.slice(0, -1);
+		} else if (key == "Enter") {
+			if (inputValid !== true) {
+				addInstantPopup(inputValid.toString());
+			}
+			processInput();
+		} else if (input.length <= game.wordLength - 1) {
+			input = `${input}${key}`;
 		}
 	}
 
@@ -216,8 +239,18 @@
 		if (event.code === "Escape") settingsOpen = !settingsOpen;
 		else if (event.code === "Equal") zoomIn();
 		else if (event.code === "Minus") zoomOut();
-		else if (alphabet.includes(event.key.toLowerCase())) {
-			inputField.focus();
+		else if (event.code === "Backspace") {
+			input = input.slice(0, -1);
+		} else if (event.code === "Enter") {
+			if (inputValid !== true) {
+				addInstantPopup(inputValid.toString());
+			}
+			processInput();
+		} else if (
+			alphabet.includes(event.key.toLowerCase()) &&
+			input.length <= game.wordLength - 1
+		) {
+			input = `${input}${event.key}`;
 		}
 	};
 
@@ -232,6 +265,19 @@
 	let closedLosePopup = false;
 	function closeLosePopup() {
 		closedLosePopup = true;
+	}
+
+	let instantPopups: { [key: string]: { message: string; delay: number } } =
+		{};
+	let instantPopupId = 0;
+	let instantPopupUpdate = false;
+	function removeInstantPopup(id: string) {
+		delete instantPopups[id];
+		instantPopupUpdate = !instantPopupUpdate;
+	}
+	function addInstantPopup(message: string, delay = 1500) {
+		instantPopups[instantPopupId] = { message, delay };
+		instantPopupId += 1;
 	}
 
 	/* -------------------------------- Settings -------------------------------- */
@@ -272,7 +318,7 @@
 					{#if game.guesses[row]}
 						{#key game.guesses[row].charAt(column).toUpperCase()}
 							<div
-								class="box"
+								class="box noBorder"
 								style="--color: {_row[column]}"
 								transition:scale={{ delay: 200 * column }}
 							>
@@ -280,7 +326,11 @@
 							</div>
 						{/key}
 					{:else}
-						<div class="box" style="--color: {_row[column]}" />
+						<div class="box">
+							{input?.[column] && game.guesses.length === row
+								? input?.[column]?.toUpperCase()
+								: ""}
+						</div>
 					{/if}
 				{/each}
 			{/each}
@@ -289,7 +339,7 @@
 		<!-- Input -->
 		<div class="input">
 			<!-- svelte-ignore a11y-autofocus -->
-			<input
+			<!-- <input
 				class="inputChildren"
 				bind:value={_input}
 				bind:this={inputField}
@@ -302,7 +352,10 @@
 				<button on:click={processInput}>Enter</button>
 			{:else}
 				<button disabled data-tooltip={inputValid}>Enter</button>
-			{/if}
+			{/if} -->
+
+			<br />
+			<Keyboard {game} {keyboardPress} />
 		</div>
 	{/if}
 
@@ -327,28 +380,37 @@
 	<!-- svelte-ignore missing-declaration -->
 	<Sidebar
 		{game}
-		toggleSettings={() => (settingsOpen = !settingsOpen)}
 		{zoomIn}
 		{zoomOut}
+		toggleSettings={() => (settingsOpen = !settingsOpen)}
 	/>
 
 	<!-- Settings -->
 	{#if settingsOpen}
 		<Settings />
 	{/if}
+
+	{#key instantPopupUpdate}
+		{#each Object.keys(instantPopups) as key}
+			<InstantPopup
+				message={instantPopups[key].message}
+				duration={instantPopups[key].delay}
+				destroy={() => removeInstantPopup(key)}
+			/>
+		{/each}
+	{/key}
 </main>
 
 <style>
+	* {
+		touch-action: manipulation;
+	}
+
 	.input {
 		display: flex;
 		justify-content: center;
 		align-items: center;
 		margin-top: 15px;
-	}
-
-	.inputChildren {
-		margin: 10px;
-		margin-top: 0px;
 	}
 
 	.game {
@@ -357,7 +419,7 @@
 
 		grid-template-columns: repeat(var(--word-length), 100px);
 		grid-template-rows: repeat(var(--max-guesses), 100px);
-		grid-gap: 10px;
+		gap: 10px;
 
 		justify-content: center;
 		align-content: center;
@@ -367,15 +429,24 @@
 		background-color: var(--color);
 		border-radius: 2px;
 		border-style: solid;
-		border-color: #000;
-		border-width: 3px;
+		border-color: grey;
+		border-width: 4px;
 
 		font-size: 300%;
-		color: white;
+		color: grey;
 
 		display: flex;
 		justify-content: center;
 		align-items: center;
+	}
+
+	.noBorder {
+		border-width: 0;
+	}
+
+	:global(body.dark-mode) .box {
+		border-color: grey;
+		color: white;
 	}
 
 	/* ------------------------------- Background ------------------------------- */
@@ -385,7 +456,7 @@
 	}
 
 	:global(body.dark-mode) {
-		background-color: #424549;
+		background-color: #1a1a1b;
 	}
 
 	:global([data-tooltip]) {
