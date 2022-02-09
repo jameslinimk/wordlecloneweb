@@ -3,12 +3,16 @@
 
     export let message: string;
     export let onClose: () => void;
+    export let customButton: { message: string; onClick: () => void } = null;
 </script>
 
 <div class="popup" in:fade out:fade>
     <h1>{message}</h1>
 
     <button on:click={onClose}>Close</button>
+    {#if customButton}
+        <button on:click={customButton.onClick}>{customButton.message}</button>
+    {/if}
 </div>
 
 <style>

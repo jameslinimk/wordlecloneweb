@@ -63,14 +63,21 @@
 			public wordLength: number,
 			public maxGuesses: number,
 			public guessesList: string[],
-			public answersList: string[]
+			public answersList: string[],
+			customWord: false | string = false
 		) {
 			this.guesses = [];
 			this.boxes = [...Array(maxGuesses)].map(() =>
 				[...Array(wordLength)].map(() => "empty")
 			);
-			this.word =
-				answersList[Math.floor(Math.random() * answersList.length)];
+			if (customWord && guessesList.includes(customWord)) {
+				console.log("📝 Custom word detected!");
+				addInstantPopup("Custom word detected & used!");
+				this.word = customWord;
+			} else {
+				this.word =
+					answersList[Math.floor(Math.random() * answersList.length)];
+			}
 			this.started = Date.now();
 			this.endTimer = false;
 			this.keyboardColors = {};
@@ -116,6 +123,28 @@
 		maxGuesses = _maxGuesses;
 	}
 
+	function obscureWord(word: string): string {
+		return word
+			.split("")
+			.map((letter) => (letter.toLowerCase().charCodeAt(0) - 96) * 2 + 3)
+			.join("|");
+	}
+
+	function unobscureWord(obscureWord: string): string {
+		return obscureWord
+			.split("|")
+			.map((number) =>
+				String.fromCharCode(96 + (parseInt(number) - 3) / 2)
+			)
+			.join("");
+	}
+
+	let customWord: false | string = false;
+	if (searchParams.has("word")) {
+		customWord = unobscureWord(searchParams.get("word"));
+		if (customWord.length !== wordLength) customWord = false;
+	}
+
 	async function start() {
 		let _guesses: string[];
 		let _answers: string[];
@@ -145,29 +174,24 @@
 		const guesses = guessesAnswers[0];
 		const answers = guessesAnswers[1];
 
-		game = new Game(wordLength, maxGuesses, guesses, answers);
+		game = new Game(wordLength, maxGuesses, guesses, answers, customWord);
 	});
 
 	function processInput() {
-		console.log(`Process ${input}`);
 		if (game.validateInput(input) !== true) return;
 
 		/* ---------------------------- Reset / add input --------------------------- */
-		console.log(`Input reset`);
-		console.log(game.boxes);
 		game.guesses = [...game.guesses, input];
 
 		/* -------------------------- Determine the colors -------------------------- */
 		const foundindexes = [];
 		for (let i = 0; i < input.length; i++) {
-			console.log("letter", i);
 			const letter = input[i];
 			const index = game.word.indexOf(letter);
 
 			if (index === -1) {
 				game.boxes[game.guesses.length - 1][i] = "empty";
 				game.keyboardColors[letter] = "empty";
-				console.log("emty");
 				continue;
 			}
 
@@ -201,8 +225,6 @@
 			game.boxes[game.guesses.length - 1][i] = "empty";
 			game.keyboardColors[letter] = "empty";
 		}
-		console.log(game.boxes);
-		input = "";
 
 		/* ------------------------------- Win / lose ------------------------------- */
 		if (input === game.word) {
@@ -212,6 +234,8 @@
 			lose = true;
 			game.endTimer = true;
 		}
+
+		input = "";
 	}
 
 	/* --------------------------------- Inputs --------------------------------- */
@@ -306,89 +330,57 @@
 </script>
 
 <main>
-	{#if game.wordLength !== 0}
-		<!-- Game -->
-		<div
-			class="game"
-			style="--max-guesses: {game.maxGuesses}; --word-length: {game.wordLength}"
-			bind:this={gameDiv}
-		>
-			{#each game.coloredBoxes as _row, row}
-				{#each _row as _, column}
-					{#if game.guesses[row]}
-						{#key game.guesses[row].charAt(column).toUpperCase()}
-							<div
-								class="box noBorder"
-								style="--color: {_row[column]}"
-								transition:scale={{ delay: 200 * column }}
-							>
-								{game.guesses[row][column].toUpperCase()}
+	<div>
+		<Sidebar
+			{game}
+			{zoomIn}
+			{zoomOut}
+			toggleSettings={() => (settingsOpen = !settingsOpen)}
+		/>
+
+		{#if game.wordLength !== 0}
+			<!-- Game -->
+			<div
+				class="game"
+				style="--max-guesses: {game.maxGuesses}; --word-length: {game.wordLength}"
+				bind:this={gameDiv}
+			>
+				{#each game.coloredBoxes as _row, row}
+					{#each _row as _, column}
+						{#if game.guesses[row]}
+							{#key game.guesses[row]
+								.charAt(column)
+								.toUpperCase()}
+								<div
+									class="box noBorder"
+									style="--color: {_row[column]}"
+									transition:scale={{ delay: 200 * column }}
+								>
+									{game.guesses[row][column].toUpperCase()}
+								</div>
+							{/key}
+						{:else}
+							<div class="box">
+								{input?.[column] && game.guesses.length === row
+									? input?.[column]?.toUpperCase()
+									: ""}
 							</div>
-						{/key}
-					{:else}
-						<div class="box">
-							{input?.[column] && game.guesses.length === row
-								? input?.[column]?.toUpperCase()
-								: ""}
-						</div>
-					{/if}
+						{/if}
+					{/each}
 				{/each}
-			{/each}
-		</div>
+			</div>
 
-		<!-- Input -->
-		<div class="input">
-			<!-- svelte-ignore a11y-autofocus -->
-			<!-- <input
-				class="inputChildren"
-				bind:value={_input}
-				bind:this={inputField}
-				on:keypress={onKeyPress}
-				maxlength={game.wordLength}
-				placeholder="Enter word here (Max: {game.wordLength})"
-				autofocus
-			/>
-			{#if inputValid === true}
-				<button on:click={processInput}>Enter</button>
-			{:else}
-				<button disabled data-tooltip={inputValid}>Enter</button>
-			{/if} -->
+			<!-- Input -->
+			<div class="input">
+				<Keyboard {game} {keyboardPress} />
+			</div>
+		{/if}
 
-			<br />
-			<Keyboard {game} {keyboardPress} />
-		</div>
-	{/if}
-
-	<!-- Win / lose popups -->
-	{#if won && !closedWonPopup}
-		<Popup
-			message="🎉 You won {game.guesses.length === 1
-				? 'first try! (hacker)'
-				: `in ${game.guesses.length} tries!`}"
-			onClose={closeWonPopup}
-		/>
-	{/if}
-
-	{#if lose && !closedLosePopup}
-		<Popup
-			message="🎈 You lost, the word was {game.word}!"
-			onClose={closeLosePopup}
-		/>
-	{/if}
-
-	<!-- Darkmode -->
-	<!-- svelte-ignore missing-declaration -->
-	<Sidebar
-		{game}
-		{zoomIn}
-		{zoomOut}
-		toggleSettings={() => (settingsOpen = !settingsOpen)}
-	/>
-
-	<!-- Settings -->
-	{#if settingsOpen}
-		<Settings />
-	{/if}
+		<!-- Settings -->
+		{#if settingsOpen}
+			<Settings />
+		{/if}
+	</div>
 
 	{#key instantPopupUpdate}
 		{#each Object.keys(instantPopups) as key}
@@ -399,6 +391,47 @@
 			/>
 		{/each}
 	{/key}
+
+	<!-- Win / lose popups -->
+	{#if won && !closedWonPopup}
+		<Popup
+			message="🎉 You won {game.guesses.length === 1
+				? 'first try! (hacker)'
+				: `in ${game.guesses.length} tries!`}"
+			onClose={closeWonPopup}
+			customButton={{
+				message: "Share your word!",
+				onClick: () => {
+					navigator.clipboard
+						.writeText(
+							`${window.location.protocol}//${
+								window.location.hostname
+							}${
+								window.location.port !== ""
+									? `:${window.location.port}`
+									: ""
+							}/?wordLength=${game.wordLength}&maxGuesses=${
+								game.maxGuesses
+							}&word=${obscureWord(game.word)}`
+						)
+						.then(() => {
+							addInstantPopup("Link copied to clipboard!");
+						})
+						.catch((err) => {
+							console.error(err);
+							addInstantPopup("An error has occured!");
+						});
+				},
+			}}
+		/>
+	{/if}
+
+	{#if lose && !closedLosePopup}
+		<Popup
+			message="🎈 You lost, the word was {game.word}!"
+			onClose={closeLosePopup}
+		/>
+	{/if}
 </main>
 
 <style>

@@ -17,27 +17,31 @@
 </script>
 
 <div class="sidebar">
-    <Darkmode />
-    <button on:click={() => toggleSettings()}>🔨</button>
-    <button on:click={() => location.reload()}>🔄</button>
-    <br />
-    <button on:click={zoomOut}>🔎➖</button>
-    <button on:click={zoomIn}>🔎➕</button>
+    <div style="float:left;">
+        <button on:click={zoomOut}>🔎➖</button>
+        <button on:click={zoomIn}>🔎➕</button>
+    </div>
+
+    <div style="float:right;">
+        <Darkmode />
+        <button on:click={() => toggleSettings()}>🔨</button>
+        <button on:click={() => location.reload()}>🔄</button>
+    </div>
 
     <h3 class="timer">{timeElapsed}</h3>
 </div>
 
 <style>
     .sidebar {
-        position: absolute;
         top: 10px;
         right: 10px;
-        transition: background-color 0.3s;
         text-align: right;
     }
 
     .timer {
         color: gray;
+        text-align: center;
+        font-size: x-large;
         transition: background-color 0.3s;
     }
 
