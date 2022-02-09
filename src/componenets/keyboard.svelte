@@ -22,7 +22,6 @@
                                 width="40"
                                 height="30"
                                 fill="currentColor"
-                                class="bi bi-backspace"
                                 viewBox="0 0 16 16"
                             >
                                 <path
@@ -42,7 +41,7 @@
                 {:else}
                     <button
                         class="key"
-                        style="--color:{game.getColor(
+                        style="background-color:{game.getColor(
                             game.keyboardColors[key],
                             true
                         )}"
@@ -59,8 +58,9 @@
     .keyboard {
         display: flex;
         flex-direction: column;
+        align-items: center;
         position: fixed;
-        bottom: 0;
+        bottom: 12px;
     }
 
     .keyboardRow {
@@ -70,11 +70,16 @@
     }
 
     .key {
-        width: min(10vw, 60px);
+        width: min(9.4vw, 60px);
         height: 75px;
         border-radius: 4px;
         border-color: black;
-        background-color: var(--color);
+        background-color: white;
+        transition: background-color 0.3s;
+    }
+
+    :global(body.darkMode) .key {
+        background-color: lightgrey;
     }
 
     .specialKey {
@@ -84,5 +89,10 @@
         border-color: black;
         background-color: lightgrey;
         font-weight: bold;
+        transition: background-color 0.3s;
+    }
+
+    :global(body.darkMode) .specialKey {
+        background-color: grey;
     }
 </style>

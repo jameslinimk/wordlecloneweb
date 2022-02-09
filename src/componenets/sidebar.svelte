@@ -45,7 +45,7 @@
         transition: background-color 0.3s;
     }
 
-    :global(body.dark-mode) .timer {
+    :global(body.darkMode) .timer {
         color: lightgray;
     }
 </style>

@@ -5,9 +5,9 @@
 
     function applyTheme() {
         if (theme === "dark") {
-            window.document.body.classList.add("dark-mode");
+            window.document.body.classList.add("darkMode");
         } else {
-            window.document.body.classList.remove("dark-mode");
+            window.document.body.classList.remove("darkMode");
         }
     }
 

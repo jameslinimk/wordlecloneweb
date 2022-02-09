@@ -54,7 +54,7 @@
         transition: background-color 0.3s;
     }
 
-    :global(body.dark-mode) .settings {
+    :global(body.darkMode) .settings {
         background-color: dimgray;
     }
 </style>
