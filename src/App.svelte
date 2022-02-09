@@ -404,12 +404,8 @@
 				onClick: () => {
 					navigator.clipboard
 						.writeText(
-							`${window.location.protocol}//${
-								window.location.hostname
-							}${
-								window.location.port !== ""
-									? `:${window.location.port}`
-									: ""
+							`${
+								window.location.href.split("?")[0]
 							}/?wordLength=${game.wordLength}&maxGuesses=${
 								game.maxGuesses
 							}&word=${obscureWord(game.word)}`
@@ -435,12 +431,8 @@
 				onClick: () => {
 					navigator.clipboard
 						.writeText(
-							`${window.location.protocol}//${
-								window.location.hostname
-							}${
-								window.location.port !== ""
-									? `:${window.location.port}`
-									: ""
+							`${
+								window.location.href.split("?")[0]
 							}/?wordLength=${game.wordLength}&maxGuesses=${
 								game.maxGuesses
 							}&word=${obscureWord(game.word)}`
