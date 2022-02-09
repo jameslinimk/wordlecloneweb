@@ -430,6 +430,30 @@
 		<Popup
 			message="🎈 You lost, the word was {game.word}!"
 			onClose={closeLosePopup}
+			customButton={{
+				message: "Share your word!",
+				onClick: () => {
+					navigator.clipboard
+						.writeText(
+							`${window.location.protocol}//${
+								window.location.hostname
+							}${
+								window.location.port !== ""
+									? `:${window.location.port}`
+									: ""
+							}/?wordLength=${game.wordLength}&maxGuesses=${
+								game.maxGuesses
+							}&word=${obscureWord(game.word)}`
+						)
+						.then(() => {
+							addInstantPopup("Link copied to clipboard!");
+						})
+						.catch((err) => {
+							console.error(err);
+							addInstantPopup("An error has occured!");
+						});
+				},
+			}}
 		/>
 	{/if}
 </main>
