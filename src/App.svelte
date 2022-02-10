@@ -285,7 +285,7 @@
 		}
 	}
 
-	document.onkeyup = (event) => {
+	document.onkeydown = (event) => {
 		if (event.code === "Escape") settingsOpen = !settingsOpen;
 		else if (event.code === "Equal") zoomIn();
 		else if (event.code === "Minus") zoomOut();
