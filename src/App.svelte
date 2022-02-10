@@ -264,17 +264,19 @@
 
 	/* --------------------------------- Inputs --------------------------------- */
 	let input = "";
-	$: inputValid = !won
-		? !lose
-			? game.validateInput(input)
-			: `You lost, the word was ${game.word}!`
-		: "You won!";
+	function inputValid() {
+		return !won
+			? !lose
+				? game.validateInput(input)
+				: `You lost, the word was ${game.word}!`
+			: "You won!";
+	}
 
 	function keyboardPress(key: string) {
 		if (key === "backspace") {
 			input = input.slice(0, -1);
 		} else if (key == "Enter") {
-			if (inputValid !== true) {
+			if (inputValid() !== true) {
 				addInstantPopup(inputValid.toString());
 			}
 			processInput();
@@ -290,7 +292,7 @@
 		else if (event.code === "Backspace") {
 			input = input.slice(0, -1);
 		} else if (event.code === "Enter") {
-			if (inputValid !== true) {
+			if (inputValid() !== true) {
 				addInstantPopup(inputValid.toString());
 			}
 			processInput();
