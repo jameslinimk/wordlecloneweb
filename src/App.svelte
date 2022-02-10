@@ -422,9 +422,7 @@
 				onClick: () => {
 					navigator.clipboard
 						.writeText(
-							`${window.location.href
-								.split("?")[0]
-								.slice(0, -1)}?wordLength=${
+							`${window.location.href.split("?")[0]}?wordLength=${
 								game.wordLength
 							}&maxGuesses=${game.maxGuesses}&word=${obscureWord(
 								game.word
@@ -451,9 +449,7 @@
 				onClick: () => {
 					navigator.clipboard
 						.writeText(
-							`${window.location.href
-								.split("?")[0]
-								.slice(0, -1)}?wordLength=${
+							`${window.location.href.split("?")[0]}?wordLength=${
 								game.wordLength
 							}&maxGuesses=${game.maxGuesses}&word=${obscureWord(
 								game.word
