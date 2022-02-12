@@ -34,8 +34,8 @@ function copyGame() {
     )
         .toISOString()
         .substr(11, 8)}s!
-Word: ${game.word}`)
-    game.boxes.forEach((row) => {
+Word: "${game.word}"`)
+    game.boxes.forEach((row, i) => {
         const rowMessage = []
         row.forEach((box) => {
             switch (box) {
@@ -50,9 +50,11 @@ Word: ${game.word}`)
                     break
             }
         })
+        if (game.guesses[i]) rowMessage.push(`(${game.guesses[i]})`)
         message.push(rowMessage.join(" "))
     })
-    message.push(`Click the link below to try a game of Wordimik!
+    message.push(`
+Click the link below to try a game of Wordimik!
 ${window.location.href.split("?")[0]}?wordLength=${game.wordLength
         }&maxGuesses=${game.maxGuesses}`)
 
@@ -71,3 +73,4 @@ export {
     copyGame,
     copyLink
 }
+
