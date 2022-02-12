@@ -14,7 +14,6 @@ class InstantPopups {
         this.popups[this.id] = { message, delay };
         this.id += 1;
         this.update = !this.update;
-        console.log("added", this.popups, this.id, this.update);
         instantPopupsWritable.update((i) => i);
     }
 }

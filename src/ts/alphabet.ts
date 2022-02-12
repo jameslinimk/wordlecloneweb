@@ -27,6 +27,25 @@ const alphabet = [
     "z",
 ]
 
-export {
-    alphabet
+function obscureWord(word: string): string {
+    return word
+        .split("")
+        .map((letter) => (letter.toLowerCase().charCodeAt(0) - 96) * 2 + 3)
+        .join("|")
 }
+
+function unobscureWord(obscureWord: string): string {
+    return obscureWord
+        .split("|")
+        .map((number) =>
+            String.fromCharCode(96 + (parseInt(number) - 3) / 2)
+        )
+        .join("")
+}
+
+export {
+    alphabet,
+    obscureWord,
+    unobscureWord
+}
+

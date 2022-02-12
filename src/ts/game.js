@@ -1,12 +1,14 @@
-import { writable } from "svelte/store";
+import { get, writable } from "svelte/store";
 import { alphabet } from "./alphabet";
+import { instantPopupsWritable } from "./instantpopups";
 class Game {
-    constructor(wordLength, maxGuesses, guessesList, answersList, instantPopups, customWord = false, dailyWord = false) {
+    constructor(wordLength, maxGuesses, guessesList, answersList, customWord = false, dailyWord = false) {
         this.wordLength = wordLength;
         this.maxGuesses = maxGuesses;
         this.guessesList = guessesList;
         this.answersList = answersList;
         this.dailyWord = dailyWord;
+        const instantPopups = get(instantPopupsWritable);
         this.guesses = [];
         this.boxes = [...Array(maxGuesses)].map(() => [...Array(wordLength)].map(() => "empty"));
         if (customWord && dailyWord) {

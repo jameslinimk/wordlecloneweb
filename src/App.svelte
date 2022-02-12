@@ -5,9 +5,10 @@
 	import Keyboard from "./componenets/keyboard.svelte";
 	import Popup from "./componenets/popup.svelte";
 	import Settings from "./componenets/settings.svelte";
-	import { alphabet } from "./ts/alphabet";
+	import { alphabet, unobscureWord } from "./ts/alphabet";
 	import { Game, gameWritable } from "./ts/game";
 	import { instantPopupsWritable } from "./ts/instantpopups";
+	import { copyGame, copyLink } from "./ts/sharing";
 
 	let wordLength = 5;
 	let maxGuesses = 6;
@@ -31,22 +32,6 @@
 	) {
 		const _maxGuesses = parseInt(searchParams.get("maxGuesses"));
 		maxGuesses = _maxGuesses;
-	}
-
-	function obscureWord(word: string): string {
-		return word
-			.split("")
-			.map((letter) => (letter.toLowerCase().charCodeAt(0) - 96) * 2 + 3)
-			.join("|");
-	}
-
-	function unobscureWord(obscureWord: string): string {
-		return obscureWord
-			.split("|")
-			.map((number) =>
-				String.fromCharCode(96 + (parseInt(number) - 3) / 2)
-			)
-			.join("");
 	}
 
 	let customWord: false | string = false;
@@ -119,7 +104,6 @@
 				maxGuesses,
 				guesses,
 				answers,
-				$instantPopupsWritable,
 				daily,
 				true
 			);
@@ -130,7 +114,6 @@
 				maxGuesses,
 				guesses,
 				answers,
-				$instantPopupsWritable,
 				customWord
 			);
 			gameWritable.update((n) => n);
@@ -172,8 +155,8 @@
 			}
 
 			let found = false;
-			for (let i = 0; i < input.length; i++) {
-				if ($gameWritable.word[i] === input[i] && input[i] === letter) {
+			for (let x = 0; x < input.length; x++) {
+				if ($gameWritable.word[i] === input[x] && x === i) {
 					found = true;
 					break;
 				}
@@ -363,69 +346,6 @@
 	function changeStats(newStats: Stats) {
 		stats = newStats;
 		localStorage.setItem("stats", JSON.stringify(stats));
-	}
-
-	/* -------------------------------- Copy link ------------------------------- */
-	function copyLink() {
-		navigator.clipboard
-			.writeText(
-				$gameWritable.dailyWord
-					? `${window.location.href.split("?")[0]}?wordLength=${
-							$gameWritable.wordLength
-					  }&maxGuesses=${$gameWritable.maxGuesses}&word=daily`
-					: `${window.location.href.split("?")[0]}?wordLength=${
-							$gameWritable.wordLength
-					  }&maxGuesses=${
-							$gameWritable.maxGuesses
-					  }&word=${obscureWord($gameWritable.word)}`
-			)
-			.then(() => {
-				$instantPopupsWritable.add("Link copied to clipboard!");
-			})
-			.catch((err) => {
-				console.error(err);
-				$instantPopupsWritable.add("An error has occured!");
-			});
-	}
-	function copyGame() {
-		const message = [];
-		message.push(`Check out my game of Wordimik I completed in ${new Date(
-			<number>$gameWritable.endTimer - $gameWritable.started
-		)
-			.toISOString()
-			.substr(11, 8)}s!
-Word: ${$gameWritable.word}`);
-		$gameWritable.boxes.forEach((row) => {
-			const rowMessage = [];
-			row.forEach((box) => {
-				switch (box) {
-					case "correct":
-						rowMessage.push("🟩");
-						break;
-					case "empty":
-						rowMessage.push("⬛");
-						break;
-					case "semicorrect":
-						rowMessage.push("🟨");
-						break;
-				}
-			});
-			message.push(rowMessage.join(" "));
-		});
-		message.push(`Click the link below to try a game of Wordimik!
-${window.location.href.split("?")[0]}?wordLength=${
-			$gameWritable.wordLength
-		}&maxGuesses=${$gameWritable.maxGuesses}`);
-
-		navigator.clipboard
-			.writeText(message.join("\n"))
-			.then(() => {
-				$instantPopupsWritable.add("Link copied to clipboard!");
-			})
-			.catch((err) => {
-				console.error(err);
-				$instantPopupsWritable.add("An error has occured!");
-			});
 	}
 </script>
 

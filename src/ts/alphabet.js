@@ -26,5 +26,17 @@ const alphabet = [
     "y",
     "z",
 ];
-export { alphabet };
+function obscureWord(word) {
+    return word
+        .split("")
+        .map((letter) => (letter.toLowerCase().charCodeAt(0) - 96) * 2 + 3)
+        .join("|");
+}
+function unobscureWord(obscureWord) {
+    return obscureWord
+        .split("|")
+        .map((number) => String.fromCharCode(96 + (parseInt(number) - 3) / 2))
+        .join("");
+}
+export { alphabet, obscureWord, unobscureWord };
 //# sourceMappingURL=alphabet.js.map

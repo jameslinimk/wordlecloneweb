@@ -1,6 +1,6 @@
-import { writable } from "svelte/store"
+import { get, writable } from "svelte/store"
 import { alphabet } from "./alphabet"
-import type { InstantPopups } from "./instantpopups"
+import { instantPopupsWritable } from "./instantpopups"
 
 class Game {
     guesses: string[]
@@ -37,10 +37,10 @@ class Game {
         public maxGuesses: number,
         public guessesList: string[],
         public answersList: string[],
-        instantPopups?: InstantPopups,
         customWord: false | string = false,
         public dailyWord = false,
     ) {
+        const instantPopups = get(instantPopupsWritable)
         this.guesses = []
         this.boxes = [...Array(maxGuesses)].map(() =>
             [...Array(wordLength)].map(() => "empty")
