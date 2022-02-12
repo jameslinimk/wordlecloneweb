@@ -82,6 +82,7 @@
 						(daily) => daily.split("|")[0] === days.toString()
 					)[0]
 					.split("|")[1];
+				maxGuesses = 6;
 			} else {
 				$instantPopupsWritable.add(
 					"You already did the daily word for today!, using random word instead."
@@ -215,6 +216,7 @@
 			// gameWritable.update((n) => n);
 			changeStats({ ...stats, losses: stats.losses + 1 });
 			changeStats({ ...stats, played: stats.played + 1 });
+			changeStats({ ...stats, currentStreak: 0 });
 		}
 
 		gameWritable.update((n) => n);

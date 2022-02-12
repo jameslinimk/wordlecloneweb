@@ -27,18 +27,21 @@
     }, 1000);
 
     let showStats = false;
+
+    let showShareMenu = false;
 </script>
 
 <div class="sidebar">
-    <div style="float:left;">
+    <div style="position:absolute; left:10px;">
         <button on:click={zoomOut}>🔎➖</button>
         <button on:click={zoomIn}>🔎➕</button>
     </div>
 
-    <div style="float:right;">
+    <div style="position:absolute; right:10px;">
         {#if $gameWritable.endTimer}
-            <button in:fade on:click={copyLink}>Share your word</button>
-            <button in:fade on:click={copyGame}>Share this game</button>
+            <button in:fade on:click={() => (showShareMenu = !showShareMenu)}
+                >🔗</button
+            >
         {/if}
         <Darkmode />
         <button on:click={() => toggleSettings()}>🔨</button>
@@ -48,6 +51,21 @@
 
     <h3 class="timer">{timeElapsed}</h3>
 </div>
+
+{#if showShareMenu}
+    <Popup onClose={() => (showShareMenu = false)}>
+        <div class="container">
+            <h2>Sharing options</h2>
+            <button on:click={copyLink}
+                >🔗 Share word (link for others to try your word)</button
+            >
+            <button on:click={copyGame}
+                >🔗 Share game (sharing your guesses, word, and time)</button
+            >
+        </div>
+        <br />
+    </Popup>
+{/if}
 
 {#if showStats}
     <Popup onClose={() => (showStats = false)}>
@@ -124,12 +142,14 @@
         top: 10px;
         right: 10px;
         text-align: right;
+        text-align: center;
     }
 
     .timer {
         color: gray;
-        text-align: center;
+        /* text-align: center; */
         font-size: x-large;
+        /* position: absolute; */
         transition: background-color 0.3s;
     }
 
