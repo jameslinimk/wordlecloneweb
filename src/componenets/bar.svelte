@@ -21,9 +21,7 @@
     setInterval(() => {
         if ($gameWritable.endTimer) return;
 
-        timeElapsed = new Date(Date.now() - $gameWritable.started)
-            .toISOString()
-            .substr(11, 8);
+        timeElapsed = new Date(Date.now() - $gameWritable.started).toISOString().substr(11, 8);
     }, 1000);
 
     let showStats = false;
@@ -39,9 +37,7 @@
 
     <div style="position:absolute; right:10px;">
         {#if $gameWritable.endTimer}
-            <button in:fade on:click={() => (showShareMenu = !showShareMenu)}
-                >🔗</button
-            >
+            <button in:fade on:click={() => (showShareMenu = !showShareMenu)}>🔗</button>
         {/if}
         <Darkmode />
         <button on:click={() => toggleSettings()}>🔨</button>
@@ -56,12 +52,8 @@
     <Popup onClose={() => (showShareMenu = false)}>
         <div class="container">
             <h2>Sharing options</h2>
-            <button on:click={copyLink}
-                >🔗 Share word (link for others to try your word)</button
-            >
-            <button on:click={copyGame}
-                >🔗 Share game (sharing your guesses, word, and time)</button
-            >
+            <button on:click={copyLink}>🔗 Share word (link for others to try your word)</button>
+            <button on:click={copyGame}>🔗 Share game (sharing your guesses, word, and time)</button>
         </div>
         <br />
     </Popup>
@@ -78,9 +70,7 @@
                 </div>
                 <div class="stat">
                     <div class="statValue">
-                        {Math.round(
-                            (getStats().wins / getStats().played) * 1000
-                        ) / 10}
+                        {Math.round((getStats().wins / getStats().played) * 1000) / 10}
                     </div>
                     <div class="statKey">Win %</div>
                 </div>

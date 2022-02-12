@@ -27,12 +27,7 @@
         <option value={false}> Don't use daily word (deafult) </option>
     </select>
 
-    <button
-        on:click={() =>
-            (window.location.href = `./?wordLength=${wordLength}&maxGuesses=${tries}${
-                daily ? "&word=daily" : ""
-            }`)}><strong>Apply settings (will reset)</strong></button
-    >
+    <button on:click={() => (window.location.href = `./?wordLength=${wordLength}&maxGuesses=${tries}${daily ? "&word=daily" : ""}`)}><strong>Apply settings (will reset)</strong></button>
 </div>
 
 <style>

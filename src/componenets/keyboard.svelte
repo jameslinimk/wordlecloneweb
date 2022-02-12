@@ -16,15 +16,8 @@
                 {#each keyboardRow as key}
                     {#if key.length !== 1}
                         {#if key === "backspace"}
-                            <button
-                                class="specialKey"
-                                on:click={() => keyboardPress(key)}
-                                ><svg
-                                    width="40"
-                                    height="30"
-                                    fill="currentColor"
-                                    viewBox="0 0 16 16"
-                                >
+                            <button class="specialKey" on:click={() => keyboardPress(key)}
+                                ><svg width="40" height="30" fill="currentColor" viewBox="0 0 16 16">
                                     <path
                                         d="M5.83 5.146a.5.5 0 0 0 0 .708L7.975 8l-2.147 2.146a.5.5 0 0 0 .707.708l2.147-2.147 2.146 2.147a.5.5 0 0 0 .707-.708L9.39 8l2.146-2.146a.5.5 0 0 0-.707-.708L8.683 7.293 6.536 5.146a.5.5 0 0 0-.707 0z"
                                     />
@@ -34,22 +27,10 @@
                                 </svg></button
                             >
                         {:else}
-                            <button
-                                class="specialKey"
-                                on:click={() => keyboardPress(key)}
-                                >{key}</button
-                            >
+                            <button class="specialKey" on:click={() => keyboardPress(key)}>{key}</button>
                         {/if}
                     {:else}
-                        <button
-                            class="key"
-                            style="background-color:{$gameWritable.getColor(
-                                $gameWritable.keyboardColors[key],
-                                true
-                            )}"
-                            on:click={() => keyboardPress(key)}
-                            >{key.toUpperCase()}</button
-                        >
+                        <button class="key" style="background-color:{$gameWritable.getColor($gameWritable.keyboardColors[key], true)}" on:click={() => keyboardPress(key)}>{key.toUpperCase()}</button>
                     {/if}
                 {/each}
             </div>

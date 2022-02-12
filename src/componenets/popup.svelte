@@ -11,9 +11,7 @@
     <button on:click={onClose}>Close</button>
     {#if customButtons}
         {#each customButtons as customButton}
-            <button on:click={customButton.onClick}
-                >{customButton.message}</button
-            >
+            <button on:click={customButton.onClick}>{customButton.message}</button>
         {/each}
     {/if}
 </div>
