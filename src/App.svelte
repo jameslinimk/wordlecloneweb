@@ -200,7 +200,7 @@
 			if (inputValid() !== true) $instantPopupsWritable.add(inputValid().toString());
 			processInput();
 		} else if (alphabet.includes(event.key.toLowerCase()) && input.length <= $gameWritable.wordLength - 1) {
-			input = `${input}${event.key}`;
+			input = `${input}${event.key.toLowerCase()}`;
 		}
 	};
 
