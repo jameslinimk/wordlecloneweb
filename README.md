@@ -6,6 +6,8 @@ Yes, this is another Wordle clone. This one has:
  - Dynamic light/dark mode
  - Word sharing
  - Virtual keyboard
+ - Custom daily words
+ - Statistics
 
 This is my first ever big web project using a framework, Svelte.
 
