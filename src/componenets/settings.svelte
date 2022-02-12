@@ -23,7 +23,7 @@
         {/each}
     </select>
     <select bind:value={daily}>
-        <option value={true}> Use daily word </option>
+        <option value={true}> Use daily word (will make guesses 6) </option>
         <option value={false}> Don't use daily word (deafult) </option>
     </select>
 
