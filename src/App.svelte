@@ -150,6 +150,7 @@
 				$gameWritable.boxes[$gameWritable.guesses.length - 1][i] =
 					"correct";
 				$gameWritable.keyboardColors[letter] = "correct";
+				foundindexes.push(index);
 				// gameWritable.update((n) => n);
 				continue;
 			}
