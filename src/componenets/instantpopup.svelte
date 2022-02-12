@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { slide } from "svelte/transition";
+    import { fade } from "svelte/transition";
 
     export let message: string;
     export let duration: number;
@@ -8,7 +8,7 @@
     setTimeout(destroy, duration);
 </script>
 
-<div class="instantpopup" in:slide out:slide>
+<div class="instantpopup" in:fade out:fade>
     {message}
 </div>
 

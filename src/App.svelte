@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { scale } from "svelte/transition";
+	import Bar from "./componenets/bar.svelte";
+	import InstantPopup from "./componenets/instantpopup.svelte";
+	import Keyboard from "./componenets/keyboard.svelte";
 	import Popup from "./componenets/popup.svelte";
 	import Settings from "./componenets/settings.svelte";
-	import Sidebar from "./componenets/sidebar.svelte";
-	import Keyboard from "./componenets/keyboard.svelte";
-	import InstantPopup from "./componenets/instantpopup.svelte";
 
 	const alphabet = [
 		"a",
@@ -71,13 +71,18 @@
 			public maxGuesses: number,
 			public guessesList: string[],
 			public answersList: string[],
-			customWord: false | string = false
+			customWord: false | string = false,
+			public dailyWord = false
 		) {
 			this.guesses = [];
 			this.boxes = [...Array(maxGuesses)].map(() =>
 				[...Array(wordLength)].map(() => "empty")
 			);
-			if (customWord && guessesList.includes(customWord)) {
+			if (customWord && dailyWord) {
+				console.log("📝 Using daily word!");
+				addInstantPopup("Daily word detected & used!");
+				this.word = customWord;
+			} else if (customWord && guessesList.includes(customWord)) {
 				console.log("📝 Custom word detected!");
 				addInstantPopup("Custom word detected & used!");
 				this.word = customWord;
@@ -152,6 +157,14 @@
 		if (customWord.length !== wordLength) customWord = false;
 	}
 
+	const date = new Date();
+	let days = date.getUTCDate() - 1;
+	function getDaysInMonth(month: number, year: number) {
+		return new Date(year, month, 0).getDate();
+	}
+	for (let i = 0; i < date.getUTCMonth(); i++)
+		days += getDaysInMonth(i + 1, date.getUTCFullYear());
+
 	async function start() {
 		let _guesses: string[];
 		let _answers: string[];
@@ -171,17 +184,57 @@
 			_answers = words.split(",");
 		}
 
-		return [_guesses, _answers];
+		let _daily: string;
+		if (searchParams.get("word") === "daily") {
+			if (
+				localStorage.getItem(`daily,${wordLength}`) !== days.toString()
+			) {
+				const _dailyList = await fetch(
+					`./words/daily_${wordLength}.txt`
+				);
+				const dailyList = await _dailyList.text();
+				_daily = dailyList
+					.split(",")
+					.filter(
+						(daily) => daily.split("|")[0] === days.toString()
+					)[0]
+					.split("|")[1];
+			} else {
+				addInstantPopup(
+					"You already did the daily word for today!, using random word instead."
+				);
+			}
+		}
+
+		return [_guesses, _answers, _daily];
 	}
 
 	let game = new Game(0, 0, [], []);
 
 	const guessesAnswers = start();
 	guessesAnswers.then((guessesAnswers) => {
-		const guesses = guessesAnswers[0];
-		const answers = guessesAnswers[1];
+		const guesses = <string[]>guessesAnswers[0];
+		const answers = <string[]>guessesAnswers[1];
+		const daily = <string>guessesAnswers[2];
 
-		game = new Game(wordLength, maxGuesses, guesses, answers, customWord);
+		if (daily) {
+			game = new Game(
+				wordLength,
+				maxGuesses,
+				guesses,
+				answers,
+				daily,
+				true
+			);
+		} else {
+			game = new Game(
+				wordLength,
+				maxGuesses,
+				guesses,
+				answers,
+				customWord
+			);
+		}
 	});
 
 	function processInput() {
@@ -254,9 +307,18 @@
 		if (input === game.word) {
 			won = true;
 			game.endTimer = true;
+			changeStats({ ...stats, wins: stats.wins + 1 });
+			changeStats({ ...stats, currentStreak: stats.currentStreak + 1 });
+			if (stats.currentStreak > stats.maxStreak) {
+				changeStats({ ...stats, maxStreak: stats.currentStreak });
+			}
+			changeStats({ ...stats, played: stats.played + 1 });
+			localStorage.setItem(`daily,${wordLength}`, days.toString());
 		} else if (game.guesses.length >= game.maxGuesses) {
 			lose = true;
 			game.endTimer = true;
+			changeStats({ ...stats, losses: stats.losses + 1 });
+			changeStats({ ...stats, played: stats.played + 1 });
 		}
 
 		input = "";
@@ -277,7 +339,7 @@
 			input = input.slice(0, -1);
 		} else if (key == "Enter") {
 			if (inputValid() !== true) {
-				addInstantPopup(inputValid.toString());
+				addInstantPopup(inputValid().toString());
 			}
 			processInput();
 		} else if (input.length <= game.wordLength - 1) {
@@ -293,7 +355,7 @@
 			input = input.slice(0, -1);
 		} else if (event.code === "Enter") {
 			if (inputValid() !== true) {
-				addInstantPopup(inputValid.toString());
+				addInstantPopup(inputValid().toString());
 			}
 			processInput();
 		} else if (
@@ -307,15 +369,9 @@
 	/* --------------------------------- Popups --------------------------------- */
 	let won = false;
 	let closedWonPopup = false;
-	function closeWonPopup() {
-		closedWonPopup = true;
-	}
 
 	let lose = false;
 	let closedLosePopup = false;
-	function closeLosePopup() {
-		closedLosePopup = true;
-	}
 
 	let instantPopups: { [key: string]: { message: string; delay: number } } =
 		{};
@@ -325,7 +381,7 @@
 		delete instantPopups[id];
 		instantPopupUpdate = !instantPopupUpdate;
 	}
-	function addInstantPopup(message: string, delay = 1500) {
+	function addInstantPopup(message: string, delay = 2000) {
 		instantPopups[instantPopupId] = { message, delay };
 		instantPopupId += 1;
 	}
@@ -335,12 +391,14 @@
 
 	/* ---------------------------------- Zoom ---------------------------------- */
 	let gameDiv /*: HTMLDivElement*/; // Because for some reason style.zoom isnt a thing
+	let zoomed = false;
 	$: {
-		if (gameDiv?.style) {
+		if (gameDiv?.style && !zoomed) {
 			const localZoom = localStorage.getItem("zoom");
 			if (localZoom && !isNaN(<any>localZoom)) {
 				gameDiv.style.zoom = parseFloat(localZoom);
 			}
+			zoomed = true;
 		}
 	}
 	function zoomIn() {
@@ -353,13 +411,131 @@
 		gameDiv.style.zoom = parseFloat(style.zoom) - 0.05;
 		localStorage.setItem("zoom", `${parseFloat(style.zoom) - 0.05}`);
 	}
+
+	/* ---------------------------------- Stats --------------------------------- */
+	interface Stats {
+		played: number;
+		wins: number;
+		losses: number;
+		currentStreak: number;
+		maxStreak: number;
+	}
+	const statsKeys = [
+		"played",
+		"wins",
+		"losses",
+		"currentStreak",
+		"maxStreak",
+	];
+	let stats: Stats = {
+		played: 0,
+		wins: 0,
+		losses: 0,
+		currentStreak: 0,
+		maxStreak: 0,
+	};
+	const localStats = localStorage.getItem("stats");
+	if (localStats) {
+		let parsedStats: Stats;
+		try {
+			parsedStats = JSON.parse(localStats);
+		} catch {
+			parsedStats = null;
+		}
+		if (parsedStats) {
+			const keys = Object.keys(parsedStats);
+			if (keys.sort().join(",") === statsKeys.sort().join(",")) {
+				keys.forEach((key) => {
+					if (typeof parsedStats[key] !== "number") {
+						parsedStats[key] = 0;
+					}
+				});
+			}
+			stats = parsedStats;
+		}
+
+		localStorage.setItem("stats", JSON.stringify(stats));
+	} else {
+		localStorage.setItem("stats", JSON.stringify(stats));
+	}
+
+	function changeStats(newStats: Stats) {
+		stats = newStats;
+		localStorage.setItem("stats", JSON.stringify(stats));
+	}
+
+	/* -------------------------------- Copy link ------------------------------- */
+	function copyLink() {
+		navigator.clipboard
+			.writeText(
+				game.dailyWord
+					? `${window.location.href.split("?")[0]}?wordLength=${
+							game.wordLength
+					  }&maxGuesses=${game.maxGuesses}&word=daily`
+					: `${window.location.href.split("?")[0]}?wordLength=${
+							game.wordLength
+					  }&maxGuesses=${game.maxGuesses}&word=${obscureWord(
+							game.word
+					  )}`
+			)
+			.then(() => {
+				addInstantPopup("Link copied to clipboard!");
+			})
+			.catch((err) => {
+				console.error(err);
+				addInstantPopup("An error has occured!");
+			});
+	}
+	function copyGame() {
+		const message = [];
+		message.push(`Check out my game of Wordimik I completed in ${new Date(
+			Date.now() - game.started
+		)
+			.toISOString()
+			.substr(11, 8)}s!
+Word: ${game.word}`);
+		game.boxes.forEach((row) => {
+			const rowMessage = [];
+			row.forEach((box) => {
+				switch (box) {
+					case "correct":
+						rowMessage.push("🟩");
+						break;
+					case "empty":
+						rowMessage.push("⬛");
+						break;
+					case "semicorrect":
+						rowMessage.push("🟨");
+						break;
+				}
+			});
+			message.push(rowMessage.join(" "));
+		});
+		message.push(`Click the link below to try a game of Wordimik!
+${window.location.href.split("?")[0]}?wordLength=${
+			game.wordLength
+		}&maxGuesses=${game.maxGuesses}`);
+
+		navigator.clipboard
+			.writeText(message.join("\n"))
+			.then(() => {
+				addInstantPopup("Link copied to clipboard!");
+			})
+			.catch((err) => {
+				console.error(err);
+				addInstantPopup("An error has occured!");
+			});
+	}
 </script>
 
 <main>
-	<Sidebar
+	<Bar
 		{game}
 		{zoomIn}
 		{zoomOut}
+		{copyLink}
+		{copyGame}
+		getStats={() => stats}
 		toggleSettings={() => (settingsOpen = !settingsOpen)}
 	/>
 
@@ -415,58 +591,42 @@
 	<!-- Win / lose popups -->
 	{#if won && !closedWonPopup}
 		<Popup
-			message="🎉 You won {game.guesses.length === 1
-				? 'first try! (hacker)'
-				: `in ${game.guesses.length} tries!`}"
-			onClose={closeWonPopup}
-			customButton={{
-				message: "Share your word!",
-				onClick: () => {
-					navigator.clipboard
-						.writeText(
-							`${window.location.href.split("?")[0]}?wordLength=${
-								game.wordLength
-							}&maxGuesses=${game.maxGuesses}&word=${obscureWord(
-								game.word
-							)}`
-						)
-						.then(() => {
-							addInstantPopup("Link copied to clipboard!");
-						})
-						.catch((err) => {
-							console.error(err);
-							addInstantPopup("An error has occured!");
-						});
+			onClose={() => (closedWonPopup = true)}
+			customButtons={[
+				{
+					message: "Share your word",
+					onClick: copyLink,
 				},
-			}}
-		/>
+				{
+					message: "Share this game",
+					onClick: copyGame,
+				},
+			]}
+		>
+			<h1>
+				🎉 You won {game.guesses.length === 1
+					? "first try! (hacker)"
+					: `in ${game.guesses.length} tries!`}
+			</h1>
+		</Popup>
 	{/if}
 
 	{#if lose && !closedLosePopup}
 		<Popup
-			message="🎈 You lost, the word was {game.word}!"
-			onClose={closeLosePopup}
-			customButton={{
-				message: "Share your word!",
-				onClick: () => {
-					navigator.clipboard
-						.writeText(
-							`${window.location.href.split("?")[0]}?wordLength=${
-								game.wordLength
-							}&maxGuesses=${game.maxGuesses}&word=${obscureWord(
-								game.word
-							)}`
-						)
-						.then(() => {
-							addInstantPopup("Link copied to clipboard!");
-						})
-						.catch((err) => {
-							console.error(err);
-							addInstantPopup("An error has occured!");
-						});
+			onClose={() => (closedLosePopup = true)}
+			customButtons={[
+				{
+					message: "Share your word",
+					onClick: copyLink,
 				},
-			}}
-		/>
+				{
+					message: "Share this game",
+					onClick: copyGame,
+				},
+			]}
+		>
+			<h1>🎈 You lost, the word was {game.word}!</h1>
+		</Popup>
 	{/if}
 
 	<svg

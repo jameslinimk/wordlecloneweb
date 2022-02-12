@@ -1,17 +1,20 @@
 <script lang="ts">
     import { fade } from "svelte/transition";
 
-    export let message: string;
     export let onClose: () => void;
-    export let customButton: { message: string; onClick: () => void } = null;
+    export let customButtons: { message: string; onClick: () => void }[] = null;
 </script>
 
 <div class="popup" in:fade out:fade>
-    <h1>{message}</h1>
+    <slot />
 
     <button on:click={onClose}>Close</button>
-    {#if customButton}
-        <button on:click={customButton.onClick}>{customButton.message}</button>
+    {#if customButtons}
+        {#each customButtons as customButton}
+            <button on:click={customButton.onClick}
+                >{customButton.message}</button
+            >
+        {/each}
     {/if}
 </div>
 

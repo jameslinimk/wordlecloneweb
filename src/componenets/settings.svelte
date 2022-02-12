@@ -1,42 +1,35 @@
 <script lang="ts">
     import { slide } from "svelte/transition";
 
-    let wordLength: number;
-    let tries: number;
-
-    function applySettings() {
-        window.location.href = `./?wordLength=${wordLength}&maxGuesses=${tries}`;
-    }
+    let wordLength = 5;
+    let tries = 6;
+    let daily = false;
 </script>
 
 <div class="settings" in:slide out:slide>
     <br />
     <select bind:value={wordLength}>
         {#each Array(5) as _, i}
-            {#if i + 3 === 5}
-                <option selected value={i + 3}>
-                    {i + 3} letter words (deafult)
-                </option>
-            {:else}
-                <option value={i + 3}>
-                    {i + 3} letter words
-                </option>
-            {/if}
+            <option value={i + 3}>
+                {i + 3} letter words {i + 3 === 5 ? "(deafult)" : ""}
+            </option>
         {/each}
     </select>
     <select bind:value={tries}>
         {#each Array(7) as _, i}
-            {#if i + 3 === 6}
-                <option selected value={i + 3}>
-                    {i + 3} tries (deafult)
-                </option>
-            {:else}
-                <option value={i + 3}> {i + 3} tries </option>
-            {/if}
+            <option value={i + 3}>
+                {i + 3} tries {i + 3 === 6 ? "(deafult)" : ""}
+            </option>
         {/each}
     </select>
+    <select bind:value={daily}>
+        <option value={true}> Use daily word </option>
+        <option value={false}> Don't use daily word (deafult) </option>
+    </select>
 
-    <button on:click={applySettings}
+    <button
+        on:click={() =>
+            (window.location.href = `./?wordLength=${wordLength}&maxGuesses=${tries}`)}
         ><strong>Apply settings (will reset)</strong></button
     >
 </div>
