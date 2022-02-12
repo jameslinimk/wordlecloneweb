@@ -29,8 +29,9 @@
 
     <button
         on:click={() =>
-            (window.location.href = `./?wordLength=${wordLength}&maxGuesses=${tries}`)}
-        ><strong>Apply settings (will reset)</strong></button
+            (window.location.href = `./?wordLength=${wordLength}&maxGuesses=${tries}${
+                daily ? "&word=daily" : ""
+            }`)}><strong>Apply settings (will reset)</strong></button
     >
 </div>
 
