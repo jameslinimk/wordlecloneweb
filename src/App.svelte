@@ -313,7 +313,7 @@
 
 	<!-- Settings -->
 	{#if settingsOpen}
-		<Settings />
+		<Settings closeSettings={() => (settingsOpen = false)} />
 	{/if}
 
 	{#key $instantPopupsWritable.update}
