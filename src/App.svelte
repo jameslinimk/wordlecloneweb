@@ -5,114 +5,9 @@
 	import Keyboard from "./componenets/keyboard.svelte";
 	import Popup from "./componenets/popup.svelte";
 	import Settings from "./componenets/settings.svelte";
-
-	// const test = new Test();
-	// test.print();
-
-	const alphabet = [
-		"a",
-		"b",
-		"c",
-		"d",
-		"e",
-		"f",
-		"g",
-		"h",
-		"i",
-		"j",
-		"k",
-		"l",
-		"m",
-		"n",
-		"o",
-		"p",
-		"q",
-		"r",
-		"s",
-		"t",
-		"u",
-		"v",
-		"w",
-		"x",
-		"y",
-		"z",
-	];
-
-	/* ---------------------------------- Game ---------------------------------- */
-	class Game {
-		guesses: string[];
-		boxes: ("empty" | "correct" | "semicorrect")[][];
-
-		getColor(
-			color: "empty" | "correct" | "semicorrect" | "none",
-			keyboard = false
-		) {
-			switch (color) {
-				case "correct":
-					return "#AFE1AF";
-				case "empty":
-					return keyboard ? "dimgrey" : "#D3D3D3";
-				case "semicorrect":
-					return "#FFC300";
-				case "none":
-					return "";
-			}
-		}
-		get coloredBoxes() {
-			return this.boxes.map((row) =>
-				row.map((color) => this.getColor(color))
-			);
-		}
-		keyboardColors: {
-			[key: string]: "none" | "empty" | "correct" | "semicorrect";
-		};
-		word: string;
-		started: number;
-		endTimer: boolean;
-		constructor(
-			public wordLength: number,
-			public maxGuesses: number,
-			public guessesList: string[],
-			public answersList: string[],
-			customWord: false | string = false,
-			public dailyWord = false
-		) {
-			this.guesses = [];
-			this.boxes = [...Array(maxGuesses)].map(() =>
-				[...Array(wordLength)].map(() => "empty")
-			);
-			if (customWord && dailyWord) {
-				console.log("📝 Using daily word!");
-				addInstantPopup("Daily word detected & used!");
-				this.word = customWord;
-			} else if (customWord && guessesList.includes(customWord)) {
-				console.log("📝 Custom word detected!");
-				addInstantPopup("Custom word detected & used!");
-				this.word = customWord;
-			} else {
-				this.word =
-					answersList[Math.floor(Math.random() * answersList.length)];
-			}
-			this.started = Date.now();
-			this.endTimer = false;
-			this.keyboardColors = {};
-			alphabet.forEach(
-				(letter) => (this.keyboardColors[letter] = "none")
-			);
-			if (this.word) console.log(`Word is "${this.word}" (cheater 👀)`);
-		}
-
-		validateInput(input: string) {
-			if (!input) return "Enter something!";
-			if (input?.length < this.wordLength) return "Input too short!";
-			if (input?.length > this.wordLength) return "Input too long!";
-			if (this.guesses.includes(input))
-				return "Don't waste your guesses!";
-			if (!this.guessesList.includes(input))
-				return `"${input}" is not a valid word!`;
-			return true;
-		}
-	}
+	import { alphabet } from "./ts/alphabet";
+	import { Game, gameWritable } from "./ts/game";
+	import { instantPopupsWritable } from "./ts/instantpopups";
 
 	let wordLength = 5;
 	let maxGuesses = 6;
@@ -203,7 +98,7 @@
 					)[0]
 					.split("|")[1];
 			} else {
-				addInstantPopup(
+				$instantPopupsWritable.add(
 					"You already did the daily word for today!, using random word instead."
 				);
 			}
@@ -212,8 +107,6 @@
 		return [_guesses, _answers, _daily];
 	}
 
-	let game = new Game(0, 0, [], []);
-
 	const guessesAnswers = start();
 	guessesAnswers.then((guessesAnswers) => {
 		const guesses = <string[]>guessesAnswers[0];
@@ -221,95 +114,110 @@
 		const daily = <string>guessesAnswers[2];
 
 		if (daily) {
-			game = new Game(
+			$gameWritable = new Game(
 				wordLength,
 				maxGuesses,
 				guesses,
 				answers,
+				$instantPopupsWritable,
 				daily,
 				true
 			);
+			gameWritable.update((n) => n);
 		} else {
-			game = new Game(
+			$gameWritable = new Game(
 				wordLength,
 				maxGuesses,
 				guesses,
 				answers,
+				$instantPopupsWritable,
 				customWord
 			);
+			gameWritable.update((n) => n);
 		}
 	});
 
 	function processInput() {
-		if (game.validateInput(input) !== true) return;
+		if ($gameWritable.validateInput(input) !== true) return;
 
 		/* ---------------------------- Reset / add input --------------------------- */
-		game.guesses = [...game.guesses, input];
+		$gameWritable.guesses = [...$gameWritable.guesses, input];
+		gameWritable.update((n) => n);
 
 		/* -------------------------- Determine the colors -------------------------- */
 		const foundindexes = [];
 		for (let i = 0; i < input.length; i++) {
 			const letter = input[i];
-			const index = game.word.indexOf(letter);
+			const index = $gameWritable.word.indexOf(letter);
 
 			if (index === -1) {
-				game.boxes[game.guesses.length - 1][i] = "empty";
+				$gameWritable.boxes[$gameWritable.guesses.length - 1][i] =
+					"empty";
 				if (
-					game.keyboardColors[letter] !== "correct" &&
-					game.keyboardColors[letter] !== "semicorrect"
+					$gameWritable.keyboardColors[letter] !== "correct" &&
+					$gameWritable.keyboardColors[letter] !== "semicorrect"
 				) {
-					game.keyboardColors[letter] = "empty";
+					$gameWritable.keyboardColors[letter] = "empty";
 				}
+				// gameWritable.update((n) => n);
 				continue;
 			}
 
-			if (game.word[i] === letter) {
-				game.boxes[game.guesses.length - 1][i] = "correct";
-				game.keyboardColors[letter] = "correct";
+			if ($gameWritable.word[i] === letter) {
+				$gameWritable.boxes[$gameWritable.guesses.length - 1][i] =
+					"correct";
+				$gameWritable.keyboardColors[letter] = "correct";
+				// gameWritable.update((n) => n);
 				continue;
 			}
 
 			let found = false;
 			for (let i = 0; i < input.length; i++) {
-				if (game.word[i] === input[i] && input[i] === letter) {
+				if ($gameWritable.word[i] === input[i] && input[i] === letter) {
 					found = true;
 					break;
 				}
 			}
 
 			if (found) {
-				game.boxes[game.guesses.length - 1][i] = "empty";
+				$gameWritable.boxes[$gameWritable.guesses.length - 1][i] =
+					"empty";
 				if (
-					game.keyboardColors[letter] !== "correct" &&
-					game.keyboardColors[letter] !== "semicorrect"
+					$gameWritable.keyboardColors[letter] !== "correct" &&
+					$gameWritable.keyboardColors[letter] !== "semicorrect"
 				) {
-					game.keyboardColors[letter] = "empty";
+					$gameWritable.keyboardColors[letter] = "empty";
 				}
+				// gameWritable.update((n) => n);
 				continue;
 			}
 
 			if (!foundindexes.includes(index)) {
-				game.boxes[game.guesses.length - 1][i] = "semicorrect";
-				if (game.keyboardColors[letter] !== "correct") {
-					game.keyboardColors[letter] = "semicorrect";
+				$gameWritable.boxes[$gameWritable.guesses.length - 1][i] =
+					"semicorrect";
+				if ($gameWritable.keyboardColors[letter] !== "correct") {
+					$gameWritable.keyboardColors[letter] = "semicorrect";
 				}
 				foundindexes.push(index);
+				// gameWritable.update((n) => n);
 				continue;
 			}
 
-			game.boxes[game.guesses.length - 1][i] = "empty";
+			$gameWritable.boxes[$gameWritable.guesses.length - 1][i] = "empty";
 			if (
-				game.keyboardColors[letter] !== "correct" &&
-				game.keyboardColors[letter] !== "semicorrect"
+				$gameWritable.keyboardColors[letter] !== "correct" &&
+				$gameWritable.keyboardColors[letter] !== "semicorrect"
 			) {
-				game.keyboardColors[letter] = "empty";
+				$gameWritable.keyboardColors[letter] = "empty";
 			}
+			// gameWritable.update((n) => n);
 		}
 
 		/* ------------------------------- Win / lose ------------------------------- */
-		if (input === game.word) {
+		if (input === $gameWritable.word) {
 			won = true;
-			game.endTimer = true;
+			$gameWritable.endTimer = Date.now();
+			// gameWritable.update((n) => n);
 			changeStats({ ...stats, wins: stats.wins + 1 });
 			changeStats({ ...stats, currentStreak: stats.currentStreak + 1 });
 			if (stats.currentStreak > stats.maxStreak) {
@@ -317,12 +225,15 @@
 			}
 			changeStats({ ...stats, played: stats.played + 1 });
 			localStorage.setItem(`daily,${wordLength}`, days.toString());
-		} else if (game.guesses.length >= game.maxGuesses) {
+		} else if ($gameWritable.guesses.length >= $gameWritable.maxGuesses) {
 			lose = true;
-			game.endTimer = true;
+			$gameWritable.endTimer = Date.now();
+			// gameWritable.update((n) => n);
 			changeStats({ ...stats, losses: stats.losses + 1 });
 			changeStats({ ...stats, played: stats.played + 1 });
 		}
+
+		gameWritable.update((n) => n);
 
 		input = "";
 	}
@@ -332,8 +243,8 @@
 	function inputValid() {
 		return !won
 			? !lose
-				? game.validateInput(input)
-				: `You lost, the word was ${game.word}!`
+				? $gameWritable.validateInput(input)
+				: `You lost, the word was ${$gameWritable.word}!`
 			: "You won!";
 	}
 
@@ -342,10 +253,10 @@
 			input = input.slice(0, -1);
 		} else if (key == "Enter") {
 			if (inputValid() !== true) {
-				addInstantPopup(inputValid().toString());
+				$instantPopupsWritable.add(inputValid().toString());
 			}
 			processInput();
-		} else if (input.length <= game.wordLength - 1) {
+		} else if (input.length <= $gameWritable.wordLength - 1) {
 			input = `${input}${key}`;
 		}
 	}
@@ -358,12 +269,12 @@
 			input = input.slice(0, -1);
 		} else if (event.code === "Enter") {
 			if (inputValid() !== true) {
-				addInstantPopup(inputValid().toString());
+				$instantPopupsWritable.add(inputValid().toString());
 			}
 			processInput();
 		} else if (
 			alphabet.includes(event.key.toLowerCase()) &&
-			input.length <= game.wordLength - 1
+			input.length <= $gameWritable.wordLength - 1
 		) {
 			input = `${input}${event.key}`;
 		}
@@ -375,19 +286,6 @@
 
 	let lose = false;
 	let closedLosePopup = false;
-
-	let instantPopups: { [key: string]: { message: string; delay: number } } =
-		{};
-	let instantPopupId = 0;
-	let instantPopupUpdate = false;
-	function removeInstantPopup(id: string) {
-		delete instantPopups[id];
-		instantPopupUpdate = !instantPopupUpdate;
-	}
-	function addInstantPopup(message: string, delay = 2000) {
-		instantPopups[instantPopupId] = { message, delay };
-		instantPopupId += 1;
-	}
 
 	/* -------------------------------- Settings -------------------------------- */
 	let settingsOpen = false;
@@ -471,33 +369,33 @@
 	function copyLink() {
 		navigator.clipboard
 			.writeText(
-				game.dailyWord
+				$gameWritable.dailyWord
 					? `${window.location.href.split("?")[0]}?wordLength=${
-							game.wordLength
-					  }&maxGuesses=${game.maxGuesses}&word=daily`
+							$gameWritable.wordLength
+					  }&maxGuesses=${$gameWritable.maxGuesses}&word=daily`
 					: `${window.location.href.split("?")[0]}?wordLength=${
-							game.wordLength
-					  }&maxGuesses=${game.maxGuesses}&word=${obscureWord(
-							game.word
-					  )}`
+							$gameWritable.wordLength
+					  }&maxGuesses=${
+							$gameWritable.maxGuesses
+					  }&word=${obscureWord($gameWritable.word)}`
 			)
 			.then(() => {
-				addInstantPopup("Link copied to clipboard!");
+				$instantPopupsWritable.add("Link copied to clipboard!");
 			})
 			.catch((err) => {
 				console.error(err);
-				addInstantPopup("An error has occured!");
+				$instantPopupsWritable.add("An error has occured!");
 			});
 	}
 	function copyGame() {
 		const message = [];
 		message.push(`Check out my game of Wordimik I completed in ${new Date(
-			Date.now() - game.started
+			<number>$gameWritable.endTimer - $gameWritable.started
 		)
 			.toISOString()
 			.substr(11, 8)}s!
-Word: ${game.word}`);
-		game.boxes.forEach((row) => {
+Word: ${$gameWritable.word}`);
+		$gameWritable.boxes.forEach((row) => {
 			const rowMessage = [];
 			row.forEach((box) => {
 				switch (box) {
@@ -516,24 +414,23 @@ Word: ${game.word}`);
 		});
 		message.push(`Click the link below to try a game of Wordimik!
 ${window.location.href.split("?")[0]}?wordLength=${
-			game.wordLength
-		}&maxGuesses=${game.maxGuesses}`);
+			$gameWritable.wordLength
+		}&maxGuesses=${$gameWritable.maxGuesses}`);
 
 		navigator.clipboard
 			.writeText(message.join("\n"))
 			.then(() => {
-				addInstantPopup("Link copied to clipboard!");
+				$instantPopupsWritable.add("Link copied to clipboard!");
 			})
 			.catch((err) => {
 				console.error(err);
-				addInstantPopup("An error has occured!");
+				$instantPopupsWritable.add("An error has occured!");
 			});
 	}
 </script>
 
 <main>
 	<Bar
-		{game}
 		{zoomIn}
 		{zoomOut}
 		{copyLink}
@@ -542,28 +439,33 @@ ${window.location.href.split("?")[0]}?wordLength=${
 		toggleSettings={() => (settingsOpen = !settingsOpen)}
 	/>
 
-	{#if game.wordLength !== 0}
+	{#if $gameWritable.wordLength !== 0}
 		<!-- Game -->
 		<div
 			class="game"
-			style="--max-guesses: {game.maxGuesses}; --word-length: {game.wordLength}"
+			style="--max-guesses: {$gameWritable.maxGuesses}; --word-length: {$gameWritable.wordLength}"
 			bind:this={gameDiv}
 		>
-			{#each game.coloredBoxes as _row, row}
+			{#each $gameWritable.coloredBoxes as _row, row}
 				{#each _row as _, column}
-					{#if game.guesses[row]}
-						{#key game.guesses[row].charAt(column).toUpperCase()}
+					{#if $gameWritable.guesses[row]}
+						{#key $gameWritable.guesses[row]
+							.charAt(column)
+							.toUpperCase()}
 							<div
 								class="box noBorder"
 								style="--color: {_row[column]}"
 								transition:scale={{ delay: 200 * column }}
 							>
-								{game.guesses[row][column].toUpperCase()}
+								{$gameWritable.guesses[row][
+									column
+								].toUpperCase()}
 							</div>
 						{/key}
 					{:else}
 						<div class="box">
-							{input?.[column] && game.guesses.length === row
+							{input?.[column] &&
+							$gameWritable.guesses.length === row
 								? input?.[column]?.toUpperCase()
 								: ""}
 						</div>
@@ -573,7 +475,7 @@ ${window.location.href.split("?")[0]}?wordLength=${
 		</div>
 
 		<!-- Input -->
-		<div class="input"><Keyboard {game} {keyboardPress} /></div>
+		<div class="input"><Keyboard {keyboardPress} /></div>
 	{/if}
 
 	<!-- Settings -->
@@ -581,12 +483,12 @@ ${window.location.href.split("?")[0]}?wordLength=${
 		<Settings />
 	{/if}
 
-	{#key instantPopupUpdate}
-		{#each Object.keys(instantPopups) as key}
+	{#key $instantPopupsWritable.update}
+		{#each Object.keys($instantPopupsWritable.popups) as key}
 			<InstantPopup
-				message={instantPopups[key].message}
-				duration={instantPopups[key].delay}
-				destroy={() => removeInstantPopup(key)}
+				message={$instantPopupsWritable.popups[key].message}
+				duration={$instantPopupsWritable.popups[key].delay}
+				destroy={() => $instantPopupsWritable.remove(key)}
 			/>
 		{/each}
 	{/key}
@@ -607,9 +509,9 @@ ${window.location.href.split("?")[0]}?wordLength=${
 			]}
 		>
 			<h1>
-				🎉 You won {game.guesses.length === 1
+				🎉 You won {$gameWritable.guesses.length === 1
 					? "first try! (hacker)"
-					: `in ${game.guesses.length} tries!`}
+					: `in ${$gameWritable.guesses.length} tries!`}
 			</h1>
 		</Popup>
 	{/if}
@@ -628,7 +530,7 @@ ${window.location.href.split("?")[0]}?wordLength=${
 				},
 			]}
 		>
-			<h1>🎈 You lost, the word was {game.word}!</h1>
+			<h1>🎈 You lost, the word was {$gameWritable.word}!</h1>
 		</Popup>
 	{/if}
 

@@ -1,9 +1,9 @@
 <script lang="ts">
     import { fade } from "svelte/transition";
+    import { gameWritable } from "../ts/game";
     import Darkmode from "./darkmode.svelte";
     import Popup from "./popup.svelte";
 
-    export let game;
     export let toggleSettings: () => void;
     export let zoomOut: () => void;
     export let zoomIn: () => void;
@@ -19,9 +19,9 @@
 
     let timeElapsed = "00:00:00";
     setInterval(() => {
-        if (game.endTimer) return;
+        if ($gameWritable.endTimer) return;
 
-        timeElapsed = new Date(Date.now() - game.started)
+        timeElapsed = new Date(Date.now() - $gameWritable.started)
             .toISOString()
             .substr(11, 8);
     }, 1000);
@@ -36,7 +36,7 @@
     </div>
 
     <div style="float:right;">
-        {#if game.endTimer}
+        {#if $gameWritable.endTimer}
             <button in:fade on:click={copyLink}>Share your word</button>
             <button in:fade on:click={copyGame}>Share this game</button>
         {/if}

@@ -1,5 +1,5 @@
 <script lang="ts">
-    export let game;
+    import { gameWritable } from "../ts/game";
     export let keyboardPress: (key) => void;
 
     const keyboard = [
@@ -10,48 +10,51 @@
 </script>
 
 <div class="keyboard">
-    {#each keyboard as keyboardRow}
-        <div class="keyboardRow" style="--columns: {keyboardRow.length}">
-            {#each keyboardRow as key}
-                {#if key.length !== 1}
-                    {#if key === "backspace"}
-                        <button
-                            class="specialKey"
-                            on:click={() => keyboardPress(key)}
-                            ><svg
-                                width="40"
-                                height="30"
-                                fill="currentColor"
-                                viewBox="0 0 16 16"
+    {#key $gameWritable}
+        {#each keyboard as keyboardRow}
+            <div class="keyboardRow" style="--columns: {keyboardRow.length}">
+                {#each keyboardRow as key}
+                    {#if key.length !== 1}
+                        {#if key === "backspace"}
+                            <button
+                                class="specialKey"
+                                on:click={() => keyboardPress(key)}
+                                ><svg
+                                    width="40"
+                                    height="30"
+                                    fill="currentColor"
+                                    viewBox="0 0 16 16"
+                                >
+                                    <path
+                                        d="M5.83 5.146a.5.5 0 0 0 0 .708L7.975 8l-2.147 2.146a.5.5 0 0 0 .707.708l2.147-2.147 2.146 2.147a.5.5 0 0 0 .707-.708L9.39 8l2.146-2.146a.5.5 0 0 0-.707-.708L8.683 7.293 6.536 5.146a.5.5 0 0 0-.707 0z"
+                                    />
+                                    <path
+                                        d="M13.683 1a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-7.08a2 2 0 0 1-1.519-.698L.241 8.65a1 1 0 0 1 0-1.302L5.084 1.7A2 2 0 0 1 6.603 1h7.08zm-7.08 1a1 1 0 0 0-.76.35L1 8l4.844 5.65a1 1 0 0 0 .759.35h7.08a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1h-7.08z"
+                                    />
+                                </svg></button
                             >
-                                <path
-                                    d="M5.83 5.146a.5.5 0 0 0 0 .708L7.975 8l-2.147 2.146a.5.5 0 0 0 .707.708l2.147-2.147 2.146 2.147a.5.5 0 0 0 .707-.708L9.39 8l2.146-2.146a.5.5 0 0 0-.707-.708L8.683 7.293 6.536 5.146a.5.5 0 0 0-.707 0z"
-                                />
-                                <path
-                                    d="M13.683 1a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-7.08a2 2 0 0 1-1.519-.698L.241 8.65a1 1 0 0 1 0-1.302L5.084 1.7A2 2 0 0 1 6.603 1h7.08zm-7.08 1a1 1 0 0 0-.76.35L1 8l4.844 5.65a1 1 0 0 0 .759.35h7.08a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1h-7.08z"
-                                />
-                            </svg></button
-                        >
+                        {:else}
+                            <button
+                                class="specialKey"
+                                on:click={() => keyboardPress(key)}
+                                >{key}</button
+                            >
+                        {/if}
                     {:else}
                         <button
-                            class="specialKey"
-                            on:click={() => keyboardPress(key)}>{key}</button
+                            class="key"
+                            style="background-color:{$gameWritable.getColor(
+                                $gameWritable.keyboardColors[key],
+                                true
+                            )}"
+                            on:click={() => keyboardPress(key)}
+                            >{key.toUpperCase()}</button
                         >
                     {/if}
-                {:else}
-                    <button
-                        class="key"
-                        style="background-color:{game.getColor(
-                            game.keyboardColors[key],
-                            true
-                        )}"
-                        on:click={() => keyboardPress(key)}
-                        >{key.toUpperCase()}</button
-                    >
-                {/if}
-            {/each}
-        </div>
-    {/each}
+                {/each}
+            </div>
+        {/each}
+    {/key}
 </div>
 
 <style>
