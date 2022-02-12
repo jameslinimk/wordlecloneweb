@@ -6,6 +6,9 @@
 	import Popup from "./componenets/popup.svelte";
 	import Settings from "./componenets/settings.svelte";
 
+	// const test = new Test();
+	// test.print();
+
 	const alphabet = [
 		"a",
 		"b",
