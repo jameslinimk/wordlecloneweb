@@ -61,10 +61,10 @@
         {#if $gameWritable.endTimer}
             <button in:fade on:click={() => (showShareMenu = !showShareMenu)}>🔗</button>
         {/if}
+        <Darkmode />
     </div>
 
     <div style="position:absolute; right:10px;">
-        <Darkmode />
         <button on:click={() => toggleSettings()}>🔨</button>
         <button on:click={() => (showStats = !showStats)}>📊</button>
         <button on:click={() => location.reload()}>🔄</button>
