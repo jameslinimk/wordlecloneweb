@@ -32,7 +32,7 @@
 
         let guesses: string[];
         if ($gameWritable.wordLength === customWord.length) {
-            guesses = $gameWritable.guesses;
+            guesses = $gameWritable.guessesList;
         } else {
             const _words = await fetch(`./words/word_${customWord.length}.txt`);
             const words = await _words.text();

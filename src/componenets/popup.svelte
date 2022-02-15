@@ -22,5 +22,7 @@
         padding: 10px;
 
         font-size: large;
+
+        z-index: 9999;
     }
 </style>
