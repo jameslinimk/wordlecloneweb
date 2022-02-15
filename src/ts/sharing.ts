@@ -29,12 +29,7 @@ function copyGame() {
     const game = get(gameWritable)
 
     const message = []
-    message.push(`Check out my game of Wordimik I completed in ${new Date(
-        <number>game.endTimer - game.started
-    )
-        .toISOString()
-        .substr(11, 8)}s!
-Word: "${game.word}"`)
+    message.push(`Wordimik | ⌚ ${new Date(<number>game.endTimer - game.started).toISOString().substring(14, 19)}s | 📕 "${game.word}"\n`)
     game.boxes.forEach((row, i) => {
         const rowMessage = []
         row.forEach((box) => {
@@ -43,15 +38,15 @@ Word: "${game.word}"`)
                     rowMessage.push("🟩")
                     break
                 case "empty":
-                    rowMessage.push("⬛")
+                    rowMessage.push("⬜")
                     break
                 case "semicorrect":
                     rowMessage.push("🟨")
                     break
             }
         })
-        if (game.guesses[i]) rowMessage.push(`(${game.guesses[i]})`)
-        message.push(rowMessage.join(" "))
+        if (game.guesses[i]) rowMessage.push(` - ${game.guesses[i]}`)
+        message.push(rowMessage.join(""))
     })
     message.push(`
 Click the link below to try a game of Wordimik!

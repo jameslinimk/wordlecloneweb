@@ -9,6 +9,9 @@
 	import { Game, gameWritable } from "./ts/game";
 	import { instantPopupsWritable } from "./ts/instantpopups";
 	import { copyGame, copyLink } from "./ts/sharing";
+	import { stats, updateStats } from "./ts/stats";
+
+	let customOpen = false;
 
 	let wordLength = 5;
 	let maxGuesses = 6;
@@ -33,7 +36,7 @@
 	const now = new Date();
 	const days = Math.floor((now.getTime() - new Date(now.getFullYear(), 0, 0).getTime()) / 86400000) - 1;
 
-	async function start() {
+	const start = async () => {
 		let _guesses: string[];
 		let _answers: string[];
 
@@ -66,7 +69,7 @@
 		}
 
 		return [_guesses, _answers, _daily];
-	}
+	};
 
 	const guessesAnswers = start();
 	guessesAnswers.then((guessesAnswers) => {
@@ -83,7 +86,7 @@
 		}
 	});
 
-	function processInput() {
+	const processInput = () => {
 		if ($gameWritable.validateInput(input) !== true) return;
 
 		/* ---------------------------- Reset / add input --------------------------- */
@@ -152,48 +155,48 @@
 			won = true;
 			$gameWritable.endTimer = Date.now();
 			// gameWritable.update((n) => n);
-			changeStats({ ...stats, wins: stats.wins + 1 });
-			changeStats({ ...stats, currentStreak: stats.currentStreak + 1 });
-			if (stats.currentStreak > stats.maxStreak) {
-				changeStats({ ...stats, maxStreak: stats.currentStreak });
+			updateStats({ ...$stats, wins: $stats.wins + 1 });
+			updateStats({ ...$stats, currentStreak: $stats.currentStreak + 1 });
+			if ($stats.currentStreak > $stats.maxStreak) {
+				updateStats({ ...$stats, maxStreak: $stats.currentStreak });
 			}
-			changeStats({ ...stats, played: stats.played + 1 });
+			updateStats({ ...$stats, played: $stats.played + 1 });
 			localStorage.setItem(`daily,${wordLength}`, days.toString());
 		} else if ($gameWritable.guesses.length >= $gameWritable.maxGuesses) {
 			lose = true;
 			$gameWritable.endTimer = Date.now();
 			// gameWritable.update((n) => n);
-			changeStats({ ...stats, losses: stats.losses + 1 });
-			changeStats({ ...stats, played: stats.played + 1 });
-			changeStats({ ...stats, currentStreak: 0 });
+			updateStats({ ...$stats, losses: $stats.losses + 1 });
+			updateStats({ ...$stats, played: $stats.played + 1 });
+			updateStats({ ...$stats, currentStreak: 0 });
 		}
 
 		gameWritable.update((n) => n);
 
 		input = "";
-	}
+	};
 
 	/* --------------------------------- Inputs --------------------------------- */
 	let input = "";
-	function inputValid() {
+	const inputValid = () => {
 		return !won ? (!lose ? $gameWritable.validateInput(input) : `You lost, the word was ${$gameWritable.word}!`) : "You won!";
-	}
+	};
 
-	function keyboardPress(key: string) {
+	const keyboardPress = (key: string) => {
 		if (key === "backspace") {
 			input = input.slice(0, -1);
-		} else if (key == "Enter") {
+		} else if (key == "enter") {
 			if (inputValid() !== true) $instantPopupsWritable.add(inputValid().toString());
 			processInput();
 		} else if (input.length <= $gameWritable.wordLength - 1) {
 			input = `${input}${key}`;
 		}
-	}
+	};
 
 	document.onkeydown = (event) => {
+		if (customOpen) return;
+
 		if (event.code === "Escape") settingsOpen = !settingsOpen;
-		else if (event.code === "Equal") zoomIn();
-		else if (event.code === "Minus") zoomOut();
 		else if (event.code === "Backspace") {
 			input = input.slice(0, -1);
 		} else if (event.code === "Enter") {
@@ -215,77 +218,53 @@
 	let settingsOpen = false;
 
 	/* ---------------------------------- Zoom ---------------------------------- */
-	let gameDiv /*: HTMLDivElement*/; // Because for some reason style.zoom isnt a thing
-	let zoomed = false;
+	let gameDiv: HTMLDivElement;
+	// let zoomed = false;
+	let resized = false;
 	$: {
-		if (gameDiv?.style && !zoomed) {
-			const localZoom = localStorage.getItem("zoom");
-			if (localZoom && !isNaN(<any>localZoom)) {
-				gameDiv.style.zoom = parseFloat(localZoom);
-			}
-			zoomed = true;
+		// if (!zoomed && gameDiv?.style) {
+		// 	const localZoom = localStorage.getItem("zoom");
+		// 	if (localZoom && !isNaN(<any>localZoom)) {
+		// 		(<any>gameDiv).style.zoom = parseFloat(localZoom);
+		// 	}
+		// 	zoomed = true;
+		// }
+
+		if (!resized && barDiv?.style && keyboardDiv?.style) {
+			onResize();
 		}
 	}
-	function zoomIn() {
-		const style: any = getComputedStyle(gameDiv);
-		gameDiv.style.zoom = parseFloat(style.zoom) + 0.05;
-		localStorage.setItem("zoom", `${parseFloat(style.zoom) + 0.05}`);
-	}
-	function zoomOut() {
-		const style: any = getComputedStyle(gameDiv);
-		gameDiv.style.zoom = parseFloat(style.zoom) - 0.05;
-		localStorage.setItem("zoom", `${parseFloat(style.zoom) - 0.05}`);
-	}
+	// const zoomIn = () => {
+	// 	const style: any = getComputedStyle(gameDiv);
+	// 	(<any>gameDiv).style.zoom = parseFloat(style.zoom) + 0.05;
+	// 	localStorage.setItem("zoom", `${parseFloat(style.zoom) + 0.05}`);
+	// };
+	// const zoomOut = () => {
+	// 	const style: any = getComputedStyle(gameDiv);
+	// 	(<any>gameDiv).style.zoom = parseFloat(style.zoom) - 0.05;
+	// 	localStorage.setItem("zoom", `${parseFloat(style.zoom) - 0.05}`);
+	// };
 
-	/* ---------------------------------- Stats --------------------------------- */
-	interface Stats {
-		played: number;
-		wins: number;
-		losses: number;
-		currentStreak: number;
-		maxStreak: number;
-	}
-	const statsKeys = ["played", "wins", "losses", "currentStreak", "maxStreak"];
-	let stats: Stats = {
-		played: 0,
-		wins: 0,
-		losses: 0,
-		currentStreak: 0,
-		maxStreak: 0,
+	const onResize = () => {
+		const barRect = barDiv.getBoundingClientRect();
+		const keyboardRect = keyboardDiv.getBoundingClientRect();
+
+		gameDiv.style.gridTemplateRows = `repeat(var(--max-guesses), calc((${Math.abs(barRect.bottom + 25 - keyboardRect.top + 50)}px - 20px) / var(--max-guesses)))`;
+		gameDiv.style.gridTemplateColumns = `repeat(var(--word-length), calc((${Math.abs(barRect.bottom + 25 - keyboardRect.top + 50)}px - 20px) / var(--max-guesses)))`;
 	};
-	const localStats = localStorage.getItem("stats");
-	if (localStats) {
-		let parsedStats: Stats;
-		try {
-			parsedStats = JSON.parse(localStats);
-		} catch {
-			parsedStats = null;
-		}
-		if (parsedStats) {
-			const keys = Object.keys(parsedStats);
-			if (keys.sort().join(",") === statsKeys.sort().join(",")) {
-				keys.forEach((key) => {
-					if (typeof parsedStats[key] !== "number") {
-						parsedStats[key] = 0;
-					}
-				});
-			}
-			stats = parsedStats;
-		}
 
-		localStorage.setItem("stats", JSON.stringify(stats));
-	} else {
-		localStorage.setItem("stats", JSON.stringify(stats));
-	}
+	// window.addEventListener("mousemove", (event) => {
+	// 	console.log(event.clientX, event.clientY);
+	// });
 
-	function changeStats(newStats: Stats) {
-		stats = newStats;
-		localStorage.setItem("stats", JSON.stringify(stats));
-	}
+	window.addEventListener("resize", onResize);
+
+	let keyboardDiv: HTMLDivElement;
+	let barDiv: HTMLDivElement;
 </script>
 
 <main>
-	<Bar {zoomIn} {zoomOut} {copyLink} {copyGame} getStats={() => stats} toggleSettings={() => (settingsOpen = !settingsOpen)} />
+	<Bar bind:showWordMenu={customOpen} bind:barDiv {copyLink} {copyGame} toggleSettings={() => (settingsOpen = !settingsOpen)} />
 
 	{#if $gameWritable.wordLength !== 0}
 		<!-- Game -->
@@ -308,7 +287,7 @@
 		</div>
 
 		<!-- Input -->
-		<div class="input"><Keyboard {keyboardPress} /></div>
+		<div class="input"><Keyboard {keyboardPress} bind:keyboardDiv /></div>
 	{/if}
 
 	<!-- Settings -->
@@ -324,40 +303,20 @@
 
 	<!-- Win / lose popups -->
 	{#if won && !closedWonPopup}
-		<Popup
-			onClose={() => (closedWonPopup = true)}
-			customButtons={[
-				{
-					message: "Share your word",
-					onClick: copyLink,
-				},
-				{
-					message: "Share this game",
-					onClick: copyGame,
-				},
-			]}
-		>
+		<Popup onClose={() => (closedWonPopup = true)}>
+			<button on:click={copyLink}>🔗 Share word (link for others to try your word)</button>
+			<button on:click={copyGame}>🔗 Share game (sharing your guesses, word, and time)</button>
 			<h1>
 				🎉 You {$gameWritable.dailyWord ? "beat the daily word" : "won"}
-				{$gameWritable.guesses.length === 1 ? "first try! (cheater)" : `in ${$gameWritable.guesses.length} tries!`}
+				{$gameWritable.guesses.length === 1 ? "first try! (Cheater 👀)" : `in ${$gameWritable.guesses.length} tries!`}
 			</h1>
 		</Popup>
 	{/if}
 
 	{#if lose && !closedLosePopup}
-		<Popup
-			onClose={() => (closedLosePopup = true)}
-			customButtons={[
-				{
-					message: "Share your word",
-					onClick: copyLink,
-				},
-				{
-					message: "Share this game",
-					onClick: copyGame,
-				},
-			]}
-		>
+		<Popup onClose={() => (closedLosePopup = true)}>
+			<button on:click={copyLink}>🔗 Share word (link for others to try your word)</button>
+			<button on:click={copyGame}>🔗 Share game (sharing your guesses, word, and time)</button>
 			<h1>🎈 You lost{$gameWritable.dailyWord ? ", click the reload icon on the top right to try the daily word again" : `, the word was ${$gameWritable.word}`}!</h1>
 		</Popup>
 	{/if}
@@ -405,13 +364,8 @@
 		grid-template-rows: repeat(var(--max-guesses), 100px);
 		gap: 10px;
 
-		/* aspect-ratio: 1/1; */
-
-		/* height: 500px; */
-
 		justify-content: center;
 		align-content: center;
-		/* margin-bottom: 20px; */
 	}
 
 	.box {
@@ -419,7 +373,7 @@
 		border-radius: 2px;
 		border-style: solid;
 		border-color: grey;
-		border-width: 4px;
+		border-width: 2px;
 
 		font-size: 300%;
 		color: grey;
@@ -427,6 +381,12 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
+	}
+
+	@media only screen and (max-height: 800px) {
+		.box {
+			font-size: 150%;
+		}
 	}
 
 	.noBorder {

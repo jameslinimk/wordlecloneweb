@@ -1,48 +1,73 @@
 <script lang="ts">
     import { fade } from "svelte/transition";
+    import { obscureWord } from "../ts/alphabet";
     import { gameWritable } from "../ts/game";
+    import { instantPopupsWritable } from "../ts/instantpopups";
+    import { stats } from "../ts/stats";
     import Darkmode from "./darkmode.svelte";
     import Popup from "./popup.svelte";
 
     export let toggleSettings: () => void;
-    export let zoomOut: () => void;
-    export let zoomIn: () => void;
     export let copyLink: () => void;
     export let copyGame: () => void;
-    export let getStats: () => {
-        played: number;
-        wins: number;
-        losses: number;
-        currentStreak: number;
-        maxStreak: number;
-    };
+    export let barDiv: HTMLDivElement;
 
-    let timeElapsed = "00:00:00";
+    let timeElapsed = "00:00";
     setInterval(() => {
         if ($gameWritable.endTimer) return;
-
-        timeElapsed = new Date(Date.now() - $gameWritable.started).toISOString().substr(11, 8);
+        timeElapsed = new Date(Date.now() - $gameWritable.started).toISOString().substring(14, 19);
     }, 1000);
 
     let showStats = false;
-
     let showShareMenu = false;
+
+    export let showWordMenu = false;
+    let customWord: string;
+    let tries = 6;
+
+    const shareCustomWord = async () => {
+        if (!customWord) return $instantPopupsWritable.add("Enter something!");
+        if (customWord?.length < 3) return $instantPopupsWritable.add("Word has to be more than 3 characters!");
+        if (customWord?.length > 7) return $instantPopupsWritable.add("Word has to be less than 7 characters!");
+
+        let guesses: string[];
+        if ($gameWritable.wordLength === customWord.length) {
+            guesses = $gameWritable.guesses;
+        } else {
+            const _words = await fetch(`./words/word_${customWord.length}.txt`);
+            const words = await _words.text();
+            guesses = words.split(",");
+        }
+
+        if (!guesses.includes(customWord)) return $instantPopupsWritable.add(`"${customWord}" is not a valid word!`);
+
+        navigator.clipboard
+            .writeText(`${window.location.href.split("?")[0]}?wordLength=${customWord.length}&maxGuesses=${tries}&word=${obscureWord(customWord)}`)
+            .then(() => {
+                $instantPopupsWritable.add("Link copied to clipboard!");
+            })
+            .catch((err) => {
+                console.error(err);
+                $instantPopupsWritable.add("An error has occured!");
+            });
+    };
 </script>
 
-<div class="sidebar">
+<div class="sidebar" bind:this={barDiv}>
     <div style="position:absolute; left:10px;">
-        <button on:click={zoomOut}>🔎➖</button>
-        <button on:click={zoomIn}>🔎➕</button>
-    </div>
-
-    <div style="position:absolute; right:10px;">
+        <!-- <button on:click={zoomOut}>🔎➖</button>
+        <button on:click={zoomIn}>🔎➕</button> -->
+        <button on:click={() => (showWordMenu = !showWordMenu)}>📩</button>
         {#if $gameWritable.endTimer}
             <button in:fade on:click={() => (showShareMenu = !showShareMenu)}>🔗</button>
         {/if}
+    </div>
+
+    <div style="position:absolute; right:10px;">
         <Darkmode />
         <button on:click={() => toggleSettings()}>🔨</button>
-        <button on:click={() => location.reload()}>🔄</button>
         <button on:click={() => (showStats = !showStats)}>📊</button>
+        <button on:click={() => location.reload()}>🔄</button>
     </div>
 
     <h3 class="timer">{timeElapsed}</h3>
@@ -65,25 +90,47 @@
             <h2>Statistics</h2>
             <div class="stats">
                 <div class="stat">
-                    <div class="statValue">{getStats().played}</div>
+                    <div class="statValue">{$stats.played}</div>
                     <div class="statKey">Played</div>
                 </div>
                 <div class="stat">
                     <div class="statValue">
-                        {Math.round((getStats().wins / getStats().played) * 1000) / 10}
+                        {Math.round((!($stats.wins / $stats.played) ? 0 : $stats.wins / $stats.played) * 1000) / 10}
                     </div>
                     <div class="statKey">Win %</div>
                 </div>
                 <div class="stat">
-                    <div class="statValue">{getStats().currentStreak}</div>
+                    <div class="statValue">{$stats.currentStreak}</div>
                     <div class="statKey">Current streak</div>
                 </div>
                 <div class="stat">
-                    <div class="statValue">{getStats().maxStreak}</div>
+                    <div class="statValue">{$stats.maxStreak}</div>
                     <div class="statKey">Max streak</div>
                 </div>
             </div>
         </div>
+    </Popup>
+{/if}
+
+{#if showWordMenu}
+    <Popup onClose={() => (showWordMenu = false)}>
+        <div class="container">
+            <h2>Share custom word</h2>
+            <div style="text-align:center;">Create a copyable link with a custom word to stump your friends (has to be a valid word)!</div>
+            <br />
+
+            <div>
+                <input placeholder="Word" bind:value={customWord} />
+                <select bind:value={tries}>
+                    {#each Array(7) as _, i}
+                        <option value={i + 3}>
+                            {i + 3} tries {i + 3 === 6 ? "(deafult)" : ""}
+                        </option>
+                    {/each}
+                </select> <button on:click={shareCustomWord}>Share</button>
+            </div>
+        </div>
+        <br />
     </Popup>
 {/if}
 

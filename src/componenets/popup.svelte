@@ -2,18 +2,12 @@
     import { fade } from "svelte/transition";
 
     export let onClose: () => void;
-    export let customButtons: { message: string; onClick: () => void }[] = null;
 </script>
 
 <div class="popup" in:fade out:fade>
     <slot />
 
     <button on:click={onClose}>Close</button>
-    {#if customButtons}
-        {#each customButtons as customButton}
-            <button on:click={customButton.onClick}>{customButton.message}</button>
-        {/each}
-    {/if}
 </div>
 
 <style>

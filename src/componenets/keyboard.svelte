@@ -1,15 +1,17 @@
 <script lang="ts">
     import { gameWritable } from "../ts/game";
-    export let keyboardPress: (key) => void;
+    export let keyboardPress: (key: string) => void;
 
     const keyboard = [
         ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"],
         ["a", "s", "d", "f", "g", "h", "j", "k", "l"],
-        ["Enter", "z", "x", "c", "v", "b", "n", "m", "backspace"],
+        ["enter", "z", "x", "c", "v", "b", "n", "m", "backspace"],
     ];
+
+    export let keyboardDiv: HTMLDivElement;
 </script>
 
-<div class="keyboard">
+<div class="keyboard" bind:this={keyboardDiv}>
     {#key $gameWritable}
         {#each keyboard as keyboardRow}
             <div class="keyboardRow" style="--columns: {keyboardRow.length}">
@@ -55,7 +57,7 @@
 
     .key {
         width: min(9.4vw, 60px);
-        height: 75px;
+        height: min(9.4vh, 75px);
         border-radius: 4px;
         border-color: black;
         background-color: white;
@@ -68,7 +70,7 @@
 
     .specialKey {
         width: 80px;
-        height: 75px;
+        height: min(9.4vh, 75px);
         border-radius: 4px;
         border-color: black;
         background-color: lightgrey;
