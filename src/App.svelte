@@ -219,43 +219,23 @@
 
 	/* ---------------------------------- Zoom ---------------------------------- */
 	let gameDiv: HTMLDivElement;
-	// let zoomed = false;
 	let resized = false;
 	$: {
-		// if (!zoomed && gameDiv?.style) {
-		// 	const localZoom = localStorage.getItem("zoom");
-		// 	if (localZoom && !isNaN(<any>localZoom)) {
-		// 		(<any>gameDiv).style.zoom = parseFloat(localZoom);
-		// 	}
-		// 	zoomed = true;
-		// }
-
 		if (!resized && barDiv?.style && keyboardDiv?.style) {
 			onResize();
 		}
 	}
-	// const zoomIn = () => {
-	// 	const style: any = getComputedStyle(gameDiv);
-	// 	(<any>gameDiv).style.zoom = parseFloat(style.zoom) + 0.05;
-	// 	localStorage.setItem("zoom", `${parseFloat(style.zoom) + 0.05}`);
-	// };
-	// const zoomOut = () => {
-	// 	const style: any = getComputedStyle(gameDiv);
-	// 	(<any>gameDiv).style.zoom = parseFloat(style.zoom) - 0.05;
-	// 	localStorage.setItem("zoom", `${parseFloat(style.zoom) - 0.05}`);
-	// };
 
 	const onResize = () => {
 		const barRect = barDiv.getBoundingClientRect();
 		const keyboardRect = keyboardDiv.getBoundingClientRect();
 
-		gameDiv.style.gridTemplateRows = `repeat(var(--max-guesses), calc((${Math.abs(barRect.bottom + 25 - keyboardRect.top + 50)}px - 20px) / var(--max-guesses)))`;
-		gameDiv.style.gridTemplateColumns = `repeat(var(--word-length), calc((${Math.abs(barRect.bottom + 25 - keyboardRect.top + 50)}px - 20px) / var(--max-guesses)))`;
-	};
+		const distance = Math.abs(barRect.bottom + 25 - keyboardRect.top + 50);
+		const value = distance / $gameWritable.maxGuesses - 5;
 
-	// window.addEventListener("mousemove", (event) => {
-	// 	console.log(event.clientX, event.clientY);
-	// });
+		gameDiv.style.gridTemplateRows = `repeat(var(--max-guesses), ${value}px`;
+		gameDiv.style.gridTemplateColumns = `repeat(var(--word-length), ${value * $gameWritable.wordLength < window.innerWidth ? `${value}px` : "1fr"}`;
+	};
 
 	window.addEventListener("resize", onResize);
 

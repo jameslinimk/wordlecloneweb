@@ -48,11 +48,15 @@ class Game {
         if (customWord && dailyWord) {
             console.log("📝 Using daily word!")
             if (instantPopups) instantPopups.add("Daily word detected & used!")
-            this.word = customWord
-        } else if (customWord && guessesList.includes(customWord)) {
+            this.word = customWord.toLowerCase()
+        } else if (customWord &&
+            customWord.split("").filter(l => alphabet.includes(l)).join("").length === customWord.length &&
+            customWord.length >= 3 &&
+            customWord.length <= 7) {
             console.log("📝 Custom word detected!")
             if (instantPopups) instantPopups.add("Custom word detected & used!")
-            this.word = customWord
+            if (!guessesList.includes(customWord)) guessesList.push(customWord)
+            this.word = customWord.toLowerCase()
         } else {
             this.word =
                 answersList[Math.floor(Math.random() * answersList.length)]

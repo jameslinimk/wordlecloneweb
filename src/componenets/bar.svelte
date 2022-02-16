@@ -1,6 +1,6 @@
 <script lang="ts">
     import { fade } from "svelte/transition";
-    import { obscureWord } from "../ts/alphabet";
+    import { alphabet, obscureWord } from "../ts/alphabet";
     import { gameWritable } from "../ts/game";
     import { instantPopupsWritable } from "../ts/instantpopups";
     import { stats } from "../ts/stats";
@@ -23,23 +23,19 @@
 
     export let showWordMenu = false;
     let customWord: string;
+    $: customWord = customWord
+        ? customWord
+              .toLowerCase()
+              .split("")
+              .filter((letter) => alphabet.includes(letter))
+              .join("")
+        : customWord;
     let tries = 6;
 
     const shareCustomWord = async () => {
         if (!customWord) return $instantPopupsWritable.add("Enter something!");
         if (customWord?.length < 3) return $instantPopupsWritable.add("Word has to be more than 3 characters!");
         if (customWord?.length > 7) return $instantPopupsWritable.add("Word has to be less than 7 characters!");
-
-        let guesses: string[];
-        if ($gameWritable.wordLength === customWord.length) {
-            guesses = $gameWritable.guessesList;
-        } else {
-            const _words = await fetch(`./words/word_${customWord.length}.txt`);
-            const words = await _words.text();
-            guesses = words.split(",");
-        }
-
-        if (!guesses.includes(customWord)) return $instantPopupsWritable.add(`"${customWord}" is not a valid word!`);
 
         navigator.clipboard
             .writeText(`${window.location.href.split("?")[0]}?wordLength=${customWord.length}&maxGuesses=${tries}&word=${obscureWord(customWord)}`)
@@ -55,13 +51,11 @@
 
 <div class="sidebar" bind:this={barDiv}>
     <div style="position:absolute; left:10px;">
-        <!-- <button on:click={zoomOut}>🔎➖</button>
-        <button on:click={zoomIn}>🔎➕</button> -->
         <button on:click={() => (showWordMenu = !showWordMenu)}>📩</button>
+        <Darkmode />
         {#if $gameWritable.endTimer}
             <button in:fade on:click={() => (showShareMenu = !showShareMenu)}>🔗</button>
         {/if}
-        <Darkmode />
     </div>
 
     <div style="position:absolute; right:10px;">
@@ -116,18 +110,18 @@
     <Popup onClose={() => (showWordMenu = false)}>
         <div class="container">
             <h2>Share custom word</h2>
-            <div style="text-align:center;">Create a copyable link with a custom word to stump your friends (has to be a valid word)!</div>
+            <div style="text-align:center;">Create a copyable link with a custom word to stump your friends (does not have to be a valid word) (3-7 letter words)!</div>
             <br />
 
             <div>
-                <input placeholder="Word" bind:value={customWord} />
+                <input placeholder="Word" bind:value={customWord} maxlength="7" />
                 <select bind:value={tries}>
                     {#each Array(7) as _, i}
                         <option value={i + 3}>
                             {i + 3} tries {i + 3 === 6 ? "(deafult)" : ""}
                         </option>
                     {/each}
-                </select> <button on:click={shareCustomWord}>Share</button>
+                </select> <button on:click={shareCustomWord}>Copy sharable link</button>
             </div>
         </div>
         <br />
