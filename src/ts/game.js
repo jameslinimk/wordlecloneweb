@@ -23,14 +23,14 @@ class Game {
             console.log("📝 Custom word detected!");
             if (instantPopups)
                 instantPopups.add("Custom word detected & used!");
-            if (!guessesList.includes(customWord))
-                guessesList.push(customWord);
             this.word = customWord.toLowerCase();
         }
         else {
             this.word =
                 answersList[Math.floor(Math.random() * answersList.length)];
         }
+        if (!guessesList.includes(this.word))
+            guessesList.push(this.word);
         this.started = Date.now();
         this.endTimer = false;
         this.keyboardColors = {};
