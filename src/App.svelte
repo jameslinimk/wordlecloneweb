@@ -193,7 +193,7 @@
 		}
 	};
 
-	document.onkeydown = (event) => {
+	document.addEventListener("keydown", (event) => {
 		if (customOpen) return;
 
 		if (event.code === "Escape") settingsOpen = !settingsOpen;
@@ -205,7 +205,7 @@
 		} else if (alphabet.includes(event.key.toLowerCase()) && input.length <= $gameWritable.wordLength - 1) {
 			input = `${input}${event.key.toLowerCase()}`;
 		}
-	};
+	});
 
 	/* --------------------------------- Popups --------------------------------- */
 	let won = false;
@@ -220,11 +220,7 @@
 	/* ---------------------------------- Zoom ---------------------------------- */
 	let gameDiv: HTMLDivElement;
 	let resized = false;
-	$: {
-		if (!resized && barDiv?.style && keyboardDiv?.style) {
-			onResize();
-		}
-	}
+	$: if (!resized && barDiv?.style && keyboardDiv?.style) onResize();
 
 	const onResize = () => {
 		const barRect = barDiv.getBoundingClientRect();
@@ -238,6 +234,7 @@
 	};
 
 	window.addEventListener("resize", onResize);
+	setTimeout(onResize, 1000);
 
 	let keyboardDiv: HTMLDivElement;
 	let barDiv: HTMLDivElement;
@@ -313,11 +310,15 @@
 		position: absolute;
 		bottom: 10px;
 		right: 10px;
-		background-color: whitesmoke;
+		background-color: rgb(216, 216, 216);
 		padding: 2px;
 		border-radius: 5px;
 		opacity: 0.6;
 		transition: 0.3s;
+	}
+
+	:global(body.darkMode) .githubIco {
+		background-color: whitesmoke;
 	}
 
 	.githubIco:hover {
@@ -386,68 +387,5 @@
 
 	:global(body.darkMode) {
 		background-color: #1a1a1b;
-	}
-
-	:global([data-tooltip]) {
-		position: relative;
-		z-index: 2;
-		display: block;
-	}
-
-	:global([data-tooltip]:before),
-	:global([data-tooltip]:after) {
-		visibility: hidden;
-		opacity: 0;
-		pointer-events: none;
-		transition: 0.2s ease-out;
-		transform: translate(-50%, 5px);
-	}
-
-	:global([data-tooltip]:before) {
-		position: absolute;
-		bottom: 100%;
-		left: 50%;
-		margin-bottom: 5px;
-		padding: 7px;
-		width: 100%;
-		min-width: 70px;
-		max-width: 250px;
-		-webkit-border-radius: 3px;
-		-moz-border-radius: 3px;
-		border-radius: 3px;
-		background-color: #000;
-		background-color: hsla(0, 0%, 20%, 0.9);
-		color: #fff;
-		content: attr(data-tooltip);
-		text-align: center;
-		font-size: 14px;
-		line-height: 1.2;
-		transition: 0.2s ease-out;
-	}
-
-	:global([data-tooltip]:after) {
-		position: absolute;
-		bottom: 100%;
-		left: 50%;
-		width: 0;
-		border-top: 5px solid #000;
-		border-top: 5px solid hsla(0, 0%, 20%, 0.9);
-		border-right: 5px solid transparent;
-		border-left: 5px solid transparent;
-		content: " ";
-		font-size: 0;
-		line-height: 0;
-	}
-
-	:global([data-tooltip]:hover:before),
-	:global([data-tooltip]:hover:after) {
-		visibility: visible;
-		opacity: 1;
-		transform: translate(-50%, 0);
-	}
-	:global([data-tooltip="false"]:hover:before),
-	:global([data-tooltip="false"]:hover:after) {
-		visibility: hidden;
-		opacity: 0;
 	}
 </style>
