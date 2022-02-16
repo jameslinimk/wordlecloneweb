@@ -51,8 +51,7 @@ class Game {
             this.word = customWord.toLowerCase()
         } else if (customWord &&
             customWord.split("").filter(l => alphabet.includes(l)).join("").length === customWord.length &&
-            customWord.length >= 3 &&
-            customWord.length <= 7) {
+            customWord.length === wordLength) {
             console.log("📝 Custom word detected!")
             if (instantPopups) instantPopups.add("Custom word detected & used!")
             if (!guessesList.includes(customWord)) guessesList.push(customWord)
