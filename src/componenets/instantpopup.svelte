@@ -1,6 +1,4 @@
 <script lang="ts">
-    import { fade } from "svelte/transition";
-
     export let message: string;
     export let duration: number;
     export let destroy: () => void;
@@ -8,21 +6,20 @@
     setTimeout(destroy, duration);
 </script>
 
-<div class="instantpopup" in:fade out:fade>
+<div class="instantpopup">
     {message}
 </div>
 
 <style>
     .instantpopup {
-        position: fixed;
-        top: 10%;
-        left: 50%;
-        transform: translate(-50%, 0);
-
         text-align: center;
-        font-size: xx-large;
+        font-size: x-large;
         font-weight: bold;
-        color: red;
-        text-shadow: 2px 2px #000;
+
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 5px 10px 18px #888888;
+        padding: 10px;
+        margin-bottom: 10px;
     }
 </style>

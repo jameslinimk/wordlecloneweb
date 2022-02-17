@@ -273,9 +273,11 @@
 	{/if}
 
 	{#key $instantPopupsWritable.update}
-		{#each Object.keys($instantPopupsWritable.popups) as key}
-			<InstantPopup message={$instantPopupsWritable.popups[key].message} duration={$instantPopupsWritable.popups[key].delay} destroy={() => $instantPopupsWritable.remove(key)} />
-		{/each}
+		<div class="instantPopups">
+			{#each Object.keys($instantPopupsWritable.popups) as key}
+				<InstantPopup message={$instantPopupsWritable.popups[key].message} duration={$instantPopupsWritable.popups[key].delay} destroy={() => $instantPopupsWritable.remove(key)} />
+			{/each}
+		</div>
 	{/key}
 
 	<!-- Win / lose popups -->
@@ -306,6 +308,16 @@
 </main>
 
 <style>
+	.instantPopups {
+		position: fixed;
+		top: 10%;
+		left: 50%;
+		transform: translate(-50%, 0);
+
+		display: flex;
+		flex-direction: column;
+	}
+
 	.githubIco {
 		position: absolute;
 		bottom: 10px;

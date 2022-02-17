@@ -26,8 +26,7 @@ class Game {
             this.word = customWord.toLowerCase();
         }
         else {
-            this.word =
-                answersList[Math.floor(Math.random() * answersList.length)];
+            this.word = answersList[Math.floor(Math.random() * answersList.length)];
         }
         if (!guessesList.includes(this.word))
             guessesList.push(this.word);
@@ -35,8 +34,7 @@ class Game {
         this.endTimer = false;
         this.keyboardColors = {};
         alphabet.forEach((letter) => (this.keyboardColors[letter] = "none"));
-        if (this.word)
-            console.log(`Word is "${this.word}" (cheater 👀)`);
+        // if (this.word) console.log(`Word is "${this.word}" (cheater 👀)`)
     }
     getColor(color, keyboard = false) {
         switch (color) {

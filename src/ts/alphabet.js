@@ -1,41 +1,45 @@
-const alphabet = [
-    "a",
-    "b",
-    "c",
-    "d",
-    "e",
-    "f",
-    "g",
-    "h",
-    "i",
-    "j",
-    "k",
-    "l",
-    "m",
-    "n",
-    "o",
-    "p",
-    "q",
-    "r",
-    "s",
-    "t",
-    "u",
-    "v",
-    "w",
-    "x",
-    "y",
-    "z",
-];
+const alphabet = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",];
+const keys = {
+    "a": "$",
+    "b": "&",
+    "c": "!",
+    "d": "@",
+    "e": "#",
+    "f": ")",
+    "g": "(",
+    "h": "0",
+    "i": "3",
+    "j": "=",
+    "k": "[",
+    "l": "}",
+    "m": "%",
+    "n": "{",
+    "o": "<",
+    "p": ">",
+    "q": "_",
+    "r": "\\",
+    "s": "*",
+    "t": "/",
+    "u": "?",
+    "v": "~",
+    "w": "`",
+    "x": "'",
+    "y": "\"",
+    "z": ".",
+};
+const reverseKeys = Object.keys(keys).reduce(((obj, value) => { obj[keys[value]] = value; return obj; }), {});
+const getCode = (letter) => letter.toLowerCase().charCodeAt(0) - 96;
+const getLetter = (code) => String.fromCharCode(code + 96);
 function obscureWord(word) {
     return word
         .split("")
-        .map((letter) => (letter.toLowerCase().charCodeAt(0) - 96) * 2 + 3)
-        .join("|");
+        .map((letter) => keys[getLetter(getCode(letter))])
+        .join("");
 }
 function unobscureWord(obscureWord) {
     return obscureWord
-        .split("|")
-        .map((number) => String.fromCharCode(96 + (parseInt(number) - 3) / 2))
+        .split("")
+        .map((code) => getLetter(getCode(reverseKeys[code])))
         .join("");
 }
 export { alphabet, obscureWord, unobscureWord };

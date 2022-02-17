@@ -42,9 +42,7 @@ class Game {
     ) {
         const instantPopups = get(instantPopupsWritable)
         this.guesses = []
-        this.boxes = [...Array(maxGuesses)].map(() =>
-            [...Array(wordLength)].map(() => "empty")
-        )
+        this.boxes = [...Array(maxGuesses)].map(() => [...Array(wordLength)].map(() => "empty"))
         if (customWord && dailyWord) {
             console.log("📝 Using daily word!")
             if (instantPopups) instantPopups.add("Daily word detected & used!")
@@ -56,27 +54,22 @@ class Game {
             if (instantPopups) instantPopups.add("Custom word detected & used!")
             this.word = customWord.toLowerCase()
         } else {
-            this.word =
-                answersList[Math.floor(Math.random() * answersList.length)]
+            this.word = answersList[Math.floor(Math.random() * answersList.length)]
         }
         if (!guessesList.includes(this.word)) guessesList.push(this.word)
         this.started = Date.now()
         this.endTimer = false
         this.keyboardColors = {}
-        alphabet.forEach(
-            (letter) => (this.keyboardColors[letter] = "none")
-        )
-        if (this.word) console.log(`Word is "${this.word}" (cheater 👀)`)
+        alphabet.forEach((letter) => (this.keyboardColors[letter] = "none"))
+        // if (this.word) console.log(`Word is "${this.word}" (cheater 👀)`)
     }
 
     validateInput(input: string) {
         if (!input) return "Enter something!"
         if (input?.length < this.wordLength) return "Input too short!"
         if (input?.length > this.wordLength) return "Input too long!"
-        if (this.guesses.includes(input))
-            return "Don't waste your guesses!"
-        if (!this.guessesList.includes(input))
-            return `"${input}" is not a valid word!`
+        if (this.guesses.includes(input)) return "Don't waste your guesses!"
+        if (!this.guessesList.includes(input)) return `"${input}" is not a valid word!`
         return true
     }
 }
