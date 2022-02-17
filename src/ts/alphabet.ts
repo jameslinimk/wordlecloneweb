@@ -31,7 +31,7 @@ const keys = {
 
 const reverseKeys = Object.keys(keys).reduce(((obj, value) => { obj[keys[value]] = value; return obj }), {})
 
-const getCode = (letter: string) => letter.toLowerCase().charCodeAt(0) - 96
+const getCode = (letter: string) => (!letter) ? null : letter.toLowerCase().charCodeAt(0) - 96
 const getLetter = (code: number) => String.fromCharCode(code + 96)
 
 function obscureWord(word: string): string {
