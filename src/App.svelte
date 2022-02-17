@@ -94,28 +94,41 @@
 		gameWritable.update((n) => n);
 
 		/* -------------------------- Determine the colors -------------------------- */
+
+		/**
+		 * Array of already colored indexes in the word
+		 */
 		const foundindexes = [];
+		/* ------------------------- Loop through the input ------------------------- */
 		for (let i = 0; i < input.length; i++) {
 			const letter = input[i];
 			const index = $gameWritable.word.indexOf(letter);
 
+			console.log(`Starting index i=${i} letter=${letter} index(of letter in word)=${index}`);
+
+			/* --------------- If the input letter isnt found in the word --------------- */
 			if (index === -1) {
 				$gameWritable.boxes[$gameWritable.guesses.length - 1][i] = "empty";
 				if ($gameWritable.keyboardColors[letter] !== "correct" && $gameWritable.keyboardColors[letter] !== "semicorrect") {
 					$gameWritable.keyboardColors[letter] = "empty";
 				}
+				console.log(" - Index not found at all (empty)");
 				// gameWritable.update((n) => n);
 				continue;
 			}
 
+			/* -------- If the input letter is in the word and in the right index ------- */
 			if ($gameWritable.word[i] === letter) {
 				$gameWritable.boxes[$gameWritable.guesses.length - 1][i] = "correct";
 				$gameWritable.keyboardColors[letter] = "correct";
 				foundindexes.push(index);
 				// gameWritable.update((n) => n);
+				console.log(" - Index is in the right place (correct)");
 				continue;
 			}
 
+			/* ---------------- Check to see if a correct index would be ---------------- */
+			/* ------------------- found if the loop were to continue ------------------- */
 			let found = false;
 			for (let x = 0; x < input.length; x++) {
 				if ($gameWritable.word[i] === input[x] && x === i) {
@@ -124,12 +137,15 @@
 				}
 			}
 
+			console.log(` - found=${found}`);
+
 			if (found) {
 				$gameWritable.boxes[$gameWritable.guesses.length - 1][i] = "empty";
 				if ($gameWritable.keyboardColors[letter] !== "correct" && $gameWritable.keyboardColors[letter] !== "semicorrect") {
 					$gameWritable.keyboardColors[letter] = "empty";
 				}
 				// gameWritable.update((n) => n);
+				console.log(" - Set empty due to found=true");
 				continue;
 			}
 
@@ -139,6 +155,7 @@
 					$gameWritable.keyboardColors[letter] = "semicorrect";
 				}
 				foundindexes.push(index);
+				console.log(" - Foundindex doesnt include (semicorrect)");
 				// gameWritable.update((n) => n);
 				continue;
 			}
